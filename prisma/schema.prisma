@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  RECEIVED     // Angekommen
+  IN_PROGRESS  // Bearbeitung
+  DONE         // Fertig
+}
+
+enum ConsultationSlot {
+  MON_12_14
+  MON_14_16
+  MON_16_18
+  MON_18_20
+  TUE_12_14
+  TUE_14_16
+  TUE_16_18
+  TUE_18_20
+  WED_12_14
+  WED_14_16
+  WED_16_18
+  WED_18_20
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+
+  orders       Order[]
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  priceCents    Int
+  recurring     Boolean  @default(false)
+  recurringInfo String?
+  restricted    Boolean  @default(true)
+
+  orders        Order[]
+}
+
+model Order {
+  id            String       @id @default(cuid())
+  userId        String
+  productId     String
+  status        OrderStatus  @default(RECEIVED)
+  stripeSession String?
+  createdAt     DateTime     @default(now())
+  brief         Json?
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+}
+
+model ConsultationRequest {
+  id            String           @id @default(cuid())
+  userId        String?
+  name          String
+  phone         String
+  preferredTime ConsultationSlot
+  note          String
+  createdAt     DateTime         @default(now())
+}

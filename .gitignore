@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.angular/
+dist/
+.env
+*.log
+.DS_Store
+.idea/
+.vscode/
+
