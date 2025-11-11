@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/i18n/useI18n";
 
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ type Brief = {
 };
 
 export default function CheckoutBriefForm({ productId }: { productId: string }) {
+  const { t } = useI18n();
   const [colors, setColors] = useState("");
   const [texts, setTexts] = useState("");
   const [images, setImages] = useState<string[]>([]);
@@ -65,20 +67,20 @@ export default function CheckoutBriefForm({ productId }: { productId: string }) 
   return (
     <div className="mt-6 space-y-4">
       <div>
-        <label className="block text-xs text-zinc-400">Farben (HEX, komma-getrennt)</label>
+        <label className="block text-xs text-zinc-400">{t("checkoutBrief.colors")}</label>
         <input className="w-full bg-black/30 border border-white/10 rounded-md px-2 py-1"
                value={colors} onChange={e=>setColors(e.target.value)} placeholder="#FF7518, #111111" />
       </div>
 
       <div>
-        <label className="block text-xs text-zinc-400">Texte / Stichworte</label>
+        <label className="block text-xs text-zinc-400">{t("checkoutBrief.texts")}</label>
         <textarea className="w-full bg-black/30 border border-white/10 rounded-md px-2 py-1"
                   rows={3} value={texts} onChange={e=>setTexts(e.target.value)}
                   placeholder="Headlines, Claims, CTA, Zielgruppe..." />
       </div>
 
       <div>
-        <label className="block text-xs text-zinc-400">Bilder hochladen (png, jpg, webp, avif; ≤5MB)</label>
+        <label className="block text-xs text-zinc-400">{t("checkoutBrief.upload")}</label>
         <input type="file" multiple accept="image/*" onChange={handleUpload}
                className="block w-full text-xs text-zinc-300" />
         {uploading && <div className="text-xs text-zinc-400 mt-1">Upload läuft…</div>}
@@ -92,11 +94,11 @@ export default function CheckoutBriefForm({ productId }: { productId: string }) 
             ))}
           </div>
         )}
-        <div className="text-[11px] text-zinc-500 mt-1">Oder Bild-Links direkt in “Texte”/unten in Notizen einfügen.</div>
+        <div className="text-[11px] text-zinc-500 mt-1">Oder Bild-Links direkt in “Texte”/unten in {t("checkoutBrief.notes")} einfügen.</div>
       </div>
 
       <div>
-        <label className="block text-xs text-zinc-400">Notizen</label>
+        <label className="block text-xs text-zinc-400">{t("checkoutBrief.notes")}</label>
         <textarea className="w-full bg-black/30 border border-white/10 rounded-md px-2 py-1"
                   rows={2} value={notes} onChange={e=>setNotes(e.target.value)} />
       </div>
@@ -105,7 +107,7 @@ export default function CheckoutBriefForm({ productId }: { productId: string }) 
 
       <button onClick={startCheckout} disabled={busy || uploading}
               className="w-full rounded-full bg-pfOrange px-4 py-3 text-black text-sm font-semibold hover:brightness-110 disabled:opacity-50">
-        {busy ? "Redirecting…" : "Mit Stripe fortfahren"}
+        {busy ? "Redirecting…" : t("checkoutBrief.button")}
       </button>
     </div>
   );

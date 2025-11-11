@@ -1,14 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { getUserFromCookie } from "@/lib/auth";
 import { getServerI18n } from "@/i18n/server";
-import { productDisplayInfo as products } from "@/lib/products";
+import { productDisplayInfo } from "@/lib/products";
 
 type OrderRow = {
   id: string;
   productId: string | null;
+  priceCents: number | null;
   status: string;
   createdAt: Date;
-  product?: { priceCents: number | null } | null;
 };
 
 export default async function DashboardPage() {
@@ -31,9 +31,9 @@ export default async function DashboardPage() {
     select: {
       id: true,
       productId: true,
+      priceCents: true,
       status: true,
       createdAt: true,
-      product: { select: { priceCents: true } },
     },
   })) as unknown as OrderRow[];
 
@@ -43,7 +43,6 @@ export default async function DashboardPage() {
   );
 
   const statusMap: Record<string, string> = {
-    RECEIVED: t("dashboard.status.PENDING"),
     PENDING: t("dashboard.status.PENDING"),
     PAID: t("dashboard.status.PAID"),
     CANCELED: t("dashboard.status.CANCELED"),
@@ -74,10 +73,10 @@ export default async function DashboardPage() {
                 </thead>
                 <tbody>
                   {rows.map((r) => {
-                    const key = (r.productId || "") as keyof typeof products;
-                    const title = products[key]?.title ?? t("dashboard.unknownProduct");
-                    const cents = r.product?.priceCents ?? 0;
-                    const amt = money.format(cents / 100);
+                    const key = (r.productId || "") as keyof typeof productDisplayInfo;
+                    const product = productDisplayInfo[key];
+                    const title = product?.title ?? t("dashboard.unknownProduct");
+                    const amt = money.format(((r.priceCents ?? 0) as number) / 100);
                     const st = statusMap[r.status] ?? r.status;
                     const dt = new Intl.DateTimeFormat(
                       lang === "de" ? "de-DE" : "en-US",

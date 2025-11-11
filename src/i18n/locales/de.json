@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "PageFoundry",
+    "description": "Konvertierende Landingpages, Hosting, SEO, Wartung."
+  },
+  "navbar": {
+    "packages": "Pakete",
+    "consultation": "Beratung",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "login": "Login",
+    "getStarted": "Los geht’s",
+    "logout": "Abmelden",
+    "language": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "hero": {
+    "badge": "CONVERSION FIRST",
+    "h1": "Landingpages, Hosting, SEO, Speed. Gebaut für Conversion.",
+    "sub": "Leistungsstarke Webpräsenz. Saubere Infrastruktur. Keine leeren Retainer.",
+    "ctaFree": "Kostenlose Beratung",
+    "ctaSee": "Pakete ansehen"
+  },
+  "products": {
+    "cta": {
+      "getStarted": "Jetzt starten",
+      "book": "Beratung buchen"
+    },
+    "landing_page": {
+      "title": "Landingpage",
+      "desc": "Moderne, ästhetische Landingpage mit Fokus auf maximale Conversion.",
+      "from": "ab €499"
+    },
+    "landing_page_hosting": {
+      "title": "Landingpage-Hosting",
+      "desc": "Wir hosten deine bestehende Landingpage. Optional mit Domainverwaltung.",
+      "from": "ab €19/Monat"
+    },
+    "all_inclusive": {
+      "title": "All-Inclusive-Paket",
+      "desc": "Landingpage, Hosting, Domain, Basic-SEO & Google-Indexing – alles enthalten.",
+      "from": "ab €799"
+    },
+    "seo_basic": {
+      "title": "SEO Basic",
+      "desc": "Technische und inhaltliche Optimierung für bessere Sichtbarkeit.",
+      "from": "ab €199"
+    },
+    "seo_advanced": {
+      "title": "SEO Advanced",
+      "desc": "Erweiterte Analyse, Keyword-Strategie und langfristige Optimierung.",
+      "from": "ab €499"
+    },
+    "speed_opt": {
+      "title": "Speed-Optimierung",
+      "desc": "Beschleunige deine Website für UX und Rankings.",
+      "from": "ab €149"
+    },
+    "maintenance": {
+      "title": "Wartungs-Abo",
+      "desc": "Monatliche Wartung, Backups, Sicherheitsupdates & Checks.",
+      "from": "ab €39/Monat"
+    },
+    "request_offer": {
+      "title": "Angebot anfragen",
+      "desc": "Individueller Umfang oder Bundle. Ideal bei Sonderfällen.",
+      "from": "auf Anfrage"
+    },
+    "free_consultation": {
+      "title": "Kostenlose Beratung",
+      "desc": "Sprich mit uns. Klarheit zu Strategie, Timing und Budget.",
+      "from": "kostenlos"
+    }
+  },
+  "consultation": {
+    "title": "Kostenlose Beratung",
+    "subtitle": "Buche ein kostenloses Zoom-Gespräch.",
+    "name": "Dein Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "preferred": "Bevorzugte Zeit",
+    "notes": "Notizen (optional)",
+    "book": "Beratung buchen",
+    "ok": "Anfrage erhalten. Wir haben dir die Zoom-Details gemailt.",
+    "failed": "Fehlgeschlagen",
+    "slot": {
+      "Mon": "Mo",
+      "Tue": "Di",
+      "Wed": "Mi"
+    }
+  },
+  "api": {
+    "invalidPreferred": "preferredTime fehlt/ungültig",
+    "serverError": "Serverfehler",
+    "mail": {
+      "customerSubject": "Deine kostenlose Beratung · PageFoundry",
+      "customerText": "Danke für die Buchung einer kostenlosen Beratung.",
+      "customerWhen": "Wann",
+      "customerZoom": "Zoom",
+      "customerAttach": "Kalendereintrag im Anhang.",
+      "adminSubject": "Neue Beratungsanfrage",
+      "adminName": "Name",
+      "adminEmail": "E-Mail",
+      "adminPhone": "Telefon",
+      "adminWhen": "Wann"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "error": "Ungültige Zugangsdaten",
+      "or": "oder",
+      "toRegister": "Konto erstellen"
+    },
+    "register": {
+      "title": "Konto erstellen",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Registrieren",
+      "haveAccount": "Bereits ein Konto?",
+      "toLogin": "Anmelden",
+      "errorExists": "Konto existiert bereits",
+      "errorWeak": "Passwort zu schwach",
+      "errorGeneric": "Registrierung fehlgeschlagen"
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "secure": "Sicherer Checkout mit Stripe."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "needLogin": "Bitte anmelden, um Bestellungen zu sehen.",
+    "orders": "Deine Bestellungen",
+    "noOrders": "Noch keine Bestellungen.",
+    "unknownProduct": "Unbekanntes Produkt",
+    "col": {
+      "product": "Produkt",
+      "amount": "Betrag",
+      "status": "Status",
+      "date": "Datum"
+    },
+    "status": {
+      "PENDING": "Ausstehend",
+      "PAID": "Bezahlt",
+      "CANCELED": "Storniert",
+      "FAILED": "Fehlgeschlagen",
+      "REFUNDED": "Erstattet"
+    }
+  },
+  "orderProducts": {
+    "landing_page": "Landingpage",
+    "landing_page_hosting": "Landingpage + Hosting",
+    "all_inclusive": "All-inclusive Website-Paket",
+    "seo_basic": "SEO Basic",
+    "seo_advanced": "SEO Advanced",
+    "speed_opt": "Speed-Optimierung",
+    "maintenance": "Wartungs-Abo",
+    "request_offer": "Individuelles Angebot",
+    "free_consultation": "Beratung"
+  },
+  "checkoutBrief": {
+    "colors": "Farben (HEX, komma-getrennt)",
+    "texts": "Texte / Stichworte",
+    "upload": "Bilder hochladen (png, jpg, webp, avif; ≤5MB)",
+    "noFile": "Keine Datei ausgewählt",
+    "notes": "Notizen",
+    "button": "Mit Stripe fortfahren"
+  }
+}

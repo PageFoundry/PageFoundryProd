@@ -1,0 +1,13 @@
+export const productOrderKeys = [
+  "landing_page",
+  "landing_page_hosting",
+  "all_inclusive",
+  "seo_basic",
+  "seo_advanced",
+  "speed_opt",
+  "maintenance",
+  "request_offer",
+  "free_consultation",
+] as const;
+
+export type ProductKey = typeof productOrderKeys[number];

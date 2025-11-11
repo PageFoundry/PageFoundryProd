@@ -1,0 +1,33 @@
+import Link from "next/link";
+import { ProductKey, productDisplayInfo } from "@/lib/products";
+
+export default function PackageCard({
+  id,
+  productId,
+  isAuthed = false,
+}: {
+  id: ProductKey;
+  productId?: string;
+  isAuthed?: boolean;
+}) {
+  const p = productDisplayInfo[id];
+  const isConsult = id === "free_consultation";
+
+  let href = "/login";
+  if (isConsult) href = "/consultation";
+  else if (productId) href = `/checkout/${productId}`;
+  else href = isAuthed ? "/dashboard" : "/login";
+
+  const label = isConsult ? "Book consultation" : "Get started";
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-sm flex flex-col">
+      <div className="text-white font-semibold text-lg">{p.title}</div>
+      <div className="text-sm text-zinc-400 mt-2 flex-1">{p.desc}</div>
+      <div className="text-xs text-zinc-500 mt-3">{p.from}</div>
+      <Link href={href} className="mt-6 inline-flex items-center justify-center rounded-full bg-pfOrange px-4 py-2 text-black text-sm font-semibold">
+        {label}
+      </Link>
+    </div>
+  );
+}

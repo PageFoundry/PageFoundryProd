@@ -1,0 +1,44 @@
+{
+  "meta": { "title": "PageFoundry", "description": "Konvertierende Landingpages, Hosting, SEO, Wartung." },
+  "navbar": {
+    "packages": "Pakete",
+    "consultation": "Beratung",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "login": "Login",
+    "getStarted": "Los geht’s",
+    "logout": "Abmelden",
+    "language": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "consultation": {
+    "title": "Kostenlose Beratung",
+    "subtitle": "Buche ein kostenloses Zoom-Gespräch.",
+    "name": "Dein Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "preferred": "Bevorzugte Zeit",
+    "notes": "Notizen (optional)",
+    "book": "Beratung buchen",
+    "ok": "Anfrage erhalten. Wir haben dir die Zoom-Details gemailt.",
+    "failed": "Fehlgeschlagen",
+    "slot": { "Mon": "Mo", "Tue": "Di", "Wed": "Mi" }
+  },
+  "api": {
+    "invalidPreferred": "preferredTime fehlt/ungültig",
+    "serverError": "Serverfehler",
+    "mail": {
+      "customerSubject": "Deine kostenlose Beratung · PageFoundry",
+      "customerText": "Danke für die Buchung einer kostenlosen Beratung.",
+      "customerWhen": "Wann",
+      "customerZoom": "Zoom",
+      "customerAttach": "Du findest den Kalendereintrag im Anhang.",
+      "adminSubject": "Neue Beratungsanfrage",
+      "adminName": "Name",
+      "adminEmail": "E-Mail",
+      "adminPhone": "Telefon",
+      "adminWhen": "Wann"
+    }
+  }
+}

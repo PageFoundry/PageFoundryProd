@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "PageFoundry",
+    "description": "High-converting landing pages, hosting, SEO, maintenance."
+  },
+  "navbar": {
+    "packages": "Packages",
+    "consultation": "Consultation",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "logout": "Logout",
+    "language": "Language",
+    "en": "English",
+    "de": "Deutsch"
+  },
+  "hero": {
+    "badge": "CONVERSION FIRST",
+    "h1": "Landing Pages, Hosting, SEO, Speed. Built to convert.",
+    "sub": "High-performing web presence. Clean infrastructure. No bullshit retainers.",
+    "ctaFree": "Free Consultation",
+    "ctaSee": "See Packages"
+  },
+  "products": {
+    "cta": {
+      "getStarted": "Get started",
+      "book": "Book consultation"
+    },
+    "landing_page": {
+      "title": "Landing Page",
+      "desc": "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
+      "from": "from €499"
+    },
+    "landing_page_hosting": {
+      "title": "Landing Page Hosting",
+      "desc": "We host your existing landing page. Choose with or without domain management.",
+      "from": "from €19/month"
+    },
+    "all_inclusive": {
+      "title": "All-Inclusive Package",
+      "desc": "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
+      "from": "from €799"
+    },
+    "seo_basic": {
+      "title": "SEO Basic",
+      "desc": "Technical and content-based optimization for better visibility in search engines.",
+      "from": "from €199"
+    },
+    "seo_advanced": {
+      "title": "SEO Advanced",
+      "desc": "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
+      "from": "from €499"
+    },
+    "speed_opt": {
+      "title": "Speed Optimization",
+      "desc": "Boost your website speed for optimal user experience and top Google rankings.",
+      "from": "from €149"
+    },
+    "maintenance": {
+      "title": "Maintenance Subscription",
+      "desc": "Monthly maintenance, backups, security updates & continuous performance checks.",
+      "from": "from €39/month"
+    },
+    "request_offer": {
+      "title": "Request Offer",
+      "desc": "Custom scope or bundle. Ideal for unique requirements.",
+      "from": "On request"
+    },
+    "free_consultation": {
+      "title": "Free Consultation",
+      "desc": "Talk to us. Get clarity on strategy, timelines, and budget.",
+      "from": "Free"
+    }
+  },
+  "consultation": {
+    "title": "Free Consultation",
+    "subtitle": "Book a free Zoom call.",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Phone",
+    "preferred": "Preferred time",
+    "notes": "Notes (optional)",
+    "book": "Book consultation",
+    "ok": "Request received. We emailed you the Zoom details.",
+    "failed": "Failed",
+    "slot": {
+      "Mon": "Mon",
+      "Tue": "Tue",
+      "Wed": "Wed"
+    }
+  },
+  "api": {
+    "invalidPreferred": "preferredTime missing/invalid",
+    "serverError": "server error",
+    "mail": {
+      "customerSubject": "Your Free Consultation · PageFoundry",
+      "customerText": "Thanks for booking a free consultation.",
+      "customerWhen": "When",
+      "customerZoom": "Zoom",
+      "customerAttach": "You will also find a calendar invitation attached.",
+      "adminSubject": "New Consultation Request",
+      "adminName": "Name",
+      "adminEmail": "Email",
+      "adminPhone": "Phone",
+      "adminWhen": "When"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "error": "Invalid credentials",
+      "or": "or",
+      "toRegister": "Create account"
+    },
+    "register": {
+      "title": "Create account",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "toLogin": "Log in",
+      "errorExists": "Account already exists",
+      "errorWeak": "Password too weak",
+      "errorGeneric": "Registration failed"
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "secure": "Secure checkout powered by Stripe."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "needLogin": "Please log in to view your orders.",
+    "orders": "Your Orders",
+    "noOrders": "No orders yet.",
+    "unknownProduct": "Unknown product",
+    "col": {
+      "product": "Product",
+      "amount": "Amount",
+      "status": "Status",
+      "date": "Date"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "PAID": "Paid",
+      "CANCELED": "Canceled",
+      "FAILED": "Failed",
+      "REFUNDED": "Refunded"
+    }
+  },
+  "orderProducts": {
+    "landing_page": "Landing page",
+    "landing_page_hosting": "Landing page + hosting",
+    "all_inclusive": "All-inclusive website package",
+    "seo_basic": "SEO basic",
+    "seo_advanced": "SEO advanced",
+    "speed_opt": "Speed optimization",
+    "maintenance": "Maintenance plan",
+    "request_offer": "Custom offer",
+    "free_consultation": "Consultation"
+  },
+  "checkoutBrief": {
+    "colors": "Colors (HEX, comma-separated)",
+    "texts": "Texts / Keywords",
+    "upload": "Upload images (png, jpg, webp, avif; ≤5MB)",
+    "noFile": "No file selected",
+    "notes": "Notes",
+    "button": "Continue with Stripe"
+  }
+}

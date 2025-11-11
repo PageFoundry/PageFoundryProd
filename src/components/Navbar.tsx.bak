@@ -1,12 +1,9 @@
-import Link from 'next/link';
-import { getUserFromCookie } from '@/lib/auth';
-import { getServerI18n } from '@/i18n/server';
-import LanguageSwitch from '@/components/LanguageSwitch';
+import Link from "next/link";
+import { getUserFromCookie } from "@/lib/auth";
 
 export default async function Navbar() {
   const user = getUserFromCookie();
   const isAuthed = !!user;
-  const { t } = await getServerI18n();
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-md z-50 border-b border-white/10">
@@ -16,37 +13,35 @@ export default async function Navbar() {
         </Link>
 
         <div className="flex items-center gap-6 text-sm">
-          <Link href="/" className="text-white/80 hover:text-white transition">{t('navbar.packages')}</Link>
-          <Link href="/consultation" className="text-white/80 hover:text-white transition">{t('navbar.consultation')}</Link>
+          <Link href="/" className="text-white/80 hover:text-white transition">Packages</Link>
 
-          {isAuthed ? (
+                        <Link href="/consultation" className="text-white/80 hover:text-white transition">Consultation</Link>
+{isAuthed ? (
             <>
               <Link href="/dashboard" className="text-white/80 hover:text-white transition">
-                {t('navbar.dashboard')}
+                Dashboard
               </Link>
 
-              {user?.role === 'ADMIN' && (
+              {user?.role === "ADMIN" && (
                 <Link href="/admin" className="text-white/80 hover:text-pfOrange font-semibold border border-pfOrange/40 rounded-lg px-3 py-1 transition">
-                  {t('navbar.admin')}
+                  Admin
                 </Link>
               )}
 
               <form action="/api/auth/logout" method="POST">
                 <button type="submit" className="rounded-full bg-pfOrange px-4 py-2 text-black font-semibold hover:brightness-110">
-                  {t('navbar.logout')}
+                  Logout
                 </button>
               </form>
             </>
           ) : (
             <>
-              <Link href="/login" className="text-white/80 hover:text-white transition">{t('navbar.login')}</Link>
+              <Link href="/login" className="text-white/80 hover:text-white transition">Login</Link>
               <Link href="/register" className="rounded-full bg-pfOrange px-4 py-2 text-black font-semibold hover:brightness-110">
-                {t('navbar.getStarted')}
+                Get Started
               </Link>
             </>
           )}
-
-          <LanguageSwitch />
         </div>
       </div>
     </nav>

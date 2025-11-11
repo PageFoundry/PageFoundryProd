@@ -1,0 +1,44 @@
+{
+  "meta": { "title": "PageFoundry", "description": "High-converting landing pages, hosting, SEO, maintenance." },
+  "navbar": {
+    "packages": "Packages",
+    "consultation": "Consultation",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "logout": "Logout",
+    "language": "Language",
+    "en": "English",
+    "de": "Deutsch"
+  },
+  "consultation": {
+    "title": "Free Consultation",
+    "subtitle": "Book a free Zoom call.",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Phone",
+    "preferred": "Preferred time",
+    "notes": "Notes (optional)",
+    "book": "Book consultation",
+    "ok": "Request received. We emailed you the Zoom details.",
+    "failed": "Failed",
+    "slot": { "Mon": "Mon", "Tue": "Tue", "Wed": "Wed" }
+  },
+  "api": {
+    "invalidPreferred": "preferredTime missing/invalid",
+    "serverError": "server error",
+    "mail": {
+      "customerSubject": "Your Free Consultation · PageFoundry",
+      "customerText": "Thanks for booking a free consultation.",
+      "customerWhen": "When",
+      "customerZoom": "Zoom",
+      "customerAttach": "You will also find a calendar invitation attached.",
+      "adminSubject": "New Consultation Request",
+      "adminName": "Name",
+      "adminEmail": "Email",
+      "adminPhone": "Phone",
+      "adminWhen": "When"
+    }
+  }
+}
