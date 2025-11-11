@@ -91,8 +91,6 @@
     }
   },
   "api": {
-    "invalidPreferred": "preferredTime missing/invalid",
-    "serverError": "server error",
     "mail": {
       "customerSubject": "Your Free Consultation · PageFoundry",
       "customerText": "Thanks for booking a free consultation.",
@@ -107,25 +105,9 @@
     }
   },
   "auth": {
-    "login": {
-      "title": "Login",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Log in",
-      "error": "Invalid credentials",
-      "or": "or",
-      "toRegister": "Create account"
-    },
-    "register": {
-      "title": "Create account",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Sign up",
-      "haveAccount": "Already have an account?",
-      "toLogin": "Log in",
-      "errorExists": "Account already exists",
-      "errorWeak": "Password too weak",
-      "errorGeneric": "Registration failed"
+    "mail": {
+      "welcomeSubject": "Welcome to PageFoundry",
+      "welcomeText": "Thanks for signing up."
     }
   },
   "checkout": {

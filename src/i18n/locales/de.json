@@ -91,8 +91,6 @@
     }
   },
   "api": {
-    "invalidPreferred": "preferredTime fehlt/ungültig",
-    "serverError": "Serverfehler",
     "mail": {
       "customerSubject": "Deine kostenlose Beratung · PageFoundry",
       "customerText": "Danke für die Buchung einer kostenlosen Beratung.",
@@ -107,25 +105,9 @@
     }
   },
   "auth": {
-    "login": {
-      "title": "Anmelden",
-      "email": "E-Mail",
-      "password": "Passwort",
-      "submit": "Anmelden",
-      "error": "Ungültige Zugangsdaten",
-      "or": "oder",
-      "toRegister": "Konto erstellen"
-    },
-    "register": {
-      "title": "Konto erstellen",
-      "email": "E-Mail",
-      "password": "Passwort",
-      "submit": "Registrieren",
-      "haveAccount": "Bereits ein Konto?",
-      "toLogin": "Anmelden",
-      "errorExists": "Konto existiert bereits",
-      "errorWeak": "Passwort zu schwach",
-      "errorGeneric": "Registrierung fehlgeschlagen"
+    "mail": {
+      "welcomeSubject": "Willkommen bei PageFoundry",
+      "welcomeText": "Danke für deine Registrierung."
     }
   },
   "checkout": {

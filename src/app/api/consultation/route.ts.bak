@@ -3,9 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/email";
 import { buildICS } from "@/lib/ics";
 import { verifyJwt } from "@/lib/jwt";
-import { cookies, headers } from "next/headers";
-import { LANG_COOKIE, type Lang } from "@/i18n/config";
-import { loadMessages, createT } from "@/i18n/translate";
+import { cookies } from "next/headers";
 
 type Slot =
   | "MON_12_14" | "MON_14_16" | "MON_16_18" | "MON_18_20"
@@ -30,6 +28,7 @@ const slotMap: Record<Slot, { weekday: number; start: number; end: number; prett
   WED_18_20:{weekday:3,start:18,end:20,pretty:"Wed 18–20"},
 };
 
+// Nächster Slot als echte "Wandzeit" Europe/Berlin, ohne UTC-Konvertierung
 function nextOccurrenceInBerlinLocal(weekday: number, startHour: number, endHour: number) {
   const tz = "Europe/Berlin";
   const now = new Date();
@@ -49,6 +48,7 @@ function nextOccurrenceInBerlinLocal(weekday: number, startHour: number, endHour
   const mkLocal = (h:number) => {
     const d = new Date(base);
     d.setUTCDate(d.getUTCDate() + addDays);
+    // Zeitstempel so setzen, dass lokale Anzeige in Berlin h:00 ist
     const localStr = d.toLocaleString("sv-SE", { timeZone: tz });
     const [date2] = localStr.split(" ");
     const [y,m,da] = date2.split("-").map(Number);
@@ -58,6 +58,7 @@ function nextOccurrenceInBerlinLocal(weekday: number, startHour: number, endHour
   let startLocal = mkLocal(startHour);
   let endLocal   = mkLocal(endHour);
 
+  // wenn heute und Start schon vorbei (lokal), schiebe um 7 Tage
   const hn = Number(now.toLocaleString("sv-SE", { timeZone: tz }).split(" ")[1].slice(0,2));
   if (addDays === 0 && hn >= startHour) {
     startLocal.setUTCDate(startLocal.getUTCDate() + 7);
@@ -74,21 +75,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "preferredTime missing/invalid" }, { status: 400 });
     }
 
+    // Auth aus Cookie → Email aus DB
     const store = await cookies();
     const token = store.get("token")?.value;
-
-    // Sprache aus Cookie / Accept-Language bestimmen
-    const langCookie = store.get(LANG_COOKIE)?.value as Lang | undefined;
-    const accept = (await headers()).get("accept-language") || "";
-    const lang: Lang = langCookie ?? (accept.toLowerCase().startsWith("de") ? "de" : "en");
-    const t = createT(await loadMessages(lang));
-
-    // Auth aus Cookie → Email aus DB
     let authedUserId: string | null = null;
     let authedEmail: string | null = null;
+
     if (token) {
-      const payload: any = verifyJwt(token);
-      authedUserId = payload?.sub ?? null;
+      let payload: any = null;
+      try { payload = verifyJwt(token); } catch {}
+      authedUserId = payload?.userId ?? null;
       if (authedUserId) {
         const user = await prisma.user.findFirst({ where: { id: authedUserId }, select: { email: true } });
         authedEmail = user?.email ?? null;
@@ -98,17 +94,19 @@ export async function POST(req: NextRequest) {
     const slot = slotMap[preferredTime as Slot];
     const when = nextOccurrenceInBerlinLocal(slot.weekday, slot.start, slot.end);
 
+    // Anzeigezeit in MEZ
     const whenPretty =
-      new Intl.DateTimeFormat(lang === "de" ? "de-DE" : "en-US", {
+      new Intl.DateTimeFormat("de-DE", {
         timeZone: "Europe/Berlin",
         weekday: "short", day: "2-digit", month: "short", year: "numeric",
         hour: "2-digit", minute: "2-digit"
       }).format(when.startLocal) +
       " – " +
-      new Intl.DateTimeFormat(lang === "de" ? "de-DE" : "en-US", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" })
+      new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" })
         .format(when.endLocal) +
-      (lang === "de" ? " (MEZ)" : " (CET)");
+      " (MEZ)";
 
+    // persist
     const safeName = (name && String(name).trim()) || (authedEmail ?? "").split("@")[0] || "Guest";
     const rec = await prisma.consultationRequest.create({
       data: {
@@ -120,63 +118,67 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    // ICS bauen (lokale Zeiten, Europe/Berlin)
     const ics = buildICS({
       uid: `consultation-${rec.id}@pagefoundry.de`,
-      summary: t("api.mail.customerSubject"),
+      summary: "Free Consultation · PageFoundry",
       description:
-        `${t("api.mail.customerText")}\n` +
-        `${t("api.mail.adminName")}: ${safeName}\n` +
-        `${t("api.mail.adminEmail")}: ${authedEmail ?? (email || "-")}\n` +
-        `${t("api.mail.adminPhone")}: ${phone || "-"}\n` +
-        `${t("api.mail.customerWhen")}: ${whenPretty}\n` +
-        `${t("api.mail.customerZoom")}: ${ZOOM_STATIC_URL}`,
+        `Your free consultation with PageFoundry.\n` +
+        `Name: ${safeName}\nEmail: ${authedEmail ?? (email || "-")}\nPhone: ${phone || "-"}\nWhen: ${whenPretty}\n` +
+        `Zoom: ${ZOOM_STATIC_URL}`,
       startLocal: when.startLocal,
       endLocal: when.endLocal,
       url: ZOOM_STATIC_URL,
       organizer: "mailto:no-reply@pagefoundry.de",
       attendeeEmail: authedEmail ?? (typeof email === "string" ? email : undefined),
-      location: lang === "de" ? "Online (Zoom) – MEZ" : "Online (Zoom) – CET",
+      location: "Online (Zoom) – MEZ",
       tzid: "Europe/Berlin",
     });
 
+    // Mail an Kunde, nur wenn wir eine Adresse haben
     const customerTo = authedEmail ?? (typeof email === "string" ? email.trim() : "");
     if (customerTo) {
       await sendMail({
         to: customerTo,
-        subject: t("api.mail.customerSubject"),
+        subject: "Your Free Consultation · PageFoundry",
         text:
-`${t("api.mail.customerText")}
-${t("api.mail.customerZoom")}: ${ZOOM_STATIC_URL}
-${t("api.mail.customerWhen")}: ${whenPretty}
-${t("api.mail.customerAttach")}`,
+`Thanks for booking a free consultation.
+
+Zoom: ${ZOOM_STATIC_URL}
+When: ${whenPretty}
+
+If the time does not fit, reply to this email.`,
         html:
-`<p>${t("api.mail.customerText")}</p>
-<p><b>${t("api.mail.customerZoom")}:</b> <a href="${ZOOM_STATIC_URL}">${ZOOM_STATIC_URL}</a><br/>
-<b>${t("api.mail.customerWhen")}:</b> ${whenPretty}</p>
-<p>${t("api.mail.customerAttach")}</p>`,
+`<p>Thanks for booking a free consultation.</p>
+<p><b>Zoom:</b> <a href="${ZOOM_STATIC_URL}">${ZOOM_STATIC_URL}</a><br/>
+<b>When:</b> ${whenPretty}</p>
+<p>You will also find a calendar invitation attached.</p>`,
         attachments: [ics],
       });
     }
 
+    // Mail an Admin
     await sendMail({
       to: ADMIN,
-      subject: t("api.mail.adminSubject"),
+      subject: "New Consultation Request",
       text:
-`${t("api.mail.adminName")}: ${safeName}
-${t("api.mail.adminEmail")}: ${customerTo || "-"}
-${t("api.mail.adminPhone")}: ${phone || "-"}
-${t("api.mail.adminWhen")}: ${whenPretty}
-${t("api.mail.customerZoom")}: ${ZOOM_STATIC_URL}`,
+`Name: ${safeName}
+Email: ${customerTo || "-"}
+Phone: ${phone || "-"}
+When: ${whenPretty}
+
+Zoom: ${ZOOM_STATIC_URL}
+`,
       html:
 `<div style="font-family:system-ui,Segoe UI,Roboto,sans-serif">
-  <h3>${t("api.mail.adminSubject")}</h3>
+  <h3>New Consultation Request</h3>
   <ul>
-    <li><b>${t("api.mail.adminName")}:</b> ${safeName}</li>
-    <li><b>${t("api.mail.adminEmail")}:</b> ${customerTo || "-"}</li>
-    <li><b>${t("api.mail.adminPhone")}:</b> ${phone || "-"}</li>
-    <li><b>${t("api.mail.adminWhen")}:</b> ${whenPretty}</li>
+    <li><b>Name:</b> ${safeName}</li>
+    <li><b>Email:</b> ${customerTo || "-"}</li>
+    <li><b>Phone:</b> ${phone || "-"}</li>
+    <li><b>When:</b> ${whenPretty}</li>
   </ul>
-  <p><b>${t("api.mail.customerZoom")}:</b> <a href="${ZOOM_STATIC_URL}">${ZOOM_STATIC_URL}</a></p>
+  <p><b>Zoom:</b> <a href="${ZOOM_STATIC_URL}">${ZOOM_STATIC_URL}</a></p>
 </div>`,
       attachments: [ics],
     });
