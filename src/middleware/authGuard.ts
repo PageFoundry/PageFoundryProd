@@ -1,8 +1,8 @@
 import { getUserFromCookie } from "@/lib/auth";
 
 
-export function requireUser() {
-const user = getUserFromCookie();
+export async function requireUser() {
+const user = await getUserFromCookie();
 if (!user) {
 return null;
 }
@@ -10,8 +10,8 @@ return user; // { sub, role }
 }
 
 
-export function requireAdmin() {
-const user = getUserFromCookie();
+export async function requireAdmin() {
+const user = await getUserFromCookie();
 if (!user || user.role !== "ADMIN") {
 return null;
 }

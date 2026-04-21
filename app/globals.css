@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================
+   PAGEFOUNDRY — GLOBAL STYLES
+   ================================================================ */
+
+:root {
+  --font-display: 'Bebas Neue';
+  --font-body:    'Space Grotesk';
+  --font-mono:    'Space Mono';
+
+  --accent:       #c9a84c;
+  --accent-warm:  #e8c96a;
+  --accent-dim:   rgba(201, 168, 76, 0.08);
+  --accent-glow:  0 0 24px rgba(201, 168, 76, 0.18);
+
+  --border:       rgba(255, 255, 255, 0.06);
+  --border-mid:   rgba(255, 255, 255, 0.12);
+}
+
+html, body {
+  @apply bg-pfBg text-pfText min-h-screen antialiased overflow-x-hidden;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: rgba(201, 168, 76, 0.25); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201, 168, 76, 0.45); }
+
+/* ── CSS Grid Background ── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 72px 72px; }
+}
+
+/* ── Animations ── */
+.fade-in {
+  animation: fadeUp 0.5s ease both;
+}
+
+.fade-in-delay-1 { animation: fadeUp 0.5s ease 0.1s both; }
+.fade-in-delay-2 { animation: fadeUp 0.5s ease 0.2s both; }
+.fade-in-delay-3 { animation: fadeUp 0.5s ease 0.35s both; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid { animation: none; }
+  .fade-in,
+  .fade-in-delay-1,
+  .fade-in-delay-2,
+  .fade-in-delay-3 { animation: none; opacity: 1; transform: none; }
+}
+
+/* ── Typography helpers ── */
+.font-display { font-family: var(--font-display), Impact, sans-serif; }
+.font-mono-ui { font-family: var(--font-mono), monospace; }
+
+.label-mono {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Shared card base ── */
+.pf-card {
+  @apply rounded-xl border border-pfBorder bg-pfCard transition-all duration-200;
+}
+.pf-card:hover {
+  @apply border-pfBorderAccent bg-pfCardHover;
+}
+
+/* ── Shared button styles ── */
+.btn-accent {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm
+         bg-pfAccent text-black font-mono text-xs tracking-widest uppercase
+         px-5 py-2.5 font-bold transition-all duration-200
+         hover:bg-pfAccentWarm active:scale-[0.98];
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm
+         border border-pfBorderMid bg-transparent text-pfText font-mono text-xs
+         tracking-widest uppercase px-5 py-2.5 transition-all duration-200
+         hover:border-pfAccent hover:text-pfAccent hover:bg-pfAccentDim
+         active:scale-[0.98];
+}
+
+/* ── Input base ── */
+.pf-input {
+  @apply w-full bg-transparent border-0 border-b border-pfBorderMid text-pfText
+         font-sans text-sm px-0 py-2 outline-none transition-colors duration-200
+         placeholder:text-pfMuted appearance-none;
+}
+.pf-input:focus {
+  @apply border-pfAccent;
+}
+select.pf-input {
+  @apply cursor-pointer text-pfText;
+}
+select.pf-input option {
+  background-color: #0d0d0d;
+  color: #e8e8e8;
+}
+textarea.pf-input {
+  @apply leading-relaxed;
+}
+
+/* ── Status badge ── */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-mono
+         tracking-wider uppercase border;
+}
+
+/* ── Table base ── */
+.pf-table {
+  @apply w-full text-sm;
+}
+.pf-table thead tr {
+  @apply border-b border-pfBorder;
+}
+.pf-table thead th {
+  @apply py-2.5 pr-6 text-left font-mono text-[0.62rem] tracking-widest
+         uppercase text-pfMuted;
+}
+.pf-table tbody tr {
+  @apply border-b border-pfBorder last:border-b-0 transition-colors duration-150
+         hover:bg-pfSurface;
+}
+.pf-table tbody td {
+  @apply py-3 pr-6 align-top;
+}
+
+/* ── Section padding ── */
+.section-pad {
+  @apply px-6 pt-28 pb-20;
+}
+
+/* ── Page title style ── */
+.page-title {
+  font-family: var(--font-display), Impact, sans-serif;
+  @apply text-5xl md:text-7xl leading-none tracking-wide text-pfText;
+}

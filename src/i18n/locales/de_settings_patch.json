@@ -1,0 +1,18 @@
+{
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Profil verwalten & Passwort ändern",
+
+    "profile": "Profil",
+    "email": "E-Mail",
+    "name": "Name",
+    "phone": "Telefon",
+    "saveProfile": "Profil speichern",
+
+    "password": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Neues Passwort wiederholen",
+    "savePassword": "Passwort speichern"
+  }
+}

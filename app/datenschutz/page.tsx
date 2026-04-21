@@ -1,0 +1,143 @@
+import type { Metadata } from "next";
+import { getServerI18n } from "@/i18n/server";
+
+export const metadata: Metadata = {
+  title: "Datenschutzerklärung · PageFoundry",
+};
+
+export default async function DatenschutzPage() {
+  const { lang } = await getServerI18n();
+
+  return (
+    <main className="mx-auto max-w-3xl px-4 py-16 text-zinc-200">
+      <h1 className="text-3xl font-bold mb-8">
+        {lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
+      </h1>
+
+      {lang === "de" ? (
+        <>
+          <h2 className="text-xl font-semibold mt-10 mb-3">1. Verantwortlicher</h2>
+          <p>
+            PageFoundry
+            <br />
+            Inhaber: Fabian Franke
+            <br />
+            Kastanienweg 20a, 42499 Hückeswagen
+            <br />
+            E-Mail: admin@pagefoundry.de
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">2. Zugriffsdaten</h2>
+          <p>
+            Beim Besuch der Website werden IP-Adresse, Datum/Uhrzeit, Browsertyp/Version,
+            Betriebssystem und Referrer-URL erfasst. Die Daten dienen der technischen
+            Sicherheit und werden in der Regel nach 7 Tagen gelöscht.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">3. Registrierung und Login</h2>
+          <p>
+            Für bestimmte Funktionen ist eine Registrierung erforderlich. Verarbeitet werden:
+            E-Mail, verschlüsseltes Passwort, optional Name und Telefonnummer.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">4. Zahlungen über Stripe</h2>
+          <p>
+            Zahlungen werden über Stripe abgewickelt. Weitere Informationen:
+            https://stripe.com/privacy
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">5. Cookies</h2>
+          <p>
+            Wir setzen technisch notwendige Cookies ein, etwa für Authentifizierung
+            und Sprachauswahl. Ohne diese ist die Nutzung bestimmter Funktionen nicht möglich.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">6. Beratungsanfragen</h2>
+          <p>
+            Bei Beratungsanfragen verarbeiten wir Name, E-Mail, Telefon, gewählten Zeit-Slot
+            sowie optionale Notizen, um den Termin zu koordinieren.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">7. Hosting</h2>
+          <p>
+            Die Website wird auf Servern innerhalb der EU betrieben. Logdaten werden automatisch
+            gelöscht, sofern keine längere Speicherung aus Sicherheitsgründen erforderlich ist.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">8. Rechte der betroffenen Personen</h2>
+          <p>
+            Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
+            Verarbeitung, Datenübertragbarkeit sowie Widerspruch. Anfragen richten Sie bitte an
+            admin@pagefoundry.de.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Änderungen</h2>
+          <p>
+            Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen.
+          </p>
+        </>
+      ) : (
+        <>
+          <h2 className="text-xl font-semibold mt-10 mb-3">1. Controller</h2>
+          <p>
+            PageFoundry
+            <br />
+            Owner: [Your Name]
+            <br />
+            [Address]
+            <br />
+            E-mail: admin@pagefoundry.de
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">2. Access data</h2>
+          <p>
+            When visiting the website we collect IP address, date/time, browser type/version,
+            operating system and referrer URL. Data is used for technical security and usually
+            deleted after 7 days.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">3. Registration and login</h2>
+          <p>
+            For certain features registration is required. We process: e-mail, encrypted password,
+            and optionally name and phone number.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">4. Payments via Stripe</h2>
+          <p>
+            Payments are processed by Stripe. Further information:
+            https://stripe.com/privacy
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">5. Cookies</h2>
+          <p>
+            We use technically necessary cookies, for example for authentication
+            and language selection. Without these, some features will not work.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">6. Consultation requests</h2>
+          <p>
+            For consultation requests we process name, e-mail, phone number, selected time slot
+            and optional notes to schedule the appointment.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">7. Hosting</h2>
+          <p>
+            The website is hosted on servers located within the EU. Log data is deleted
+            automatically unless longer retention is required for security reasons.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">8. Data subject rights</h2>
+          <p>
+            You have the right to access, rectification, erasure, restriction of processing,
+            data portability and objection. Please send requests to admin@pagefoundry.de.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Changes</h2>
+          <p>
+            We may update this privacy policy from time to time as needed.
+          </p>
+        </>
+      )}
+    </main>
+  );
+}

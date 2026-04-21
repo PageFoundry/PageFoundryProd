@@ -11,6 +11,7 @@
     "login": "Login",
     "getStarted": "Get Started",
     "logout": "Logout",
+    "settings": "Settings",
     "language": "Language",
     "en": "English",
     "de": "Deutsch"
@@ -23,44 +24,45 @@
     "ctaSee": "See Packages"
   },
   "products": {
+    "heading": "Our Packages",
     "cta": {
-      "getStarted": "Get started",
+      "getStarted": "Order",
       "book": "Book consultation"
     },
     "landing_page": {
       "title": "Landing Page",
       "desc": "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-      "from": "from €499"
+      "from": "from 499 €"
     },
     "landing_page_hosting": {
       "title": "Landing Page Hosting",
       "desc": "We host your existing landing page. Choose with or without domain management.",
-      "from": "from €19/month"
+      "from": "from 19 €/month"
     },
     "all_inclusive": {
       "title": "All-Inclusive Package",
       "desc": "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
-      "from": "from €799"
+      "from": "from 799 €"
     },
     "seo_basic": {
       "title": "SEO Basic",
       "desc": "Technical and content-based optimization for better visibility in search engines.",
-      "from": "from €199"
+      "from": "from 199 €"
     },
     "seo_advanced": {
       "title": "SEO Advanced",
       "desc": "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-      "from": "from €499"
+      "from": "from 499 €"
     },
     "speed_opt": {
       "title": "Speed Optimization",
       "desc": "Boost your website speed for optimal user experience and top Google rankings.",
-      "from": "from €149"
+      "from": "from 149 €"
     },
     "maintenance": {
       "title": "Maintenance Subscription",
       "desc": "Monthly maintenance, backups, security updates & continuous performance checks.",
-      "from": "from €39/month"
+      "from": "from 39 €/month"
     },
     "request_offer": {
       "title": "Request Offer",
@@ -76,14 +78,27 @@
   "consultation": {
     "title": "Free Consultation",
     "subtitle": "Book a free Zoom call.",
+
     "name": "Your name",
     "email": "Email",
     "phone": "Phone",
-    "preferred": "Preferred time",
+    "preferred": "Preferred time (Europe/Berlin)",
+
+    "timeOfDay": "Time of day",
+    "participants": "Participants",
+    "typeOfConsultation": "Type of consultation",
+    "notesLabel": "Notes (optional)",
+    "notesPlaceholder": "Brief description of your project or questions…",
+
     "notes": "Notes (optional)",
     "book": "Book consultation",
+    "submitting": "Submitting…",
+    "loadingSlots": "Loading available slots…",
+    "noSlots": "No slots available for this day.",
+    "noDates": "No available dates in the next 14 days.",
+    "notesRequired": "Please add a short description of your project.",
     "ok": "Request received. We emailed you the Zoom details.",
-    "failed": "Failed",
+    "failed": "Submission failed. Please try again.",
     "slot": {
       "Mon": "Mon",
       "Tue": "Tue",
@@ -105,6 +120,14 @@
     }
   },
   "auth": {
+    "register": {
+      "title": "Register",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "toLogin": "Go to login"
+    },
     "mail": {
       "welcomeSubject": "Welcome to PageFoundry",
       "welcomeText": "Thanks for signing up."
@@ -112,7 +135,9 @@
   },
   "checkout": {
     "title": "Checkout",
-    "secure": "Secure checkout powered by Stripe."
+    "secure": "Secure checkout powered by Stripe.",
+    "oneTime": "One-time price",
+    "recurring": "Recurring service"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -127,6 +152,9 @@
       "date": "Date"
     },
     "status": {
+      "RECEIVED": "Received",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done",
       "PENDING": "Pending",
       "PAID": "Paid",
       "CANCELED": "Canceled",
@@ -146,11 +174,40 @@
     "free_consultation": "Consultation"
   },
   "checkoutBrief": {
+    "website": "Website URL *",
+    "websitePH": "https://example.com",
+    "websiteRequired": "Please provide your website URL.",
+    "uploading": "Uploading…",
     "colors": "Colors (HEX, comma-separated)",
     "texts": "Texts / Keywords",
     "upload": "Upload images (png, jpg, webp, avif; ≤5MB)",
     "noFile": "No file selected",
     "notes": "Notes",
-    "button": "Continue with Stripe"
+    "button": "Continue with Stripe",
+    "textsPH": "Examples: headlines, claims, CTA, target audience…",
+    "notesPH": "Additional notes, references, links…"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your profile & update your password",
+
+    "profile": "Profile",
+    "email": "Email",
+    "name": "Name",
+    "phone": "Phone",
+    "saveProfile": "Save profile",
+
+    "password": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat new password",
+    "savePassword": "Save password",
+    "successProfile": "Profile saved.",
+    "successPassword": "Password updated.",
+    "error": "Something went wrong. Please try again.",
+    "loading": "Loading…",
+    "pwMismatch": "The new passwords do not match.",
+    "pwRequired": "Please enter a new password.",
+    "pwMinLength": "Password must be at least 8 characters."
   }
 }

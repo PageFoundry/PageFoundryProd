@@ -15,9 +15,9 @@ export function buildWelcomeMailHTML() {
     line-height:1.5;
   ">
     <div style="text-align:center;margin-bottom:16px;">
-      <img src="https://pagefoundry.de/PAGEfoundry.png"
+      <img src="cid:pf_logo"
            alt="PageFoundry"
-           style="height:56px;width:auto;border-radius:4px;display:inline-block;border:1px solid #e5e7eb;background:#000;" />
+           style="height:56px;width:auto;display:inline-block;border:0;outline:0;" />
     </div>
 
     <h1 style="font-size:18px;font-weight:600;color:#111827;margin:0 0 12px 0;text-align:center;">
@@ -97,9 +97,9 @@ export function buildInvoiceMailHTML({
     line-height:1.5;
   ">
     <div style="text-align:center;margin-bottom:16px;">
-      <img src="https://pagefoundry.de/PAGEfoundry.png"
+      <img src="cid:pf_logo"
            alt="PageFoundry"
-           style="height:56px;width:auto;border-radius:4px;display:inline-block;border:1px solid #e5e7eb;background:#000;" />
+           style="height:56px;width:auto;display:inline-block;border:0;outline:0;" />
     </div>
 
     <h1 style="font-size:18px;font-weight:600;color:#111827;margin:0 0 4px 0;text-align:center;">

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /checkout/
+Disallow: /api/
+
+Sitemap: https://pagefoundry.de/sitemap.xml

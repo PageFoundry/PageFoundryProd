@@ -18,19 +18,15 @@ enum OrderStatus {
   DONE         // Fertig
 }
 
-enum ConsultationSlot {
-  MON_12_14
-  MON_14_16
-  MON_16_18
-  MON_18_20
-  TUE_12_14
-  TUE_14_16
-  TUE_16_18
-  TUE_18_20
-  WED_12_14
-  WED_14_16
-  WED_16_18
-  WED_18_20
+enum ConsultationType {
+  LANDING_PAGE            // Landing Page Beratung
+  SEO_AUDIT               // SEO / Technical Audit
+  CONTENT_COPY            // Content & Copywriting
+  ECOMMERCE_OPTIMIZATION  // E-Commerce Optimierung
+  FULL_SITE_REVIEW        // Full-Website Assessment
+  CONVERSION_OPT          // Conversion-Optimierung
+  SYSTEMS_AUTOMATION      // Systeme / Automatisierung
+  SPEED_AUDIT             // Performance & Speed Audit
 }
 
 model User {
@@ -41,7 +37,16 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
 
-  orders       Order[]
+  // OAuth-Profile
+  provider   String?  @db.VarChar(20)
+  providerId String?  @db.VarChar(191)
+  name       String?  @db.VarChar(191)
+  avatarUrl  String?  @db.VarChar(512)
+
+  @@index([provider, providerId])
+
+  orders               Order[]
+  consultationBookings ConsultationBooking[]
 }
 
 model Product {
@@ -57,7 +62,7 @@ model Product {
 }
 
 model Order {
-  priceCents  Int      @default(0)
+  priceCents    Int          @default(0)
   id            String       @id @default(cuid())
   userId        String
   productId     String
@@ -65,16 +70,81 @@ model Order {
   stripeSession String?
   createdAt     DateTime     @default(now())
   brief         Json?
+
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 }
 
-model ConsultationRequest {
-  id            String           @id @default(cuid())
-  userId        String?
-  name          String
-  phone         String
-  preferredTime ConsultationSlot
-  note          String
-  createdAt     DateTime         @default(now())
+model ConsultationSlot {
+  id        String   @id @default(cuid())
+
+  // Start/Ende des Slots
+  start     DateTime
+  end       DateTime
+
+  // einzelner Slot deaktiviert
+  isDisabled Boolean  @default(false)
+
+  // final gebucht
+  isBooked   Boolean  @default(false)
+
+  // zukünftige Nutzung für temporäre Reservierungen
+  temporaryReservedUntil DateTime?
+
+  // Relation zu Buchungen
+  bookings  ConsultationBooking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([start])
+  @@index([isBooked, temporaryReservedUntil])
+}
+
+model ConsultationBooking {
+  id      String   @id @default(cuid())
+
+  slotId  String
+  slot    ConsultationSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+
+  userId  String?
+  user    User?    @relation(fields: [userId], references: [id])
+
+  // für Hover-Historie
+  email   String   @db.VarChar(320)
+
+  // Teilnehmerzahl (Dropdown im Formular)
+  participants Int @default(1)
+
+  // Art der Beratung
+  consultationType ConsultationType
+
+  // Freitext-Beschreibung des Kunden
+  description String
+
+  // Zoom-Link zum Zeitpunkt der Buchung
+  zoomUrl   String   @db.VarChar(512)
+
+  // für spätere Stripe-Integration
+  stripeSessionId       String? @db.VarChar(191)
+  stripePaymentIntentId String? @db.VarChar(191)
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([stripeSessionId])
+  @@index([stripePaymentIntentId])
+}
+
+model ConsultationDayOff {
+  id    String   @id @default(cuid())
+
+  // ganzer Tag ist deaktiviert (Feiertag, Urlaub, Krankheit)
+  date  DateTime
+
+  reason String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([date])
 }

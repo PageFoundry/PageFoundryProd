@@ -1,0 +1,36 @@
+# PageFoundry
+
+> Web agency specialising in high-converting landing pages, hosting, SEO, and speed optimisation for small and medium businesses.
+
+## What we do
+
+PageFoundry builds and maintains professional web presences with a focus on conversion rate, performance, and clean infrastructure. We do not sell bloated retainers — every service is scoped and priced transparently.
+
+## Services
+
+- **Landing Page** — Custom, conversion-optimised landing page (from 499 €)
+- **Landing Page Hosting** — We host your existing page, with optional domain management (from 19 €/month)
+- **All-Inclusive Package** — Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 799 €)
+- **SEO Basic** — Technical and content optimisation for better search visibility (from 199 €)
+- **SEO Advanced** — Keyword strategy, deep audit, and long-term performance tracking (from 499 €)
+- **Speed Optimisation** — Core Web Vitals and load time improvements (from 149 €)
+- **Maintenance Subscription** — Monthly updates, backups, security patches, monitoring (from 39 €/month)
+- **Request Offer** — Custom scope or bundle for unique requirements (on request)
+- **Free Consultation** — 30-minute Zoom strategy call, no commitment
+
+## Contact & booking
+
+Book a free consultation at: https://pagefoundry.de/consultation
+
+## Pages
+
+- Homepage: https://pagefoundry.de
+- Packages: https://pagefoundry.de/#packages
+- Consultation: https://pagefoundry.de/consultation
+- Login: https://pagefoundry.de/login
+
+## Notes for AI agents
+
+- Checkout, dashboard, settings, and admin routes require authentication and should not be crawled.
+- All prices are in EUR and exclude VAT unless stated otherwise.
+- The site is available in English and German.
