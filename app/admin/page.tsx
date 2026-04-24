@@ -18,6 +18,7 @@ type AdminOrderRow = {
 type ConsultationRow = {
   id: string;
   name: string;
+  email: string;
   phone: string | null;
   preferredTime: string;
   note: string | null;
@@ -47,14 +48,23 @@ export default async function AdminPage() {
     user: o.user!,
   }));
 
-  let consultations: ConsultationRow[] = [];
-  try {
-    consultations = (await prisma.$queryRawUnsafe<ConsultationRow[]>(
-      'SELECT * FROM "ConsultationRequest" ORDER BY "createdAt" ASC'
-    )) as ConsultationRow[];
-  } catch (e) {
-    consultations = [];
-  }
+  const consultationBookings = await prisma.consultationBooking.findMany({
+    orderBy: { createdAt: "asc" },
+    include: {
+      slot: { select: { start: true, end: true } },
+      user: { select: { name: true, email: true, phone: true } },
+    },
+  });
+
+  const consultations: ConsultationRow[] = consultationBookings.map((booking) => ({
+    id: booking.id,
+    name: booking.user?.name || booking.email,
+    email: booking.email,
+    phone: booking.user?.phone ?? null,
+    preferredTime: `${booking.slot.start.toISOString()} - ${booking.slot.end.toISOString()}`,
+    note: booking.description,
+    createdAt: booking.createdAt,
+  }));
 
   const now = new Date();
   const year = now.getFullYear();
