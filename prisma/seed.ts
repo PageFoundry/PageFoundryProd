@@ -10,7 +10,7 @@ async function main() {
       name: "Landing Page",
       description:
         "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-      priceCents: 49900,
+      priceCents: 24900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -20,9 +20,9 @@ async function main() {
       name: "Landing Page Hosting",
       description:
         "We host your existing landing page. Choose with or without domain management.",
-      priceCents: 1900,
+      priceCents: 500,
       recurring: true,
-      recurringInfo: "from €19/month",
+      recurringInfo: "from €5/month",
       restricted: true,
     },
     {
@@ -30,7 +30,7 @@ async function main() {
       name: "All-Inclusive Package",
       description:
         "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
-      priceCents: 79900,
+      priceCents: 49900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -40,7 +40,7 @@ async function main() {
       name: "SEO Basic",
       description:
         "Technical and content-based optimization for better visibility in search engines.",
-      priceCents: 19900,
+      priceCents: 4900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -50,7 +50,7 @@ async function main() {
       name: "SEO Advanced",
       description:
         "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-      priceCents: 49900,
+      priceCents: 9900,
       recurring: false,
       recurringInfo: null,
       restricted: true,

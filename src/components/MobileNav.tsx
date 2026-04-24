@@ -76,13 +76,16 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
               <Link href="/dashboard" onClick={close} className={navLinkClass}>{labels.dashboard}</Link>
               <Link href="/settings" onClick={close} className={navLinkClass}>Settings</Link>
               {isAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={close}
-                  className="font-mono text-sm tracking-widest uppercase text-pfAccent border border-pfBorderAccent px-3 py-2 rounded-sm hover:bg-pfAccentDim transition-colors w-fit"
-                >
-                  {labels.admin}
-                </Link>
+                <>
+                  <Link href="/outreach" onClick={close} className={navLinkClass}>Outreach</Link>
+                  <Link
+                    href="/admin"
+                    onClick={close}
+                    className="font-mono text-sm tracking-widest uppercase text-pfAccent border border-pfBorderAccent px-3 py-2 rounded-sm hover:bg-pfAccentDim transition-colors w-fit"
+                  >
+                    {labels.admin}
+                  </Link>
+                </>
               )}
               <form action="/api/auth/logout" method="POST" onSubmit={close}>
                 <button type="submit" className="btn-accent mt-2">
