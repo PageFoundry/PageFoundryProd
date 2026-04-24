@@ -47,21 +47,21 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
       </button>
 
       <div
-        className={`fixed inset-0 z-[80] bg-black/45 transition-opacity duration-300 sm:hidden ${
+        className={`fixed inset-0 z-[80] bg-black/80 transition-opacity duration-300 sm:hidden ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
-        style={{ backdropFilter: "blur(22px)", WebkitBackdropFilter: "blur(22px)" }}
+        style={{ backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)" }}
         onClick={close}
       />
 
       <aside
         id="mobile-navigation"
-        className={`fixed right-0 top-0 z-[90] flex h-dvh w-[min(92vw,28rem)] flex-col overflow-y-auto border-l border-white/10 bg-[#050505]/78 shadow-[-28px_0_90px_rgba(0,0,0,0.72)] transition-transform duration-300 ease-out sm:hidden ${
+        className={`fixed right-0 top-0 z-[90] flex h-dvh w-full flex-col overflow-y-auto border-l border-white/10 bg-[#050505]/95 shadow-[-28px_0_90px_rgba(0,0,0,0.86)] transition-transform duration-300 ease-out sm:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
-        style={{ backdropFilter: "blur(34px) saturate(145%)", WebkitBackdropFilter: "blur(34px) saturate(145%)" }}
+        style={{ backdropFilter: "blur(40px) saturate(150%)", WebkitBackdropFilter: "blur(40px) saturate(150%)" }}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(201,168,76,0.18),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.06),transparent_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(201,168,76,0.12),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.035),transparent_42%)]" />
 
         <div className="relative flex items-center justify-between border-b border-white/10 px-6 py-5">
           <span
