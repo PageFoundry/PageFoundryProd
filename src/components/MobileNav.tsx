@@ -13,19 +13,31 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
-    return () => { document.documentElement.style.overflow = ""; };
+    document.body.style.overflow = open ? "hidden" : "";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [open]);
 
   const close = () => setOpen(false);
 
   const navLinkClass =
-    "font-mono text-sm tracking-widest uppercase text-pfSubtle hover:text-pfAccent transition-colors py-1";
+    "block rounded-sm border border-white/10 bg-black/25 px-4 py-4 font-mono text-sm tracking-widest uppercase text-pfText shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors hover:border-pfAccent hover:bg-pfAccentDim hover:text-pfAccent";
 
   return (
     <>
-      {/* Hamburger */}
       <button
         aria-label="Menu"
+        aria-expanded={open}
+        aria-controls="mobile-navigation"
         onClick={() => setOpen(true)}
         className="sm:hidden flex flex-col gap-[5px] p-2 border border-pfBorderMid rounded-sm hover:border-pfAccent transition-colors"
       >
@@ -34,23 +46,24 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
         <span className="block w-3 h-[1px] bg-pfAccent" />
       </button>
 
-      {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm transition-opacity ${
+        className={`fixed inset-0 z-[80] bg-black/45 transition-opacity duration-300 sm:hidden ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
+        style={{ backdropFilter: "blur(22px)", WebkitBackdropFilter: "blur(22px)" }}
         onClick={close}
       />
 
-      {/* Drawer */}
       <aside
-        className={`fixed inset-0 z-[90] flex flex-col transform transition-transform duration-300 ${
+        id="mobile-navigation"
+        className={`fixed right-0 top-0 z-[90] flex h-dvh w-[min(92vw,28rem)] flex-col overflow-y-auto border-l border-white/10 bg-[#050505]/78 shadow-[-28px_0_90px_rgba(0,0,0,0.72)] transition-transform duration-300 ease-out sm:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
-        style={{ backgroundColor: "#000000" }}
+        style={{ backdropFilter: "blur(34px) saturate(145%)", WebkitBackdropFilter: "blur(34px) saturate(145%)" }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-pfBorder px-6 py-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(201,168,76,0.18),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.06),transparent_42%)]" />
+
+        <div className="relative flex items-center justify-between border-b border-white/10 px-6 py-5">
           <span
             className="text-pfText text-2xl tracking-widest leading-none"
             style={{ fontFamily: "var(--font-display), Impact, sans-serif" }}
@@ -60,15 +73,14 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
           <button
             aria-label="Close"
             onClick={close}
-            className="border border-pfBorderMid rounded-sm px-2.5 py-1 text-pfSubtle hover:text-pfAccent hover:border-pfAccent transition-colors font-mono text-xs"
+            className="border border-pfBorderMid bg-black/30 rounded-sm px-3 py-2 text-pfSubtle hover:text-pfAccent hover:border-pfAccent transition-colors font-mono text-xs"
           >
             ✕
           </button>
         </div>
 
-        {/* Nav links */}
-        <nav className="flex flex-col gap-6 px-6 py-8 flex-1">
-          <Link href="/" onClick={close} className={navLinkClass}>{labels.packages}</Link>
+        <nav className="relative flex flex-1 flex-col gap-3 px-5 py-6">
+          <Link href="/#packages" onClick={close} className={navLinkClass}>{labels.packages}</Link>
           <Link href="/consultation" onClick={close} className={navLinkClass}>{labels.consultation}</Link>
 
           {isAuthed ? (
@@ -81,14 +93,14 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
                   <Link
                     href="/admin"
                     onClick={close}
-                    className="font-mono text-sm tracking-widest uppercase text-pfAccent border border-pfBorderAccent px-3 py-2 rounded-sm hover:bg-pfAccentDim transition-colors w-fit"
+                    className="block rounded-sm border border-pfBorderAccent bg-pfAccentDim px-4 py-4 font-mono text-sm tracking-widest uppercase text-pfAccent transition-colors hover:bg-pfAccent/15"
                   >
                     {labels.admin}
                   </Link>
                 </>
               )}
               <form action="/api/auth/logout" method="POST" onSubmit={close}>
-                <button type="submit" className="btn-accent mt-2">
+                <button type="submit" className="btn-accent mt-2 w-full">
                   {labels.logout}
                 </button>
               </form>
@@ -96,14 +108,14 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
           ) : (
             <>
               <Link href="/login" onClick={close} className={navLinkClass}>{labels.login}</Link>
-              <Link href="/register" onClick={close} className="btn-accent mt-2 w-fit">
+              <Link href="/register" onClick={close} className="btn-accent mt-2 w-full">
                 {labels.getStarted}
               </Link>
             </>
           )}
         </nav>
 
-        <div className="px-6 pb-8 border-t border-pfBorder pt-4">
+        <div className="relative border-t border-white/10 px-6 pb-8 pt-4">
           <span className="label-mono">© {new Date().getFullYear()} PageFoundry</span>
         </div>
       </aside>
