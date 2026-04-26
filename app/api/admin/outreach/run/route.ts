@@ -10,12 +10,17 @@ export const dynamic = "force-dynamic";
 const PROJECT_DIR = "/home/ubuntu/outreach-demo";
 const SCRIPT = join(PROJECT_DIR, "runDailyOutreach.sh");
 const LOCK_FILE = join(PROJECT_DIR, "data/run.lock");
+const OUTREACH_PAUSED = process.env.OUTREACH_PAUSED !== "false";
 
 export async function POST() {
   try {
     await requireAdmin();
   } catch {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  if (OUTREACH_PAUSED) {
+    return NextResponse.json({ error: "cold outreach is paused" }, { status: 423 });
   }
 
   if (existsSync(LOCK_FILE)) {
