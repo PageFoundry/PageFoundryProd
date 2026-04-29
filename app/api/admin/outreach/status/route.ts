@@ -1,6 +1,8 @@
 import { existsSync } from "fs";
 import { readFile, readdir, stat } from "fs/promises";
 import { join } from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 
@@ -10,6 +12,8 @@ export const dynamic = "force-dynamic";
 const PROJECT_DIR = "/home/ubuntu/outreach-demo";
 const LOCK_FILE = join(PROJECT_DIR, "data/run.lock");
 const REPORT_DIR = join(PROJECT_DIR, "reports");
+const OUTREACH_DB = join(PROJECT_DIR, "data/outreach.db");
+const execFileAsync = promisify(execFile);
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -79,6 +83,53 @@ async function latestRunId(date: string) {
   }
 }
 
+async function loadSentContacts() {
+  const sql = `
+    WITH sent_messages AS (
+      SELECT
+        m.contact_id,
+        m.sent_at,
+        m.outreach_trigger,
+        m.subject,
+        ROW_NUMBER() OVER (PARTITION BY m.contact_id ORDER BY m.sent_at DESC) AS rn,
+        COUNT(*) OVER (PARTITION BY m.contact_id) AS message_count
+      FROM outreach_messages m
+      WHERE m.direction = 'out'
+        AND m.sent_at IS NOT NULL
+        AND COALESCE(m.smtp_response, '') <> 'DRY_RUN'
+        AND COALESCE(m.subject, '') NOT LIKE 'SMTP Live Test%'
+    )
+    SELECT
+      s.contact_id,
+      s.sent_at,
+      s.outreach_trigger AS trigger,
+      s.subject,
+      s.message_count,
+      l.name AS company,
+      l.website,
+      l.email AS lead_email,
+      c.normalized_email AS contacted_email,
+      c.normalized_domain AS domain,
+      c.status AS contact_status,
+      c.bounced,
+      c.first_contact_at,
+      c.last_reply_at,
+      c.reply_tag,
+      c.reply_tag_reason
+    FROM sent_messages s
+    JOIN outreach_contacts c ON c.id = s.contact_id
+    JOIN leads l ON l.id = c.lead_id
+    WHERE s.rn = 1
+    ORDER BY s.sent_at DESC
+    LIMIT 200
+  `;
+
+  const { stdout } = await execFileAsync("sqlite3", ["-json", OUTREACH_DB, sql], {
+    maxBuffer: 1024 * 1024,
+  });
+  return JSON.parse(stdout || "[]");
+}
+
 export async function GET() {
   try {
     await requireAdmin();
@@ -95,10 +146,11 @@ export async function GET() {
   const gatePath = join(REPORT_DIR, `${runId}.gate.json`);
   const sendPath = join(REPORT_DIR, `${runId}.send.json`);
 
-  const [validation, gate, send] = await Promise.all([
+  const [validation, gate, send, sentContacts] = await Promise.all([
     readJson(validationPath),
     readJson(gatePath),
     readJson(sendPath),
+    loadSentContacts().catch(() => []),
   ]);
 
   return NextResponse.json({
@@ -133,6 +185,11 @@ export async function GET() {
             skipped_blocked: send.skipped_blocked || 0,
           }
         : null,
+    },
+    sent_contacts: {
+      total: sentContacts.length,
+      bounced: sentContacts.filter((contact: { bounced?: number }) => Number(contact.bounced || 0) === 1).length,
+      items: sentContacts,
     },
     log_tail: logTail,
   });

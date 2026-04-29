@@ -25,7 +25,31 @@ type StatusResponse = {
       skipped_blocked: number;
     };
   };
+  sent_contacts: {
+    total: number;
+    bounced: number;
+    items: SentContact[];
+  };
   log_tail: string | null;
+};
+
+type SentContact = {
+  contact_id: string;
+  sent_at: string;
+  trigger: string | null;
+  subject: string | null;
+  message_count: number;
+  company: string;
+  website: string | null;
+  lead_email: string | null;
+  contacted_email: string | null;
+  domain: string | null;
+  contact_status: string;
+  bounced: number;
+  first_contact_at: string | null;
+  last_reply_at: string | null;
+  reply_tag: string | null;
+  reply_tag_reason: string | null;
 };
 
 function stat(label: string, value: string | number) {
@@ -35,6 +59,27 @@ function stat(label: string, value: string | number) {
       <div className="mt-3 text-2xl font-semibold text-pfText">{value}</div>
     </div>
   );
+}
+
+function formatDateTime(iso: string | null) {
+  if (!iso) return "-";
+  return new Date(iso).toLocaleString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function websiteHref(website: string | null) {
+  if (!website) return null;
+  return /^https?:\/\//i.test(website) ? website : `https://${website}`;
+}
+
+function statusClass(contact: SentContact) {
+  if (contact.bounced) return "border-red-400/30 bg-red-500/10 text-red-200";
+  if (contact.last_reply_at) return "border-blue-400/30 bg-blue-500/10 text-blue-200";
+  return "border-emerald-400/30 bg-emerald-500/10 text-emerald-200";
 }
 
 export default function OutreachAdminPanel() {
@@ -150,6 +195,8 @@ export default function OutreachAdminPanel() {
         {stat("PLZ", plzLabel)}
         {stat("Gate Approved", status?.reports.gate?.approved ?? "-")}
         {stat("Gesendet", status?.reports.send?.sent ?? "-")}
+        {stat("Kontakte", status?.sent_contacts.total ?? "-")}
+        {stat("Bounces", status?.sent_contacts.bounced ?? "-")}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -174,6 +221,85 @@ export default function OutreachAdminPanel() {
           <div className="mt-3 text-xs font-mono text-pfMuted">
             {status?.reports.send?.daily_limit_applies === false ? "Manual-Lauf ohne Tagesbudget-Verbrauch" : "Routine-Tagesbudget aktiv"}
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-5">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="label-mono">Angeschriebene Unternehmen</div>
+            <div className="mt-1 text-sm text-pfSubtle">
+              {status?.sent_contacts.total ?? 0} Kontakte mit gespeicherter Lead-Website
+            </div>
+          </div>
+          <div className="text-xs font-mono uppercase tracking-widest text-pfMuted">
+            {status?.sent_contacts.bounced ?? 0} bounced
+          </div>
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-pfBorder">
+          <table className="w-full min-w-[980px] text-left text-sm">
+            <thead className="border-b border-pfBorder bg-black/30 text-[0.65rem] font-mono uppercase tracking-widest text-pfMuted">
+              <tr>
+                <th className="px-4 py-3">Unternehmen</th>
+                <th className="px-4 py-3">Website</th>
+                <th className="px-4 py-3">E-Mail</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Gesendet</th>
+                <th className="px-4 py-3">Betreff</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-pfBorder">
+              {!status ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                    Laedt...
+                  </td>
+                </tr>
+              ) : status.sent_contacts.items.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                    Noch keine echten Outreach-Mails.
+                  </td>
+                </tr>
+              ) : (
+                status.sent_contacts.items.map((contact) => {
+                  const href = websiteHref(contact.website);
+                  return (
+                    <tr key={contact.contact_id} className="align-top transition hover:bg-white/[0.03]">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-pfText">{contact.company}</div>
+                        <div className="mt-1 text-xs text-pfMuted">{contact.domain || "-"}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {href ? (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="break-all text-pfAccent hover:underline"
+                          >
+                            {contact.website}
+                          </a>
+                        ) : (
+                          <span className="text-pfMuted">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="break-all text-pfText">{contact.contacted_email || contact.lead_email || "-"}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex rounded border px-2 py-1 text-xs font-medium ${statusClass(contact)}`}>
+                          {contact.bounced ? "bounced" : contact.last_reply_at ? "replied" : contact.contact_status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-pfSubtle">{formatDateTime(contact.sent_at)}</td>
+                      <td className="px-4 py-3 text-pfSubtle">{contact.subject || "-"}</td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
