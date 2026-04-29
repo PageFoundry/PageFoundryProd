@@ -74,10 +74,12 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const mode = body?.mode || "run_new";
+  const requestedMode = body?.mode || null;
+  const approvedRunId = await latestApprovedDryRun(today());
+  const mode = requestedMode || (approvedRunId ? "send_latest_approved" : "run_new");
 
   if (mode === "send_latest_approved") {
-    const runId = await latestApprovedDryRun(today());
+    const runId = approvedRunId || await latestApprovedDryRun(today());
     if (!runId) {
       return NextResponse.json({ error: "no approved dry-run found for today" }, { status: 404 });
     }
