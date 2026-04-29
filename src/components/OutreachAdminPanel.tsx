@@ -62,7 +62,7 @@ export default function OutreachAdminPanel() {
     const ok = window.confirm(
       hasApprovedDryRun
         ? "Die freigegebenen Leads aus dem sichtbaren Dry-Run jetzt live senden?"
-        : "Bis zu 5 echte Mails senden? Der Lauf nutzt lokale Claude/Codex-Batch-Gates und sendet nur beidseitig freigegebene Leads.",
+        : "Bis zu 10 echte Mails senden? Der Lauf nutzt lokale Claude/Codex-Batch-Gates und sendet nur beidseitig freigegebene Leads.",
     );
     if (!ok) return;
 
@@ -113,7 +113,7 @@ export default function OutreachAdminPanel() {
         <div>
           <div className="label-mono mb-2">Manual Outreach</div>
           <p className="text-sm text-pfSubtle">
-            Sendet den freigegebenen Dry-Run oder startet einen neuen gated 5-Lead-Lauf.
+            Sendet den freigegebenen Dry-Run oder startet einen neuen gated 10-Lead-Lauf.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -135,7 +135,7 @@ export default function OutreachAdminPanel() {
             disabled={starting || status?.running}
             className="btn-accent px-4 py-2 text-xs"
           >
-            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene 5 senden" : "5 Leads suchen & senden"}
+            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene Leads senden" : "Bis zu 10 Leads suchen & senden"}
           </button>
         </div>
       </div>

@@ -92,7 +92,7 @@ export async function POST(request: Request) {
       "--output",
       `reports/${runId}.send.json`,
       "--limit",
-      "5",
+      "10",
       "--trigger",
       "manual_button_reviewed",
       "--ignore-daily-limit",
