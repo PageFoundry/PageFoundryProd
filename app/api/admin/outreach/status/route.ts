@@ -1,5 +1,5 @@
 import { existsSync } from "fs";
-import { readFile } from "fs/promises";
+import { readFile, readdir, stat } from "fs/promises";
 import { join } from "path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 const PROJECT_DIR = "/home/ubuntu/outreach-demo";
 const LOCK_FILE = join(PROJECT_DIR, "data/run.lock");
+const REPORT_DIR = join(PROJECT_DIR, "reports");
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -33,6 +34,34 @@ async function readJson(path: string) {
   }
 }
 
+async function latestRunId(date: string) {
+  try {
+    const names = await readdir(REPORT_DIR);
+    const candidates = names
+      .filter((name) => name.startsWith(date) && name.endsWith(".send.json"))
+      .map((name) => name.slice(0, -".send.json".length));
+
+    if (!candidates.includes(date)) candidates.push(date);
+
+    const withTime = await Promise.all(
+      candidates.map(async (runId) => {
+        const sendPath = join(REPORT_DIR, `${runId}.send.json`);
+        try {
+          const info = await stat(sendPath);
+          return { runId, time: info.mtimeMs };
+        } catch {
+          return { runId, time: 0 };
+        }
+      }),
+    );
+
+    withTime.sort((a, b) => b.time - a.time);
+    return withTime[0]?.runId || date;
+  } catch {
+    return date;
+  }
+}
+
 export async function GET() {
   try {
     await requireAdmin();
@@ -41,10 +70,11 @@ export async function GET() {
   }
 
   const date = today();
+  const runId = await latestRunId(date);
   const logPath = join(PROJECT_DIR, `logs/daily-${date}.log`);
-  const validationPath = join(PROJECT_DIR, `reports/${date}.json`);
-  const gatePath = join(PROJECT_DIR, `reports/${date}.gate.json`);
-  const sendPath = join(PROJECT_DIR, `reports/${date}.send.json`);
+  const validationPath = join(REPORT_DIR, `${runId}.json`);
+  const gatePath = join(REPORT_DIR, `${runId}.gate.json`);
+  const sendPath = join(REPORT_DIR, `${runId}.send.json`);
 
   const [logTail, validation, gate, send] = await Promise.all([
     readText(logPath),
@@ -56,6 +86,7 @@ export async function GET() {
   return NextResponse.json({
     running: existsSync(LOCK_FILE),
     date,
+    run_id: runId,
     reports: {
       validation: validation
         ? {

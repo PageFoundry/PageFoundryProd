@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 type StatusResponse = {
   running: boolean;
   date: string;
+  run_id: string;
   reports: {
     validation: null | {
       selected_plz: null | { plz: string; ort?: string };
@@ -58,13 +59,21 @@ export default function OutreachAdminPanel() {
   }
 
   async function startRun() {
-    const ok = window.confirm("Bis zu 5 echte Mails senden? Der Lauf nutzt 0 Claude-Routine-Runs und 1 lokalen Claude-Aufruf.");
+    const ok = window.confirm(
+      hasApprovedDryRun
+        ? "Die freigegebenen Leads aus dem sichtbaren Dry-Run jetzt live senden?"
+        : "Bis zu 5 echte Mails senden? Der Lauf nutzt lokale Claude/Codex-Batch-Gates und sendet nur beidseitig freigegebene Leads.",
+    );
     if (!ok) return;
 
     setStarting(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/outreach/run", { method: "POST" });
+      const res = await fetch("/api/admin/outreach/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: hasApprovedDryRun ? "send_latest_approved" : "run_new" }),
+      });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.message || body.error || `Start fehlgeschlagen (${res.status})`);
       await loadStatus();
@@ -92,13 +101,19 @@ export default function OutreachAdminPanel() {
     return selected.ort ? `${selected.plz} ${selected.ort}` : selected.plz;
   }, [status]);
 
+  const hasApprovedDryRun =
+    status?.reports.send?.live === false &&
+    (status.reports.send?.sendable_from_gate || 0) > 0 &&
+    (status.reports.send?.sent || 0) === 0 &&
+    (status.reports.send?.errors || 0) === 0;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 rounded-xl border border-pfBorder bg-pfSurface/40 p-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="label-mono mb-2">Manual Outreach</div>
           <p className="text-sm text-pfSubtle">
-            Startet den bestehenden Outreach-Daily-Run manuell fuer bis zu 5 Leads einer PLZ.
+            Sendet den freigegebenen Dry-Run oder startet einen neuen gated 5-Lead-Lauf.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -120,7 +135,7 @@ export default function OutreachAdminPanel() {
             disabled={starting || status?.running}
             className="btn-accent px-4 py-2 text-xs"
           >
-            {starting ? "Startet..." : "5 Leads anschreiben"}
+            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene 5 senden" : "5 Leads suchen & senden"}
           </button>
         </div>
       </div>
@@ -131,6 +146,7 @@ export default function OutreachAdminPanel() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stat("Datum", status?.date || "-")}
+        {stat("Run", status?.run_id || "-")}
         {stat("PLZ", plzLabel)}
         {stat("Gate Approved", status?.reports.gate?.approved ?? "-")}
         {stat("Gesendet", status?.reports.send?.sent ?? "-")}
