@@ -34,6 +34,23 @@ async function readJson(path: string) {
   }
 }
 
+async function currentRunIdFromLock(date: string, logTail: string | null) {
+  if (!existsSync(LOCK_FILE)) return null;
+
+  const lockText = await readText(LOCK_FILE, 4000);
+  if (lockText) {
+    try {
+      const payload = JSON.parse(lockText);
+      if (typeof payload.run_id === "string" && payload.run_id) return payload.run_id;
+    } catch {
+      // Older lock files contained only the PID.
+    }
+  }
+
+  const matches = [...(logTail || "").matchAll(/run_id=([^,\s)]+)/g)];
+  return matches.at(-1)?.[1] || date;
+}
+
 async function latestRunId(date: string) {
   try {
     const names = await readdir(REPORT_DIR);
@@ -70,21 +87,22 @@ export async function GET() {
   }
 
   const date = today();
-  const runId = await latestRunId(date);
   const logPath = join(PROJECT_DIR, `logs/daily-${date}.log`);
+  const logTail = await readText(logPath);
+  const running = existsSync(LOCK_FILE);
+  const runId = (running && await currentRunIdFromLock(date, logTail)) || await latestRunId(date);
   const validationPath = join(REPORT_DIR, `${runId}.json`);
   const gatePath = join(REPORT_DIR, `${runId}.gate.json`);
   const sendPath = join(REPORT_DIR, `${runId}.send.json`);
 
-  const [logTail, validation, gate, send] = await Promise.all([
-    readText(logPath),
+  const [validation, gate, send] = await Promise.all([
     readJson(validationPath),
     readJson(gatePath),
     readJson(sendPath),
   ]);
 
   return NextResponse.json({
-    running: existsSync(LOCK_FILE),
+    running,
     date,
     run_id: runId,
     reports: {

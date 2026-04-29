@@ -9,11 +9,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const PROJECT_DIR = "/home/ubuntu/outreach-demo";
-const SCRIPT = join(PROJECT_DIR, "runDailyOutreach.sh");
 const LOCK_FILE = join(PROJECT_DIR, "data/run.lock");
 const REPORT_DIR = join(PROJECT_DIR, "reports");
 const OUTREACH_PAUSED = process.env.OUTREACH_PAUSED !== "false";
 const MANUAL_OUTREACH_ENABLED = process.env.MANUAL_OUTREACH_ENABLED !== "false";
+const RUN_ID_RE = /^\d{4}-\d{2}-\d{2}(?:[.\w-]+)?$/;
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -58,6 +58,16 @@ async function latestApprovedDryRun(date: string) {
     .sort((a, b) => b.time - a.time)[0]?.runId || null;
 }
 
+function startDetached(command: string, env: NodeJS.ProcessEnv) {
+  const child = spawn("bash", ["-lc", `${command} >/dev/null 2>&1 < /dev/null &`], {
+    cwd: PROJECT_DIR,
+    stdio: "ignore",
+    env,
+  });
+  child.unref();
+  return child;
+}
+
 export async function POST(request: Request) {
   try {
     await requireAdmin();
@@ -83,31 +93,25 @@ export async function POST(request: Request) {
     if (!runId) {
       return NextResponse.json({ error: "no approved dry-run found for today" }, { status: 404 });
     }
+    if (!RUN_ID_RE.test(runId)) {
+      return NextResponse.json({ error: "invalid approved dry-run id" }, { status: 500 });
+    }
 
-    const child = spawn("node", [
-      "--env-file=.env",
-      "scripts/send-mails.mjs",
-      "--gate",
-      `reports/${runId}.gate.json`,
-      "--output",
-      `reports/${runId}.send.json`,
-      "--limit",
-      "10",
-      "--trigger",
-      "manual_button_reviewed",
-      "--ignore-daily-limit",
-      "--live",
-    ], {
-      cwd: PROJECT_DIR,
-      detached: true,
-      stdio: "ignore",
-      env: {
+    const child = startDetached(
+      [
+        "node --env-file=.env scripts/send-mails.mjs",
+        `--gate reports/${runId}.gate.json`,
+        `--output reports/${runId}.send.json`,
+        "--limit 10",
+        "--trigger manual_button_reviewed",
+        "--ignore-daily-limit",
+        "--live",
+      ].join(" "),
+      {
         ...process.env,
         OUTREACH_TRIGGER: "manual_button_reviewed",
       },
-    });
-
-    child.unref();
+    );
 
     return NextResponse.json(
       {
@@ -121,18 +125,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const child = spawn(SCRIPT, {
-    cwd: PROJECT_DIR,
-    detached: true,
-    stdio: "ignore",
-    env: {
+  const child = startDetached(
+    "./runDailyOutreach.sh",
+    {
       ...process.env,
       OUTREACH_LIVE: "true",
       OUTREACH_TRIGGER: "manual_button",
     },
-  });
-
-  child.unref();
+  );
 
   return NextResponse.json(
     {
