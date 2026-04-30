@@ -29,6 +29,15 @@ enum ConsultationType {
   SPEED_AUDIT             // Performance & Speed Audit
 }
 
+enum RetellProjectType {
+  website
+  redesign
+  seo
+  hosting
+  web_app
+  other
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -147,4 +156,47 @@ model ConsultationDayOff {
   createdAt DateTime @default(now())
 
   @@unique([date])
+}
+
+model CallLead {
+  id                   String             @id @default(cuid())
+  retellCallId         String?            @unique
+  name                 String
+  company              String?
+  phone                String?
+  reason               String
+  projectType          RetellProjectType?
+  appointmentRequested Boolean            @default(false)
+  appointmentBooked    Boolean            @default(false)
+  appointmentDateTime  DateTime?
+  transcript           String?
+  callStatus           String             @default("new")
+  summary              String?
+  noAppointmentReason  String?
+  discordNotifiedAt    DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  calendarEvents CalendarEvent[]
+
+  @@index([createdAt])
+  @@index([appointmentBooked, appointmentDateTime])
+}
+
+model CalendarEvent {
+  id            String   @id @default(cuid())
+  leadId        String
+  lead          CallLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  startDateTime DateTime
+  endDateTime   DateTime
+  timezone      String   @default("Europe/Berlin")
+  status        String   @default("booked")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([startDateTime, endDateTime])
+  @@index([status])
 }
