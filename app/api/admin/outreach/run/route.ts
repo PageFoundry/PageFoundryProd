@@ -129,7 +129,7 @@ export async function POST(request: Request) {
     "./runDailyOutreach.sh",
     {
       ...process.env,
-      OUTREACH_LIVE: "true",
+      OUTREACH_LIVE: "false",
       OUTREACH_TRIGGER: "manual_button",
     },
   );
@@ -139,6 +139,7 @@ export async function POST(request: Request) {
       started: true,
       pid: child.pid,
       trigger: "manual_button",
+      mode: "review_dry_run",
       routine_runs_used: 0,
       claude_mode: "local_cli_batch",
     },

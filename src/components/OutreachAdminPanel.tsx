@@ -30,7 +30,25 @@ type StatusResponse = {
     bounced: number;
     items: SentContact[];
   };
+  review_items: {
+    total: number;
+    items: ReviewItem[];
+  };
   log_tail: string | null;
+};
+
+type ReviewItem = {
+  item_id: string | null;
+  company: string;
+  website: string | null;
+  email: string | null;
+  subject: string | null;
+  reason: string | null;
+  source: string | null;
+  issues: string[];
+  score: number | null;
+  website_quality: number | null;
+  sales_problem: number | null;
 };
 
 type SentContact = {
@@ -82,6 +100,13 @@ function statusClass(contact: SentContact) {
   return "border-emerald-400/30 bg-emerald-500/10 text-emerald-200";
 }
 
+function formatIssues(issues: string[]) {
+  if (!issues.length) return "-";
+  return issues
+    .map((issue) => issue.replaceAll("_", " "))
+    .join(", ");
+}
+
 export default function OutreachAdminPanel() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -107,7 +132,7 @@ export default function OutreachAdminPanel() {
     const ok = window.confirm(
       hasApprovedDryRun
         ? "Die freigegebenen Leads aus dem sichtbaren Dry-Run jetzt live senden?"
-        : "Bis zu 10 echte Mails senden? Der Lauf nutzt lokale Claude/Codex-Batch-Gates und sendet nur beidseitig freigegebene Leads.",
+        : "Einen neuen Review-Dry-Run erstellen? Es werden noch keine echten Mails gesendet.",
     );
     if (!ok) return;
 
@@ -158,7 +183,7 @@ export default function OutreachAdminPanel() {
         <div>
           <div className="label-mono mb-2">Manual Outreach</div>
           <p className="text-sm text-pfSubtle">
-            Sendet den freigegebenen Dry-Run oder startet einen neuen gated 10-Lead-Lauf.
+            Erst Leads prüfen lassen, danach den freigegebenen Dry-Run live senden.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -180,7 +205,7 @@ export default function OutreachAdminPanel() {
             disabled={starting || status?.running}
             className="btn-accent px-4 py-2 text-xs"
           >
-            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene Leads senden" : "Bis zu 10 Leads suchen & senden"}
+            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene Leads senden" : "Review-Dry-Run erstellen"}
           </button>
         </div>
       </div>
@@ -221,6 +246,81 @@ export default function OutreachAdminPanel() {
           <div className="mt-3 text-xs font-mono text-pfMuted">
             {status?.reports.send?.daily_limit_applies === false ? "Manual-Lauf ohne Tagesbudget-Verbrauch" : "Routine-Tagesbudget aktiv"}
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-5">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="label-mono">Freigegebene Leads im Review</div>
+            <div className="mt-1 text-sm text-pfSubtle">
+              {status?.review_items?.total ?? 0} Kandidaten aus dem sichtbaren Gate-Report
+            </div>
+          </div>
+          <div className="text-xs font-mono uppercase tracking-widest text-pfMuted">
+            {hasApprovedDryRun ? "bereit zum senden" : "kein offener Dry-Run"}
+          </div>
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-pfBorder">
+          <table className="w-full min-w-[1020px] text-left text-sm">
+            <thead className="border-b border-pfBorder bg-black/30 text-[0.65rem] font-mono uppercase tracking-widest text-pfMuted">
+              <tr>
+                <th className="px-4 py-3">Unternehmen</th>
+                <th className="px-4 py-3">Website</th>
+                <th className="px-4 py-3">E-Mail</th>
+                <th className="px-4 py-3">Issues</th>
+                <th className="px-4 py-3">Scores</th>
+                <th className="px-4 py-3">Betreff</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-pfBorder">
+              {!status ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                    Laedt...
+                  </td>
+                </tr>
+              ) : (status.review_items?.items || []).length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                    Kein freigegebener Review-Dry-Run sichtbar.
+                  </td>
+                </tr>
+              ) : (
+                (status.review_items?.items || []).map((item) => {
+                  const href = websiteHref(item.website);
+                  return (
+                    <tr key={item.item_id || `${item.company}-${item.email}`} className="align-top transition hover:bg-white/[0.03]">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-pfText">{item.company}</div>
+                        <div className="mt-1 text-xs text-pfMuted">{item.source || item.reason || "-"}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {href ? (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="break-all text-pfAccent hover:underline"
+                          >
+                            {item.website}
+                          </a>
+                        ) : (
+                          <span className="text-pfMuted">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 break-all text-pfText">{item.email || "-"}</td>
+                      <td className="px-4 py-3 text-pfSubtle">{formatIssues(item.issues)}</td>
+                      <td className="px-4 py-3 text-pfSubtle">
+                        Q{item.website_quality ?? "-"} / S{item.sales_problem ?? "-"} / Fit {item.score ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-pfSubtle">{item.subject || "-"}</td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

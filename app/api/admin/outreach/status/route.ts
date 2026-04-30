@@ -15,6 +15,29 @@ const REPORT_DIR = join(PROJECT_DIR, "reports");
 const OUTREACH_DB = join(PROJECT_DIR, "data/outreach.db");
 const execFileAsync = promisify(execFile);
 
+type GateReviewItem = {
+  item_id?: string;
+  lead?: {
+    id?: string;
+    name?: string;
+    website?: string;
+    email?: string;
+    website_quality?: number;
+    sales_problem?: number;
+  };
+  draft?: {
+    to?: string;
+    subject?: string;
+    outreach_fit?: { sendable_issues?: string[]; score?: number };
+  };
+  outreach_fit?: { sendable_issues?: string[]; score?: number };
+  outreachFit?: { sendable_issues?: string[]; score?: number };
+  decision?: string;
+  reason?: string;
+  source?: string;
+  sourcePool?: string;
+};
+
 function today() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -130,6 +153,33 @@ async function loadSentContacts() {
   return JSON.parse(stdout || "[]");
 }
 
+function issuesFromGateItem(item: GateReviewItem) {
+  return (
+    item?.outreach_fit?.sendable_issues ||
+    item?.draft?.outreach_fit?.sendable_issues ||
+    item?.outreachFit?.sendable_issues ||
+    []
+  );
+}
+
+function loadReviewItems(gate: { results?: GateReviewItem[] } | null) {
+  const results = Array.isArray(gate?.results) ? gate.results : [];
+  const approved = results.filter((item) => item?.decision === "send");
+  return approved.slice(0, 20).map((item) => ({
+    item_id: item.item_id || item.lead?.id || null,
+    company: item.lead?.name || "-",
+    website: item.lead?.website || null,
+    email: item.draft?.to || item.lead?.email || null,
+    subject: item.draft?.subject || null,
+    reason: item.reason || null,
+    source: item.source || item.sourcePool || null,
+    issues: issuesFromGateItem(item),
+    score: item.outreach_fit?.score ?? item.draft?.outreach_fit?.score ?? null,
+    website_quality: item.lead?.website_quality ?? null,
+    sales_problem: item.lead?.sales_problem ?? null,
+  }));
+}
+
 export async function GET() {
   try {
     await requireAdmin();
@@ -190,6 +240,12 @@ export async function GET() {
       total: sentContacts.length,
       bounced: sentContacts.filter((contact: { bounced?: number }) => Number(contact.bounced || 0) === 1).length,
       items: sentContacts,
+    },
+    review_items: {
+      total: Array.isArray(gate?.results)
+        ? gate.results.filter((item: GateReviewItem) => item?.decision === "send").length
+        : 0,
+      items: loadReviewItems(gate),
     },
     log_tail: logTail,
   });
