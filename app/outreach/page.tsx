@@ -23,7 +23,7 @@ export default async function OutreachPage() {
             Outreach
           </h1>
           <p className="mt-3 text-sm text-pfSubtle">
-            Manueller Lauf fuer PLZ-Auswahl, Gate und Versand aus dem bestehenden Outreach-System.
+            Manueller Lauf fuer PLZ-Auswahl, Gate, Review und anschliessende Freigabe.
           </p>
         </div>
 
