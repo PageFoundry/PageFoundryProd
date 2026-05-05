@@ -12,7 +12,22 @@ type StatusResponse = {
       count: number;
       summary: Record<string, number> | null;
     };
-    gate: null | { total: number; approved: number; manual_review: number };
+    gate: null | {
+      gate_skipped: boolean;
+      candidates_pending: number;
+      total: number;
+      approved: number;
+      manual_review: number;
+      architecture: string | null;
+      models: Record<string, string> | null;
+      usage: null | {
+        input_tokens: number;
+        output_tokens: number;
+        cache_read_input_tokens: number;
+        cache_creation_input_tokens: number;
+      };
+      top_reasons: { reason: string; count: number }[];
+    };
     send: null | {
       trigger: string | null;
       live: boolean;
@@ -25,6 +40,10 @@ type StatusResponse = {
       skipped_blocked: number;
     };
   };
+  draft_candidates: {
+    total: number;
+    items: DraftCandidate[];
+  };
   sent_contacts: {
     total: number;
     bounced: number;
@@ -35,6 +54,17 @@ type StatusResponse = {
     items: ReviewItem[];
   };
   log_tail: string | null;
+};
+
+type DraftCandidate = {
+  item_id: string | null;
+  company: string;
+  website: string | null;
+  email: string | null;
+  subject: string | null;
+  issues: string[];
+  website_quality: number | null;
+  sales_problem: number | null;
 };
 
 type ReviewItem = {
@@ -107,11 +137,20 @@ function formatIssues(issues: string[]) {
     .join(", ");
 }
 
+type GateMode = "codex_dual" | "claude_sonnet" | "codex_mini";
+
+const GATE_MODE_LABELS: Record<GateMode, string> = {
+  codex_dual: "Codex Dual (gpt-5.4 + mini)",
+  claude_sonnet: "Claude Sonnet",
+  codex_mini: "Codex Mini (gpt-5.4-mini)",
+};
+
 export default function OutreachAdminPanel() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [gateMode, setGateMode] = useState<GateMode>("codex_dual");
 
   async function loadStatus() {
     setLoading(true);
@@ -128,13 +167,50 @@ export default function OutreachAdminPanel() {
     }
   }
 
+  async function resetDay() {
+    if (!status?.run_id) return;
+    if (!window.confirm(`Run ${status.run_id} zurücksetzen (Drafts/Gate/Send)? Live-Versendete bleiben in der DB.`)) return;
+    setStarting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/outreach/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ run_id: status.run_id }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.message || body.error || `Reset fehlgeschlagen (${res.status})`);
+      await loadStatus();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setStarting(false);
+    }
+  }
+
   async function startRun() {
-    const ok = window.confirm(
-      hasApprovedDryRun
-        ? "Die freigegebenen Leads aus dem sichtbaren Dry-Run jetzt live senden?"
-        : "Einen neuen Review-Dry-Run erstellen? Es werden noch keine echten Mails gesendet.",
-    );
-    if (!ok) return;
+    let plzForRun: string | null = null;
+
+    if (currentPhase === "search") {
+      const input = window.prompt("PLZ forcieren (optional — leer lassen für automatische Auswahl):", "");
+      if (input === null) return;
+      plzForRun = /^\d{5}$/.test(input.trim()) ? input.trim() : null;
+    }
+
+    const confirmMsg =
+      currentPhase === "send"
+        ? `Jetzt ${status?.reports.gate?.approved ?? "?"} freigegebene Leads LIVE senden? Mails gehen wirklich raus.`
+        : currentPhase === "gate"
+          ? `Gate auf ${status?.reports.gate?.candidates_pending ?? "?"} Kandidaten ausführen (${GATE_MODE_LABELS[gateMode]})? Noch keine Mails.`
+          : plzForRun
+            ? `Leads suchen für PLZ ${plzForRun}? Noch keine Mails.`
+            : "Leads suchen und validieren? Noch keine Mails.";
+    if (!window.confirm(confirmMsg)) return;
+
+    const mode =
+      currentPhase === "send" ? "send_latest_approved" :
+      currentPhase === "gate" ? "run_gate" :
+      "validate_only";
 
     setStarting(true);
     setError(null);
@@ -142,7 +218,7 @@ export default function OutreachAdminPanel() {
       const res = await fetch("/api/admin/outreach/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: hasApprovedDryRun ? "send_latest_approved" : "run_new" }),
+        body: JSON.stringify({ mode, gate_mode: gateMode, ...(plzForRun ? { force_plz: plzForRun } : {}) }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.message || body.error || `Start fehlgeschlagen (${res.status})`);
@@ -171,26 +247,56 @@ export default function OutreachAdminPanel() {
     return selected.ort ? `${selected.plz} ${selected.ort}` : selected.plz;
   }, [status]);
 
-  const hasApprovedDryRun =
-    status?.reports.send?.live === false &&
-    (status.reports.send?.sendable_from_gate || 0) > 0 &&
-    (status.reports.send?.sent || 0) === 0 &&
-    (status.reports.send?.errors || 0) === 0;
+  const alreadyLiveSent =
+    status?.reports.send?.live === true && (status?.reports.send?.sent || 0) > 0;
+
+  const hasApprovedGate =
+    !!status?.reports.gate &&
+    status?.reports.gate?.gate_skipped !== true &&
+    (status?.reports.gate?.approved || 0) > 0 &&
+    !alreadyLiveSent;
+
+  const hasGateRanWithoutApproval =
+    !!status?.reports.gate &&
+    status?.reports.gate?.gate_skipped !== true &&
+    (status?.reports.gate?.total || 0) > 0 &&
+    (status?.reports.gate?.approved || 0) === 0;
+
+  const hasSkippedGate =
+    status?.reports.gate?.gate_skipped === true &&
+    (status.reports.gate?.candidates_pending || 0) > 0;
+
+  const currentPhase: "search" | "gate" | "send" =
+    hasApprovedGate ? "send" :
+    hasSkippedGate ? "gate" :
+    "search";
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 rounded-xl border border-pfBorder bg-pfSurface/40 p-5 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <div className="label-mono mb-2">Manual Outreach</div>
-          <p className="text-sm text-pfSubtle">
-            Erst Leads prüfen lassen, danach den freigegebenen Dry-Run live senden.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-pfSubtle">
-            <span className={`h-2.5 w-2.5 rounded-full ${status?.running ? "bg-amber-400" : "bg-green-400"}`} />
-            {status?.running ? "Laeuft" : "Bereit"}
+          <div>
+            <div className="label-mono mb-2">Manual Outreach</div>
+            <p className="text-sm text-pfSubtle">
+              Erst Leads prüfen lassen, danach den freigegebenen Dry-Run live senden.
+            </p>
           </div>
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 text-sm text-pfSubtle">
+              <span className={`h-2.5 w-2.5 rounded-full ${status?.running ? "bg-amber-400" : "bg-green-400"}`} />
+              {status?.running ? "Laeuft" : "Bereit"}
+            </div>
+            {currentPhase !== "send" && (
+              <select
+                value={gateMode}
+                onChange={(e) => setGateMode(e.target.value as GateMode)}
+                disabled={starting || status?.running}
+                className="rounded-sm border border-pfBorder bg-pfSurface px-3 py-2 text-xs font-mono text-pfText transition hover:border-pfAccent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {(Object.entries(GATE_MODE_LABELS) as [GateMode, string][]).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            )}
           <button
             type="button"
             onClick={loadStatus}
@@ -201,18 +307,49 @@ export default function OutreachAdminPanel() {
           </button>
           <button
             type="button"
+            onClick={resetDay}
+            disabled={starting || status?.running || !status?.run_id}
+            className="rounded-sm border border-pfBorder px-3 py-2 text-xs font-mono uppercase tracking-widest text-pfMuted transition hover:border-red-400 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
+            title="Drafts/Gate/Send des sichtbaren Run archivieren — Live-Versendete bleiben in DB"
+          >
+            Reset
+          </button>
+          <button
+            type="button"
             onClick={startRun}
             disabled={starting || status?.running}
             className="btn-accent px-4 py-2 text-xs"
           >
-            {starting ? "Startet..." : hasApprovedDryRun ? "Freigegebene Leads senden" : "Review-Dry-Run erstellen"}
+            {starting ? "Startet..." :
+              currentPhase === "send" ? `Freigegebene Leads senden (${status?.reports.gate?.approved ?? 0})` :
+              currentPhase === "gate" ? "Gate ausführen" :
+              "Leads suchen"}
           </button>
-        </div>
+          </div>
       </div>
 
       {error ? (
         <div className="rounded-xl border border-red-500/30 bg-red-500/[0.06] p-4 text-sm text-red-300">{error}</div>
       ) : null}
+
+      {hasGateRanWithoutApproval && (
+        <div className="rounded-xl border border-orange-500/30 bg-orange-500/[0.06] p-4 text-sm text-orange-200">
+          <div className="font-medium">Gate ist durchgelaufen, aber 0 Leads wurden freigegeben ({status?.reports.gate?.total} bewertet, {status?.reports.gate?.architecture}).</div>
+          {status?.reports.gate?.top_reasons?.length ? (
+            <div className="mt-2 text-xs text-orange-200/80">
+              Häufigste Gründe:{" "}
+              {status.reports.gate.top_reasons.map((r, i) => (
+                <span key={r.reason} className="font-mono">
+                  {i > 0 ? " · " : ""}{r.reason} ({r.count})
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <div className="mt-2 text-xs text-orange-200/70">
+            Tipp: Anderen Gate-Mode versuchen (Reset → erneut "Gate ausführen") oder Drafts manuell prüfen.
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stat("Datum", status?.date || "-")}
@@ -234,8 +371,22 @@ export default function OutreachAdminPanel() {
         </div>
         <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-5">
           <div className="text-[0.65rem] font-mono uppercase tracking-widest text-pfMuted">Gate</div>
-          <div className="mt-3 text-3xl font-semibold text-pfText">{status?.reports.gate?.total ?? "-"}</div>
-          <div className="mt-3 text-sm text-pfSubtle">manual_review {status?.reports.gate?.manual_review ?? "-"}</div>
+          <div className="mt-3 text-3xl font-semibold text-pfText">
+            {status?.reports.gate?.approved ?? "-"} / {status?.reports.gate?.total ?? "-"}
+          </div>
+          <div className="mt-3 text-sm text-pfSubtle">
+            manual_review {status?.reports.gate?.manual_review ?? "-"}
+            {status?.reports.gate?.architecture ? ` · ${status.reports.gate.architecture}` : ""}
+          </div>
+          {status?.reports.gate?.usage ? (
+            <div className="mt-2 text-xs font-mono text-pfMuted">
+              tokens in {status.reports.gate.usage.input_tokens.toLocaleString("de-DE")} ·
+              out {status.reports.gate.usage.output_tokens.toLocaleString("de-DE")}
+              {status.reports.gate.usage.cache_read_input_tokens > 0
+                ? ` · cache-read ${status.reports.gate.usage.cache_read_input_tokens.toLocaleString("de-DE")}`
+                : ""}
+            </div>
+          ) : null}
         </div>
         <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-5">
           <div className="text-[0.65rem] font-mono uppercase tracking-widest text-pfMuted">Versand</div>
@@ -249,17 +400,92 @@ export default function OutreachAdminPanel() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-5">
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="label-mono">Freigegebene Leads im Review</div>
-            <div className="mt-1 text-sm text-pfSubtle">
-              {status?.review_items?.total ?? 0} Kandidaten aus dem sichtbaren Gate-Report
+      {hasSkippedGate && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-5">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="label-mono text-amber-300">Kandidaten — vor Gate</div>
+              <div className="mt-1 text-sm text-pfSubtle">
+                {status?.draft_candidates?.total ?? 0} Kandidaten für das LLM-Gate ausgewählt
+              </div>
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <select
+                value={gateMode}
+                onChange={(e) => setGateMode(e.target.value as GateMode)}
+                disabled={starting || status?.running}
+                className="rounded-sm border border-amber-500/40 bg-pfSurface px-3 py-2 text-xs font-mono text-pfText transition hover:border-pfAccent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {(Object.entries(GATE_MODE_LABELS) as [GateMode, string][]).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={startRun}
+                disabled={starting || status?.running}
+                className="btn-accent px-4 py-2 text-xs"
+              >
+                {starting ? "Startet..." : "Gate auf diese Kandidaten ausführen"}
+              </button>
             </div>
           </div>
-          <div className="text-xs font-mono uppercase tracking-widest text-pfMuted">
-            {hasApprovedDryRun ? "bereit zum senden" : "kein offener Dry-Run"}
+          <div className="overflow-x-auto rounded-lg border border-amber-500/20">
+            <table className="w-full min-w-[900px] text-left text-sm">
+              <thead className="border-b border-amber-500/20 bg-black/30 text-[0.65rem] font-mono uppercase tracking-widest text-pfMuted">
+                <tr>
+                  <th className="px-4 py-3">Unternehmen</th>
+                  <th className="px-4 py-3">Website</th>
+                  <th className="px-4 py-3">E-Mail</th>
+                  <th className="px-4 py-3">Issues</th>
+                  <th className="px-4 py-3">Scores</th>
+                  <th className="px-4 py-3">Betreff</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-amber-500/10">
+                {(status?.draft_candidates?.items || []).length === 0 ? (
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-pfMuted">Keine Kandidaten geladen.</td></tr>
+                ) : (
+                  (status?.draft_candidates?.items || []).map((item) => {
+                    const href = websiteHref(item.website);
+                    return (
+                      <tr key={item.item_id || item.company} className="align-top hover:bg-white/[0.02]">
+                        <td className="px-4 py-3 font-medium text-pfText">{item.company}</td>
+                        <td className="px-4 py-3">
+                          {href ? <a href={href} target="_blank" rel="noopener noreferrer" className="break-all text-pfAccent hover:underline">{item.website}</a> : <span className="text-pfMuted">-</span>}
+                        </td>
+                        <td className="px-4 py-3 break-all text-pfText">{item.email || "-"}</td>
+                        <td className="px-4 py-3 text-pfSubtle">{formatIssues(item.issues)}</td>
+                        <td className="px-4 py-3 text-pfSubtle">Q{item.website_quality ?? "-"} / S{item.sales_problem ?? "-"}</td>
+                        <td className="px-4 py-3 text-pfSubtle">{item.subject || "-"}</td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
+        </div>
+      )}
+
+      <div className={`rounded-xl border p-5 ${hasApprovedGate ? "border-emerald-500/40 bg-emerald-500/[0.04]" : "border-pfBorder bg-pfSurface/40"}`}>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className={`label-mono ${hasApprovedGate ? "text-emerald-300" : ""}`}>Freigegebene Leads im Review</div>
+            <div className="mt-1 text-sm text-pfSubtle">
+              {status?.review_items?.total ?? 0} Kandidaten freigegeben{alreadyLiveSent ? " — bereits live versendet" : ""}
+            </div>
+          </div>
+          {hasApprovedGate && (
+            <button
+              type="button"
+              onClick={startRun}
+              disabled={starting || status?.running}
+              className="btn-accent px-4 py-2 text-xs"
+            >
+              {starting ? "Sendet..." : `Diese ${status?.reports.gate?.approved ?? 0} Leads jetzt LIVE senden`}
+            </button>
+          )}
         </div>
         <div className="overflow-x-auto rounded-lg border border-pfBorder">
           <table className="w-full min-w-[1020px] text-left text-sm">

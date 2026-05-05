@@ -15,6 +15,17 @@ const REPORT_DIR = join(PROJECT_DIR, "reports");
 const OUTREACH_DB = join(PROJECT_DIR, "data/outreach.db");
 const execFileAsync = promisify(execFile);
 
+type DraftCandidate = {
+  item_id: string | null;
+  company: string;
+  website: string | null;
+  email: string | null;
+  subject: string | null;
+  issues: string[];
+  website_quality: number | null;
+  sales_problem: number | null;
+};
+
 type GateReviewItem = {
   item_id?: string;
   lead?: {
@@ -162,6 +173,30 @@ function issuesFromGateItem(item: GateReviewItem) {
   );
 }
 
+function loadDraftCandidates(drafts: { drafts?: unknown[]; gate_input?: unknown[] } | null): DraftCandidate[] {
+  const allDrafts: unknown[] = Array.isArray(drafts?.drafts) ? drafts.drafts : [];
+  const hasExplicitGateInput = Array.isArray(drafts?.gate_input);
+  const explicitGateInput: unknown[] = hasExplicitGateInput && Array.isArray(drafts?.gate_input) ? drafts.gate_input : [];
+  const selectedDrafts = allDrafts.filter((d: unknown) => d && typeof d === "object" && (d as { selected_for_gate?: boolean }).selected_for_gate === true);
+  const source: unknown[] = hasExplicitGateInput ? explicitGateInput : selectedDrafts.length ? selectedDrafts : allDrafts;
+  return source
+    .filter((d: unknown) => d && typeof d === "object" && !(d as { skipped?: boolean }).skipped)
+    .slice(0, 30)
+    .map((d: unknown) => {
+      const item = d as { lead?: { id?: string; name?: string; website?: string; email?: string; website_quality?: number; sales_problem?: number }; draft?: { subject?: string }; outreach_fit?: { sendable_issues?: string[] } };
+      return {
+        item_id: item.lead?.id || null,
+        company: item.lead?.name || "-",
+        website: item.lead?.website || null,
+        email: item.lead?.email || null,
+        subject: item.draft?.subject || null,
+        issues: item.outreach_fit?.sendable_issues || [],
+        website_quality: item.lead?.website_quality ?? null,
+        sales_problem: item.lead?.sales_problem ?? null,
+      };
+    });
+}
+
 function loadReviewItems(gate: { results?: GateReviewItem[] } | null) {
   const results = Array.isArray(gate?.results) ? gate.results : [];
   const approved = results.filter((item) => item?.decision === "send");
@@ -196,10 +231,12 @@ export async function GET() {
   const gatePath = join(REPORT_DIR, `${runId}.gate.json`);
   const sendPath = join(REPORT_DIR, `${runId}.send.json`);
 
-  const [validation, gate, send, sentContacts] = await Promise.all([
+  const draftsPath = join(REPORT_DIR, `${runId}.drafts.json`);
+  const [validation, gate, send, drafts, sentContacts] = await Promise.all([
     readJson(validationPath),
     readJson(gatePath),
     readJson(sendPath),
+    readJson(draftsPath),
     loadSentContacts().catch(() => []),
   ]);
 
@@ -217,9 +254,28 @@ export async function GET() {
         : null,
       gate: gate
         ? {
+            gate_skipped: gate.gate_skipped === true,
+            candidates_pending: gate.candidates_pending || 0,
             total: gate.total || 0,
             approved: gate.approved || 0,
             manual_review: gate.manual_review || 0,
+            architecture: gate.gate_architecture || null,
+            models: gate.gate_models || null,
+            usage: gate.usage_summary || null,
+            top_reasons: Array.isArray(gate.results)
+              ? (Object.entries(
+                  gate.results.reduce((acc: Record<string, number>, r: { reason?: string; decision?: string }) => {
+                    if (r?.decision !== "send") {
+                      const k = r?.reason?.split("(")[0] || "unknown";
+                      acc[k] = (acc[k] || 0) + 1;
+                    }
+                    return acc;
+                  }, {}),
+                ) as [string, number][])
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 5)
+                  .map(([reason, count]) => ({ reason, count }))
+              : [],
           }
         : null,
       send: send
@@ -240,6 +296,10 @@ export async function GET() {
       total: sentContacts.length,
       bounced: sentContacts.filter((contact: { bounced?: number }) => Number(contact.bounced || 0) === 1).length,
       items: sentContacts,
+    },
+    draft_candidates: {
+      total: gate?.gate_skipped === true ? (gate.candidates_pending || 0) : 0,
+      items: gate?.gate_skipped === true ? loadDraftCandidates(drafts) : [],
     },
     review_items: {
       total: Array.isArray(gate?.results)
