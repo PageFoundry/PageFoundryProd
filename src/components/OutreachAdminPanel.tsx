@@ -151,6 +151,7 @@ export default function OutreachAdminPanel() {
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [gateMode, setGateMode] = useState<GateMode>("codex_dual");
+  const [removingItem, setRemovingItem] = useState<string | null>(null);
 
   async function loadStatus() {
     setLoading(true);
@@ -227,6 +228,29 @@ export default function OutreachAdminPanel() {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setStarting(false);
+    }
+  }
+
+  async function removeDryRunItem(item: DraftCandidate | ReviewItem, scope: "draft" | "approved") {
+    if (!status?.run_id || !item.item_id) return;
+    const label = scope === "approved" ? "aus den freigegebenen Leads" : "aus dem Gate-Dry-Run";
+    if (!window.confirm(`${item.company} ${label} entfernen?`)) return;
+
+    setRemovingItem(item.item_id);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/outreach/exclude", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ run_id: status.run_id, item_id: item.item_id }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.message || body.error || `Entfernen fehlgeschlagen (${res.status})`);
+      await loadStatus();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRemovingItem(null);
     }
   }
 
@@ -440,11 +464,12 @@ export default function OutreachAdminPanel() {
                   <th className="px-4 py-3">Issues</th>
                   <th className="px-4 py-3">Scores</th>
                   <th className="px-4 py-3">Betreff</th>
+                  <th className="px-4 py-3">Aktion</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-amber-500/10">
                 {(status?.draft_candidates?.items || []).length === 0 ? (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-pfMuted">Keine Kandidaten geladen.</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-8 text-center text-pfMuted">Keine Kandidaten geladen.</td></tr>
                 ) : (
                   (status?.draft_candidates?.items || []).map((item) => {
                     const href = websiteHref(item.website);
@@ -458,6 +483,16 @@ export default function OutreachAdminPanel() {
                         <td className="px-4 py-3 text-pfSubtle">{formatIssues(item.issues)}</td>
                         <td className="px-4 py-3 text-pfSubtle">Q{item.website_quality ?? "-"} / S{item.sales_problem ?? "-"}</td>
                         <td className="px-4 py-3 text-pfSubtle">{item.subject || "-"}</td>
+                        <td className="px-4 py-3">
+                          <button
+                            type="button"
+                            onClick={() => removeDryRunItem(item, "draft")}
+                            disabled={status?.running || removingItem === item.item_id || !item.item_id}
+                            className="rounded-sm border border-red-400/40 px-3 py-2 text-xs font-mono uppercase tracking-widest text-red-200 transition hover:border-red-300 hover:text-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {removingItem === item.item_id ? "Entfernt..." : "Entfernen"}
+                          </button>
+                        </td>
                       </tr>
                     );
                   })
@@ -497,18 +532,19 @@ export default function OutreachAdminPanel() {
                 <th className="px-4 py-3">Issues</th>
                 <th className="px-4 py-3">Scores</th>
                 <th className="px-4 py-3">Betreff</th>
+                <th className="px-4 py-3">Aktion</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-pfBorder">
               {!status ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                  <td colSpan={7} className="px-4 py-8 text-center text-pfMuted">
                     Laedt...
                   </td>
                 </tr>
               ) : (status.review_items?.items || []).length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-pfMuted">
+                  <td colSpan={7} className="px-4 py-8 text-center text-pfMuted">
                     Kein freigegebener Review-Dry-Run sichtbar.
                   </td>
                 </tr>
@@ -541,6 +577,16 @@ export default function OutreachAdminPanel() {
                         Q{item.website_quality ?? "-"} / S{item.sales_problem ?? "-"} / Fit {item.score ?? "-"}
                       </td>
                       <td className="px-4 py-3 text-pfSubtle">{item.subject || "-"}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() => removeDryRunItem(item, "approved")}
+                          disabled={status?.running || alreadyLiveSent || removingItem === item.item_id || !item.item_id}
+                          className="rounded-sm border border-red-400/40 px-3 py-2 text-xs font-mono uppercase tracking-widest text-red-200 transition hover:border-red-300 hover:text-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {removingItem === item.item_id ? "Entfernt..." : "Entfernen"}
+                        </button>
+                      </td>
                     </tr>
                   );
                 })
