@@ -202,7 +202,7 @@ export default function OutreachAdminPanel() {
       currentPhase === "send"
         ? `Jetzt ${status?.reports.gate?.approved ?? "?"} freigegebene Leads LIVE senden? Mails gehen wirklich raus.`
         : currentPhase === "gate"
-          ? `Gate auf ${status?.reports.gate?.candidates_pending ?? "?"} Kandidaten ausführen (${GATE_MODE_LABELS[gateMode]})? Noch keine Mails.`
+          ? `Jetzt ${status?.reports.gate?.candidates_pending ?? "?"} übrig gebliebene Kandidaten LIVE senden? Mails gehen wirklich raus.`
           : plzForRun
             ? `Leads suchen für PLZ ${plzForRun}? Noch keine Mails.`
             : "Leads suchen und validieren? Noch keine Mails.";
@@ -210,7 +210,7 @@ export default function OutreachAdminPanel() {
 
     const mode =
       currentPhase === "send" ? "send_latest_approved" :
-      currentPhase === "gate" ? "run_gate" :
+      currentPhase === "gate" ? "send_curated_dry_run" :
       "validate_only";
 
     setStarting(true);
@@ -223,6 +223,27 @@ export default function OutreachAdminPanel() {
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.message || body.error || `Start fehlgeschlagen (${res.status})`);
+      await loadStatus();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setStarting(false);
+    }
+  }
+
+  async function runGateAnyway() {
+    if (!window.confirm(`LLM-Gate auf ${status?.reports.gate?.candidates_pending ?? "?"} Kandidaten ausführen (${GATE_MODE_LABELS[gateMode]})? Noch keine Mails.`)) return;
+
+    setStarting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/outreach/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "run_gate", gate_mode: gateMode }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.message || body.error || `Gate fehlgeschlagen (${res.status})`);
       await loadStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -301,7 +322,7 @@ export default function OutreachAdminPanel() {
           <div>
             <div className="label-mono mb-2">Manual Outreach</div>
             <p className="text-sm text-pfSubtle">
-              Erst Leads prüfen lassen, danach den freigegebenen Dry-Run live senden.
+              Leads suchen, unpassende Unternehmen entfernen, übrig gebliebene Liste live senden.
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
@@ -309,18 +330,6 @@ export default function OutreachAdminPanel() {
               <span className={`h-2.5 w-2.5 rounded-full ${status?.running ? "bg-amber-400" : "bg-green-400"}`} />
               {status?.running ? "Laeuft" : "Bereit"}
             </div>
-            {currentPhase !== "send" && (
-              <select
-                value={gateMode}
-                onChange={(e) => setGateMode(e.target.value as GateMode)}
-                disabled={starting || status?.running}
-                className="rounded-sm border border-pfBorder bg-pfSurface px-3 py-2 text-xs font-mono text-pfText transition hover:border-pfAccent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {(Object.entries(GATE_MODE_LABELS) as [GateMode, string][]).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            )}
           <button
             type="button"
             onClick={loadStatus}
@@ -346,7 +355,7 @@ export default function OutreachAdminPanel() {
           >
             {starting ? "Startet..." :
               currentPhase === "send" ? `Freigegebene Leads senden (${status?.reports.gate?.approved ?? 0})` :
-              currentPhase === "gate" ? "Gate ausführen" :
+              currentPhase === "gate" ? `Übrige Leads senden (${status?.reports.gate?.candidates_pending ?? 0})` :
               "Leads suchen"}
           </button>
           </div>
@@ -428,12 +437,20 @@ export default function OutreachAdminPanel() {
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-5">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="label-mono text-amber-300">Kandidaten — vor Gate</div>
+              <div className="label-mono text-amber-300">Kandidaten — vor Versand</div>
               <div className="mt-1 text-sm text-pfSubtle">
-                {status?.draft_candidates?.total ?? 0} Kandidaten für das LLM-Gate ausgewählt
+                {status?.draft_candidates?.total ?? 0} Kandidaten bleiben nach manueller Prüfung übrig
               </div>
             </div>
             <div className="flex items-center gap-3 flex-wrap">
+              <button
+                type="button"
+                onClick={startRun}
+                disabled={starting || status?.running}
+                className="btn-accent px-4 py-2 text-xs"
+              >
+                {starting ? "Startet..." : "Diese Liste LIVE senden"}
+              </button>
               <select
                 value={gateMode}
                 onChange={(e) => setGateMode(e.target.value as GateMode)}
@@ -446,11 +463,11 @@ export default function OutreachAdminPanel() {
               </select>
               <button
                 type="button"
-                onClick={startRun}
+                onClick={runGateAnyway}
                 disabled={starting || status?.running}
-                className="btn-accent px-4 py-2 text-xs"
+                className="rounded-sm border border-amber-500/40 px-4 py-2 text-xs font-mono uppercase tracking-widest text-amber-100 transition hover:border-pfAccent hover:text-pfAccent disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {starting ? "Startet..." : "Gate auf diese Kandidaten ausführen"}
+                {starting ? "Startet..." : "LLM-Gate optional"}
               </button>
             </div>
           </div>

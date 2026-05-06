@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 import { existsSync } from "fs";
-import { readFile, readdir, stat } from "fs/promises";
+import { readFile, readdir, stat, writeFile } from "fs/promises";
 import { join } from "path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
@@ -34,6 +34,68 @@ async function readJson(path: string) {
   } catch {
     return null;
   }
+}
+
+function curatedGateResult(item: Record<string, unknown>) {
+  const lead = item.lead as { id?: string } | undefined;
+  return {
+    ...item,
+    item_id: typeof item.item_id === "string" ? item.item_id : lead?.id || null,
+    source: typeof item.source === "string"
+      ? item.source
+      : typeof item.sourcePool === "string"
+        ? item.sourcePool
+        : typeof item.source_pool === "string"
+          ? item.source_pool
+          : "manual_curated",
+    original_decision: typeof item.decision === "string" ? item.decision : null,
+    decision: "send",
+    reason: "manual_curated_dry_run",
+  };
+}
+
+async function writeCuratedGateReport(runId: string) {
+  const draftsPath = join(REPORT_DIR, `${runId}.drafts.json`);
+  const gatePath = join(REPORT_DIR, `${runId}.gate.json`);
+  const drafts = await readJson(draftsPath);
+  const allDrafts = Array.isArray(drafts?.drafts) ? drafts.drafts : [];
+  const hasExplicitGateInput = Array.isArray(drafts?.gate_input);
+  const explicitGateInput = hasExplicitGateInput ? drafts.gate_input : [];
+  const selectedDrafts = allDrafts.filter((item: unknown) => {
+    return item && typeof item === "object" && (item as { selected_for_gate?: boolean }).selected_for_gate === true;
+  });
+  const source = hasExplicitGateInput ? explicitGateInput : selectedDrafts.length ? selectedDrafts : allDrafts;
+  const results = source
+    .filter((item: unknown): item is Record<string, unknown> => {
+      if (!item || typeof item !== "object") return false;
+      const candidate = item as {
+        skipped?: boolean;
+        lead?: { id?: string };
+        draft?: { to?: string };
+      };
+      return !candidate.skipped && Boolean(candidate.lead?.id) && Boolean(candidate.draft?.to);
+    })
+    .map(curatedGateResult);
+
+  if (!results.length) return { ok: false as const, count: 0 };
+
+  await writeFile(
+    gatePath,
+    `${JSON.stringify({
+      generated_at: new Date().toISOString(),
+      source_drafts: `reports/${runId}.drafts.json`,
+      source_gate_input_count: hasExplicitGateInput ? explicitGateInput.length : selectedDrafts.length || null,
+      dry_run_only: true,
+      manual_curated: true,
+      gate_architecture: "manual_curated",
+      total: results.length,
+      approved: results.length,
+      manual_review: 0,
+      results,
+    }, null, 2)}\n`,
+  );
+
+  return { ok: true as const, count: results.length };
 }
 
 async function latestSkippedGateRun(date: string) {
@@ -133,7 +195,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const VALID_GATE_MODES = ["codex_dual", "claude_sonnet", "codex_mini"] as const;
-  const VALID_MODES = ["send_latest_approved", "run_gate", "validate_only"] as const;
+  const VALID_MODES = ["send_latest_approved", "send_curated_dry_run", "run_gate", "validate_only"] as const;
   type GateMode = (typeof VALID_GATE_MODES)[number];
   const gateMode: GateMode = VALID_GATE_MODES.includes(body?.gate_mode) ? body.gate_mode : "codex_dual";
   const forcePlz: string | null = typeof body?.force_plz === "string" && /^\d{5}$/.test(body.force_plz.trim()) ? body.force_plz.trim() : null;
@@ -146,7 +208,7 @@ export async function POST(request: Request) {
 
   const requestedMode: string = body?.mode || (
     approvedGateRunId ? "send_latest_approved" :
-    skippedGateRunId ? "run_gate" :
+    skippedGateRunId ? "send_curated_dry_run" :
     "validate_only"
   );
   if (!VALID_MODES.includes(requestedMode as (typeof VALID_MODES)[number])) {
@@ -184,6 +246,44 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({ started: true, pid: child.pid, trigger: "manual_button_reviewed", run_id: runId, mode: requestedMode }, { status: 202 });
+  }
+
+  // — Senden: manuell kuratierte SKIP_GATE-Liste direkt als freigegeben behandeln —
+  if (requestedMode === "send_curated_dry_run") {
+    const runId = skippedGateRunId || await latestSkippedGateRun(date);
+    if (!runId || !RUN_ID_RE.test(runId)) {
+      return NextResponse.json({ error: "no curated dry-run found for today" }, { status: 404 });
+    }
+
+    const curated = await writeCuratedGateReport(runId);
+    if (!curated.ok) {
+      return NextResponse.json({ error: "no sendable curated candidates found" }, { status: 409 });
+    }
+
+    const child = startDetached(
+      [
+        "node --env-file=.env scripts/send-mails.mjs",
+        `--gate reports/${runId}.gate.json`,
+        `--output reports/${runId}.send.json`,
+        "--limit 10",
+        "--trigger manual_button_curated",
+        "--ignore-daily-limit",
+        "--live",
+      ].join(" "),
+      { ...process.env, OUTREACH_TRIGGER: "manual_button_curated" },
+      {
+        lockPayload: {
+          run_id: runId,
+          trigger: "manual_button_curated",
+          phase: "send_curated",
+          curated_count: curated.count,
+          started_at: new Date().toISOString(),
+        },
+        logFile,
+      },
+    );
+
+    return NextResponse.json({ started: true, pid: child.pid, trigger: "manual_button_curated", run_id: runId, mode: requestedMode, curated_count: curated.count }, { status: 202 });
   }
 
   // — Gate ausführen: auf vorhandenen Drafts aus einem SKIP_GATE-Lauf —
