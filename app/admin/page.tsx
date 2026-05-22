@@ -347,18 +347,6 @@ export default async function AdminPage() {
                       {overview.infra.postgres5432 ? "listening" : "down"}
                     </span>
                   </div>
-                  <div className="flex justify-between gap-4">
-                    <span>Postgres :5433</span>
-                    <span className={overview.infra.postgres5433 ? "text-green-400" : "text-red-400"}>
-                      {overview.infra.postgres5433 ? "listening" : "down"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between gap-4">
-                    <span>Redis :6379</span>
-                    <span className={overview.infra.redis6379 ? "text-green-400" : "text-red-400"}>
-                      {overview.infra.redis6379 ? "listening" : "down"}
-                    </span>
-                  </div>
                 </div>
               </div>
               <div className="rounded-xl border border-pfBorder bg-pfSurface/40 p-4">

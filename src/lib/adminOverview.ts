@@ -59,8 +59,6 @@ type SystemStatus = {
 type InfraStatus = {
   nginx: string;
   postgres5432: boolean;
-  postgres5433: boolean;
-  redis6379: boolean;
   cronEntries: string[];
 };
 
@@ -408,21 +406,15 @@ function collectSupportOpportunities(input: {
     });
   }
 
-  for (const port of [
-    { key: "postgres5432", label: "Postgres :5432" },
-    { key: "postgres5433", label: "Postgres :5433" },
-    { key: "redis6379", label: "Redis :6379" },
-  ] as const) {
-    if (!input.infra[port.key]) {
-      opportunities.push({
-        id: `infra-${port.key}`,
-        scope: "infra",
-        severity: "high",
-        title: `${port.label} nicht erreichbar`,
-        detail: "Port-Check hat keinen Listener gefunden",
-        target: port.label,
-      });
-    }
+  if (!input.infra.postgres5432) {
+    opportunities.push({
+      id: "infra-postgres5432",
+      scope: "infra",
+      severity: "high",
+      title: "Postgres :5432 nicht erreichbar",
+      detail: "Port-Check hat keinen Listener gefunden",
+      target: "Postgres :5432",
+    });
   }
 
   return opportunities.sort((a, b) => {
@@ -441,8 +433,6 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     pm2Res,
     nginxRes,
     pg5432Res,
-    pg5433Res,
-    redisRes,
     cronRes,
   ] = await Promise.all([
     Promise.all(WEBSITE_TARGETS.map(fetchWebsiteStatus)),
@@ -453,8 +443,6 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     runCommand("pm2", ["list"]),
     runCommand("systemctl", ["is-active", "nginx"]),
     runCommand("bash", ["-lc", "ss -ltn '( sport = :5432 )' | tail -n +2"]),
-    runCommand("bash", ["-lc", "ss -ltn '( sport = :5433 )' | tail -n +2"]),
-    runCommand("bash", ["-lc", "ss -ltn '( sport = :6379 )' | tail -n +2"]),
     runCommand("crontab", ["-l"]),
   ]);
 
@@ -480,8 +468,6 @@ export async function getAdminOverview(): Promise<AdminOverview> {
   const infra = {
     nginx: nginxRes.ok ? nginxRes.stdout || "unknown" : nginxRes.error || "unknown",
     postgres5432: pg5432Res.ok ? parsePortCheck(pg5432Res.stdout) : false,
-    postgres5433: pg5433Res.ok ? parsePortCheck(pg5433Res.stdout) : false,
-    redis6379: redisRes.ok ? parsePortCheck(redisRes.stdout) : false,
     cronEntries,
   };
   const opportunities = collectSupportOpportunities({ websites, processes, system, infra });
