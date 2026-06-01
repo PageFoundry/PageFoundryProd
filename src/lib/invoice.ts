@@ -166,3 +166,170 @@ export async function generateInvoicePDF({
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
 }
+
+type ServiceInvoicePdfInput = {
+  number: string;
+  issueDate: Date;
+  dueDate: Date;
+  subtotalCents: number;
+  taxCents: number;
+  totalCents: number;
+  notes: string | null;
+  client: {
+    name: string;
+    companyName: string | null;
+    billingName: string | null;
+    billingAddressLine1: string | null;
+    billingAddressLine2: string | null;
+    postalCode: string | null;
+    city: string | null;
+    country: string;
+    vatId: string | null;
+  };
+  items: Array<{
+    description: string;
+    quantity: number;
+    unitPriceCents: number;
+    taxRateBps: number;
+    lineNetCents: number;
+    lineTaxCents: number;
+    lineGrossCents: number;
+  }>;
+};
+
+function pdfMoney(cents: number) {
+  return `${(cents / 100).toLocaleString("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} EUR`;
+}
+
+function pdfDate(date: Date) {
+  return date.toLocaleDateString("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
+}
+
+function normalizePdfText(text: string) {
+  return text.replace(/€/g, "EUR").replace(/[–—]/g, "-");
+}
+
+export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput): Promise<Buffer> {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595.28, 841.89]);
+  const { width, height } = page.getSize();
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const margin = 50;
+  const accent = rgb(0.79, 0.66, 0.3);
+  const dark = rgb(0.08, 0.08, 0.08);
+  const muted = rgb(0.36, 0.36, 0.36);
+  const light = rgb(0.95, 0.95, 0.93);
+
+  function text(value: string, x: number, y: number, size = 10, isBold = false, color = dark) {
+    page.drawText(normalizePdfText(value), {
+      x,
+      y,
+      size,
+      font: isBold ? bold : regular,
+      color,
+    });
+  }
+
+  function right(value: string, x: number, y: number, size = 10, isBold = false) {
+    const font = isBold ? bold : regular;
+    const normalized = normalizePdfText(value);
+    page.drawText(normalized, {
+      x: x - font.widthOfTextAtSize(normalized, size),
+      y,
+      size,
+      font,
+      color: dark,
+    });
+  }
+
+  function lines(value: string, maxChars = 72) {
+    const words = normalizePdfText(value).split(/\s+/).filter(Boolean);
+    const output: string[] = [];
+    let line = "";
+    for (const word of words) {
+      const next = line ? `${line} ${word}` : word;
+      if (next.length > maxChars && line) {
+        output.push(line);
+        line = word;
+      } else {
+        line = next;
+      }
+    }
+    if (line) output.push(line);
+    return output;
+  }
+
+  page.drawRectangle({ x: 0, y: height - 92, width, height: 92, color: rgb(0.03, 0.03, 0.03) });
+  text("Pagefoundry", margin, height - 48, 22, true, rgb(1, 1, 1));
+  text("Webdesign, Automatisierung und digitale Services", margin, height - 66, 9, false, rgb(0.82, 0.82, 0.78));
+  text("RECHNUNG", width - 182, height - 48, 18, true, accent);
+  text(invoice.number, width - 182, height - 66, 10, false, rgb(1, 1, 1));
+
+  const client = invoice.client;
+  const recipient = [
+    client.billingName ?? client.companyName ?? client.name,
+    client.billingAddressLine1,
+    client.billingAddressLine2,
+    [client.postalCode, client.city].filter(Boolean).join(" "),
+    client.country && client.country !== "DE" ? client.country : null,
+  ].filter(Boolean) as string[];
+
+  text("Pagefoundry · Kastanienweg 20a · 42499 Hueckeswagen", margin, height - 125, 7, false, muted);
+  let y = height - 154;
+  recipient.forEach((line, index) => {
+    text(line, margin, y - index * 14, 10, index === 0);
+  });
+  if (client.vatId) text(`USt-Id: ${client.vatId}`, margin, y - recipient.length * 14 - 4, 9, false, muted);
+
+  const metaX = width - 220;
+  page.drawRectangle({ x: metaX, y: height - 214, width: 170, height: 86, color: light });
+  text("Rechnungsdatum", metaX + 14, height - 152, 8, false, muted);
+  right(pdfDate(invoice.issueDate), metaX + 156, height - 152, 9, true);
+  text("Faellig bis", metaX + 14, height - 174, 8, false, muted);
+  right(pdfDate(invoice.dueDate), metaX + 156, height - 174, 9, true);
+  text("Gesamt", metaX + 14, height - 196, 8, false, muted);
+  right(pdfMoney(invoice.totalCents), metaX + 156, height - 196, 10, true);
+
+  y = height - 275;
+  text("Leistung", margin, y, 9, true);
+  right("Netto", width - 162, y, 9, true);
+  right("USt", width - 96, y, 9, true);
+  right("Brutto", width - margin, y, 9, true);
+  page.drawLine({ start: { x: margin, y: y - 8 }, end: { x: width - margin, y: y - 8 }, thickness: 1, color: accent });
+  y -= 28;
+
+  for (const item of invoice.items) {
+    const itemLines = lines(item.description, 48);
+    text(itemLines[0] ?? item.description, margin, y, 10, true);
+    if (item.quantity > 1) text(`${item.quantity} x ${pdfMoney(item.unitPriceCents)}`, margin, y - 13, 8, false, muted);
+    itemLines.slice(1, 3).forEach((line, index) => text(line, margin, y - 14 - index * 11, 8, false, muted));
+    right(pdfMoney(item.lineNetCents), width - 162, y, 9);
+    right(`${(item.taxRateBps / 100).toLocaleString("de-DE")} %`, width - 96, y, 9);
+    right(pdfMoney(item.lineGrossCents), width - margin, y, 9, true);
+    y -= Math.max(38, 22 + itemLines.slice(1, 3).length * 11);
+  }
+
+  page.drawLine({ start: { x: width - 260, y: y + 8 }, end: { x: width - margin, y: y + 8 }, thickness: 0.5, color: muted });
+  text("Zwischensumme", width - 260, y - 8, 9, false, muted);
+  right(pdfMoney(invoice.subtotalCents), width - margin, y - 8, 9);
+  text("Umsatzsteuer", width - 260, y - 28, 9, false, muted);
+  right(pdfMoney(invoice.taxCents), width - margin, y - 28, 9);
+  text("Gesamtbetrag", width - 260, y - 54, 11, true);
+  right(pdfMoney(invoice.totalCents), width - margin, y - 54, 11, true);
+
+  const footerY = 78;
+  text("Zahlbar per Ueberweisung. Bitte die Rechnungsnummer als Verwendungszweck angeben.", margin, footerY + 38, 9, false, muted);
+  if (invoice.notes) {
+    lines(invoice.notes, 92)
+      .slice(0, 2)
+      .forEach((line, index) => text(line, margin, footerY + 18 - index * 11, 8, false, muted));
+  }
+  text("Pagefoundry · Fabian Franke · Kastanienweg 20a · 42499 Hueckeswagen · pagefoundry.de", margin, footerY - 10, 7, false, muted);
+
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
+}

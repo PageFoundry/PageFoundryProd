@@ -38,6 +38,39 @@ enum RetellProjectType {
   other
 }
 
+enum ClientStatus {
+  LEAD
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum ServiceBillingMode {
+  ONE_TIME
+  RECURRING
+}
+
+enum ClientServiceStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  STRIPE
+  CASH
+  OTHER
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -68,6 +101,154 @@ model Product {
   restricted    Boolean  @default(true)
 
   orders        Order[]
+}
+
+model BusinessClient {
+  id                  String       @id @default(cuid())
+  name                String
+  companyName         String?
+  status              ClientStatus @default(ACTIVE)
+  email               String?
+  phone               String?
+  website             String?
+  billingName         String?
+  billingEmail        String?
+  billingAddressLine1 String?
+  billingAddressLine2 String?
+  postalCode          String?
+  city                String?
+  country             String       @default("DE")
+  vatId               String?
+  notes               String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  contacts ClientContact[]
+  services ClientService[]
+  invoices Invoice[]
+
+  @@index([status])
+  @@index([name])
+}
+
+model ClientContact {
+  id        String         @id @default(cuid())
+  clientId  String
+  client    BusinessClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  role      String?
+  isPrimary Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([clientId])
+  @@index([email])
+}
+
+model ServiceOffering {
+  id             String             @id @default(cuid())
+  name           String             @unique
+  description    String?
+  unitPriceCents Int
+  taxRateBps     Int                @default(1900)
+  billingMode    ServiceBillingMode @default(ONE_TIME)
+  isActive       Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  clientServices ClientService[]
+  invoiceItems   InvoiceItem[]
+
+  @@index([isActive])
+  @@index([billingMode])
+}
+
+model ClientService {
+  id              String              @id @default(cuid())
+  clientId        String
+  client          BusinessClient      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  serviceId       String?
+  service         ServiceOffering?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  title           String
+  quantity        Int                 @default(1)
+  unitPriceCents  Int
+  taxRateBps      Int                 @default(1900)
+  billingInterval String              @default("monthly")
+  status          ClientServiceStatus @default(ACTIVE)
+  nextInvoiceDate DateTime?
+  startedAt       DateTime            @default(now())
+  cancelledAt     DateTime?
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([clientId])
+  @@index([serviceId])
+  @@index([status, nextInvoiceDate])
+}
+
+model Invoice {
+  id                 String         @id @default(cuid())
+  number             String         @unique
+  clientId           String
+  client             BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  status             InvoiceStatus  @default(DRAFT)
+  issueDate          DateTime       @default(now())
+  dueDate            DateTime
+  servicePeriodStart DateTime?
+  servicePeriodEnd   DateTime?
+  currency           String         @default("EUR")
+  subtotalCents      Int            @default(0)
+  taxCents           Int            @default(0)
+  totalCents         Int            @default(0)
+  notes              String?
+  sentAt             DateTime?
+  paidAt             DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  items    InvoiceItem[]
+  payments Payment[]
+
+  @@index([clientId])
+  @@index([status])
+  @@index([issueDate])
+  @@index([dueDate])
+}
+
+model InvoiceItem {
+  id             String           @id @default(cuid())
+  invoiceId      String
+  invoice        Invoice          @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  serviceId      String?
+  service        ServiceOffering? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  description    String
+  quantity       Int              @default(1)
+  unitPriceCents Int
+  taxRateBps     Int              @default(1900)
+  lineNetCents   Int
+  lineTaxCents   Int
+  lineGrossCents Int
+  createdAt      DateTime         @default(now())
+
+  @@index([invoiceId])
+  @@index([serviceId])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amountCents Int
+  method      PaymentMethod @default(BANK_TRANSFER)
+  reference   String?
+  paidAt      DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+
+  @@index([invoiceId])
+  @@index([paidAt])
 }
 
 model Order {
