@@ -170,6 +170,7 @@ const copy = {
       "In der kostenlosen Erstberatung priorisieren wir die Seiten und Hebel mit der größten Wirkung - ohne Verkaufsgespräch.",
     consultationCta: "Kostenlose Beratung buchen",
     packagesCta: "Pakete ansehen",
+    detailLabel: "Im Detail",
     services: [
       {
         n: "01",
@@ -268,6 +269,7 @@ const copy = {
       "In the free consultation, we prioritize the pages and levers with the biggest impact - without a sales call.",
     consultationCta: "Book free consultation",
     packagesCta: "See packages",
+    detailLabel: "In detail",
     services: [
       {
         n: "01",
@@ -466,6 +468,21 @@ export default async function LandingPage() {
                 <PackageCard id={id} isAuthed={isAuthed} />
               </div>
             ))}
+          </div>
+
+          <div className="mt-10 flex flex-col gap-4 border-t border-pfBorder pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+            <span className="font-mono text-[0.7rem] uppercase tracking-widest text-pfMuted">
+              {c.detailLabel}
+            </span>
+            <Link href="/ki-telefonassistenz" className="btn-outline">
+              KI-Telefonassistenz
+            </Link>
+            <Link href="/website-wache" className="btn-outline">
+              Website-Wache
+            </Link>
+            <Link href="/website-rettung" className="btn-outline">
+              Website-Rettung
+            </Link>
           </div>
         </div>
       </section>

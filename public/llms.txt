@@ -16,6 +16,9 @@ PageFoundry builds and maintains professional web presences with a focus on conv
 - [Speed Optimisation](https://pagefoundry.de/#packages): Core Web Vitals and load time improvements (from 149 €)
 - [Maintenance Subscription](https://pagefoundry.de/#packages): Monthly updates, backups, security patches, monitoring (from 39 €/month)
 - [Request Offer](https://pagefoundry.de/#packages): Custom scope or bundle for unique requirements (on request)
+- [AI Phone Assistant](https://pagefoundry.de/ki-telefonassistenz): AI assistant answers calls, books appointments and captures leads on a real landline (from 690 € setup + 199 €/month)
+- [Website Watch](https://pagefoundry.de/website-wache): Uptime, SSL and load-time monitoring with a monthly report and small fixes (from 39 €/month)
+- [Website Rescue](https://pagefoundry.de/website-rettung): Rescue sprint for weak sites — audit, preview and a new high-converting page (from 690 €)
 - [Free Consultation](https://pagefoundry.de/consultation): 30-minute Zoom strategy call, no commitment
 
 ## Contact & booking
@@ -26,6 +29,9 @@ Book a free consultation at: https://pagefoundry.de/consultation
 
 - Homepage: https://pagefoundry.de
 - Packages: https://pagefoundry.de/#packages
+- AI Phone Assistant: https://pagefoundry.de/ki-telefonassistenz
+- Website Watch: https://pagefoundry.de/website-wache
+- Website Rescue: https://pagefoundry.de/website-rettung
 - Consultation: https://pagefoundry.de/consultation
 - Login: https://pagefoundry.de/login
 
