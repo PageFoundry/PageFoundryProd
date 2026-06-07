@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dashboard · PageFoundry",
+  title: "Dashboard",
   description: "Manage your orders and projects.",
   robots: "noindex",
 };

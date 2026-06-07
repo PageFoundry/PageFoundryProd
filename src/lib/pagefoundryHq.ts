@@ -136,7 +136,7 @@ export async function createBusinessClient(input: Record<string, unknown>) {
 export async function createServiceOffering(input: Record<string, unknown>) {
   const name = cleanString(input.name);
   const unitPriceCents = parseCents(input.unitPrice);
-  const taxRateBps = Math.round(Number(input.taxRate ?? 19) * 100);
+  const taxRateBps = Math.round(Number(input.taxRate ?? 0) * 100);
   if (!name) throw new Error("service_name_required");
   if (unitPriceCents < 0) throw new Error("service_price_invalid");
   if (taxRateBps < 0 || taxRateBps > 10000) throw new Error("service_tax_invalid");
@@ -204,7 +204,7 @@ export async function createInvoice(input: Record<string, unknown>) {
     const description = cleanString(item.description);
     const quantity = Math.max(1, Math.round(Number(item.quantity ?? 1)));
     const unitPriceCents = parseCents(item.unitPrice);
-    const taxRateBps = Math.round(Number(item.taxRate ?? 19) * 100);
+    const taxRateBps = Math.round(Number(item.taxRate ?? 0) * 100);
     if (!description) throw new Error("invoice_item_description_required");
     if (unitPriceCents < 0) throw new Error("invoice_item_price_invalid");
     if (taxRateBps < 0 || taxRateBps > 10000) throw new Error("invoice_item_tax_invalid");

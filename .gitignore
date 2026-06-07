@@ -11,3 +11,8 @@ dist/
 
 # binaries
 stripe-cli.*
+
+# env backups + build info
+.env.*
+!.env.example
+*.tsbuildinfo

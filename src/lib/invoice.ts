@@ -175,6 +175,8 @@ type ServiceInvoicePdfInput = {
   taxCents: number;
   totalCents: number;
   notes: string | null;
+  servicePeriodStart: Date | null;
+  servicePeriodEnd: Date | null;
   client: {
     name: string;
     companyName: string | null;
@@ -223,6 +225,10 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   const dark = rgb(0.08, 0.08, 0.08);
   const muted = rgb(0.36, 0.36, 0.36);
   const light = rgb(0.95, 0.95, 0.93);
+  const issuerName = "Fabian Franke";
+  const issuerIban = "DE26 3705 0299 0000 4213 13";
+  // leer bis Gewerbe angemeldet ist; danach Finanzamt-Steuernummer eintragen
+  const issuerTaxNumber = "";
 
   function text(value: string, x: number, y: number, size = 10, isBold = false, color = dark) {
     page.drawText(normalizePdfText(value), {
@@ -263,11 +269,27 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
     return output;
   }
 
-  page.drawRectangle({ x: 0, y: height - 92, width, height: 92, color: rgb(0.03, 0.03, 0.03) });
-  text("Pagefoundry", margin, height - 48, 22, true, rgb(1, 1, 1));
-  text("Webdesign, Automatisierung und digitale Services", margin, height - 66, 9, false, rgb(0.82, 0.82, 0.78));
-  text("RECHNUNG", width - 182, height - 48, 18, true, accent);
-  text(invoice.number, width - 182, height - 66, 10, false, rgb(1, 1, 1));
+  let logo: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
+  try {
+    const logoBytes = await fs.readFile(path.join(process.cwd(), "public", "PAGEfoundry.png"));
+    logo = await pdfDoc.embedPng(logoBytes);
+  } catch {
+    logo = null;
+  }
+
+  page.drawRectangle({ x: 0, y: height - 92, width, height: 92, color: rgb(0, 0, 0) });
+  page.drawRectangle({ x: 0, y: height - 93, width, height: 1, color: accent });
+  if (logo) {
+    const logoH = 60;
+    const logoW = (logo.width / logo.height) * logoH;
+    page.drawImage(logo, { x: margin, y: height - 46 - logoH / 2, width: logoW, height: logoH });
+    text("Webdesign, Automatisierung und digitale Services", margin + logoW + 14, height - 50, 9, false, rgb(0.82, 0.82, 0.78));
+  } else {
+    text("Pagefoundry", margin, height - 48, 22, true, rgb(1, 1, 1));
+    text("Webdesign, Automatisierung und digitale Services", margin, height - 66, 9, false, rgb(0.82, 0.82, 0.78));
+  }
+  text("RECHNUNG", width - 182, height - 44, 18, true, accent);
+  text(invoice.number, width - 182, height - 62, 10, false, rgb(1, 1, 1));
 
   const client = invoice.client;
   const recipient = [
@@ -285,6 +307,18 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   });
   if (client.vatId) text(`USt-Id: ${client.vatId}`, margin, y - recipient.length * 14 - 4, 9, false, muted);
 
+  const servicePeriodText = (() => {
+    const s = invoice.servicePeriodStart;
+    const e = invoice.servicePeriodEnd;
+    if (s && e) return s.getTime() === e.getTime() ? pdfDate(s) : `${pdfDate(s)} - ${pdfDate(e)}`;
+    if (s) return pdfDate(s);
+    if (e) return pdfDate(e);
+    return pdfDate(invoice.issueDate);
+  })();
+  const servicePeriodLabel = invoice.servicePeriodStart || invoice.servicePeriodEnd ? "Leistungszeitraum" : "Leistungsdatum";
+  text(servicePeriodLabel, margin, height - 232, 8, false, muted);
+  text(servicePeriodText, margin, height - 246, 10);
+
   const metaX = width - 220;
   page.drawRectangle({ x: metaX, y: height - 214, width: 170, height: 86, color: light });
   text("Rechnungsdatum", metaX + 14, height - 152, 8, false, muted);
@@ -294,41 +328,67 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   text("Gesamt", metaX + 14, height - 196, 8, false, muted);
   right(pdfMoney(invoice.totalCents), metaX + 156, height - 196, 10, true);
 
+  const noVat = invoice.taxCents === 0;
+  const colNet = width - 215;
+  const colTax = width - 135;
+  const colGross = width - margin;
   y = height - 275;
   text("Leistung", margin, y, 9, true);
-  right("Netto", width - 162, y, 9, true);
-  right("USt", width - 96, y, 9, true);
-  right("Brutto", width - margin, y, 9, true);
+  if (noVat) {
+    right("Betrag", colGross, y, 9, true);
+  } else {
+    right("Netto", colNet, y, 9, true);
+    right("USt", colTax, y, 9, true);
+    right("Brutto", colGross, y, 9, true);
+  }
   page.drawLine({ start: { x: margin, y: y - 8 }, end: { x: width - margin, y: y - 8 }, thickness: 1, color: accent });
   y -= 28;
 
   for (const item of invoice.items) {
-    const itemLines = lines(item.description, 48);
+    const itemLines = lines(item.description, 42);
     text(itemLines[0] ?? item.description, margin, y, 10, true);
     if (item.quantity > 1) text(`${item.quantity} x ${pdfMoney(item.unitPriceCents)}`, margin, y - 13, 8, false, muted);
     itemLines.slice(1, 3).forEach((line, index) => text(line, margin, y - 14 - index * 11, 8, false, muted));
-    right(pdfMoney(item.lineNetCents), width - 162, y, 9);
-    right(`${(item.taxRateBps / 100).toLocaleString("de-DE")} %`, width - 96, y, 9);
-    right(pdfMoney(item.lineGrossCents), width - margin, y, 9, true);
+    if (noVat) {
+      right(pdfMoney(item.lineGrossCents), colGross, y, 9, true);
+    } else {
+      right(pdfMoney(item.lineNetCents), colNet, y, 9);
+      right(`${(item.taxRateBps / 100).toLocaleString("de-DE")} %`, colTax, y, 9);
+      right(pdfMoney(item.lineGrossCents), colGross, y, 9, true);
+    }
     y -= Math.max(38, 22 + itemLines.slice(1, 3).length * 11);
   }
 
   page.drawLine({ start: { x: width - 260, y: y + 8 }, end: { x: width - margin, y: y + 8 }, thickness: 0.5, color: muted });
-  text("Zwischensumme", width - 260, y - 8, 9, false, muted);
-  right(pdfMoney(invoice.subtotalCents), width - margin, y - 8, 9);
-  text("Umsatzsteuer", width - 260, y - 28, 9, false, muted);
-  right(pdfMoney(invoice.taxCents), width - margin, y - 28, 9);
-  text("Gesamtbetrag", width - 260, y - 54, 11, true);
-  right(pdfMoney(invoice.totalCents), width - margin, y - 54, 11, true);
+  if (noVat) {
+    text("Gesamtbetrag", width - 260, y - 8, 11, true);
+    right(pdfMoney(invoice.totalCents), width - margin, y - 8, 11, true);
+    text("Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet.", margin, y - 8, 8, false, muted);
+  } else {
+    text("Zwischensumme", width - 260, y - 8, 9, false, muted);
+    right(pdfMoney(invoice.subtotalCents), width - margin, y - 8, 9);
+    text("Umsatzsteuer", width - 260, y - 28, 9, false, muted);
+    right(pdfMoney(invoice.taxCents), width - margin, y - 28, 9);
+    text("Gesamtbetrag", width - 260, y - 54, 11, true);
+    right(pdfMoney(invoice.totalCents), width - margin, y - 54, 11, true);
+  }
 
   const footerY = 78;
-  text("Zahlbar per Ueberweisung. Bitte die Rechnungsnummer als Verwendungszweck angeben.", margin, footerY + 38, 9, false, muted);
+  let fy = footerY + 52;
+  text("Zahlbar per Ueberweisung. Bitte die Rechnungsnummer als Verwendungszweck angeben.", margin, fy, 9, false, muted);
+  fy -= 13;
+  text(`Bankverbindung: ${issuerName} · IBAN ${issuerIban}`, margin, fy, 9, false, muted);
+  if (issuerTaxNumber) {
+    fy -= 13;
+    text(`Steuernummer: ${issuerTaxNumber}`, margin, fy, 9, false, muted);
+  }
   if (invoice.notes) {
+    fy -= 16;
     lines(invoice.notes, 92)
       .slice(0, 2)
-      .forEach((line, index) => text(line, margin, footerY + 18 - index * 11, 8, false, muted));
+      .forEach((line, index) => text(line, margin, fy - index * 11, 8, false, muted));
   }
-  text("Pagefoundry · Fabian Franke · Kastanienweg 20a · 42499 Hueckeswagen · pagefoundry.de", margin, footerY - 10, 7, false, muted);
+  text(`Pagefoundry · ${issuerName} · Kastanienweg 20a · 42499 Hueckeswagen · pagefoundry.de`, margin, footerY - 10, 7, false, muted);
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
-  title: "AGB · PageFoundry",
+  title: "AGB",
+  alternates: { canonical: "https://pagefoundry.de/agb" },
 };
 
 export default async function AgbPage() {

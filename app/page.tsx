@@ -36,12 +36,26 @@ const organizationSchema = {
   url: "https://pagefoundry.de",
   description:
     "Web-Agentur für hochkonvertierende Landing Pages, Hosting, SEO und Speed-Optimierung.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Kastanienweg 20a",
+    postalCode: "42499",
+    addressLocality: "Hückeswagen",
+    addressCountry: "DE",
+  },
+  telephone: "+49 2192 8743999",
+  email: "admin@pagefoundry.de",
+  image: "https://pagefoundry.de/PAGEfoundry.png",
+  logo: "https://pagefoundry.de/PAGEfoundry.png",
+  founder: { "@type": "Person", name: "Fabian Franke" },
   areaServed: { "@type": "Country", name: "Germany" },
   availableLanguage: ["German", "English"],
   priceRange: "€€",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
+    telephone: "+49 2192 8743999",
+    email: "admin@pagefoundry.de",
     availableLanguage: ["German", "English"],
     url: "https://pagefoundry.de/consultation",
   },
@@ -61,7 +75,6 @@ const organizationSchema = {
           "@type": "PriceSpecification",
           price: "249",
           priceCurrency: "EUR",
-          minPrice: "249",
         },
       },
       {
@@ -76,7 +89,6 @@ const organizationSchema = {
           "@type": "PriceSpecification",
           price: "49",
           priceCurrency: "EUR",
-          minPrice: "49",
         },
       },
       {
@@ -91,7 +103,6 @@ const organizationSchema = {
           "@type": "PriceSpecification",
           price: "99",
           priceCurrency: "EUR",
-          minPrice: "99",
         },
       },
       {
@@ -106,7 +117,6 @@ const organizationSchema = {
           "@type": "PriceSpecification",
           price: "149",
           priceCurrency: "EUR",
-          minPrice: "149",
         },
       },
       {
@@ -121,7 +131,6 @@ const organizationSchema = {
           "@type": "PriceSpecification",
           price: "499",
           priceCurrency: "EUR",
-          minPrice: "499",
         },
       },
     ],

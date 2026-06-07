@@ -3,12 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 const MAX_DAYS_AHEAD = 14;
 const SLOT_MINUTES = 30;
-const START_HOUR = 15;
+const START_HOUR = 16;
 const END_HOUR = 20;
 const TIMEZONE = "Europe/Berlin";
 
-// Mo = 1, Mi = 3, Do = 4
-const ALLOWED_WEEKDAYS = [1, 3, 4];
+// Mo–Fr = 1–5
+const ALLOWED_WEEKDAYS = [1, 2, 3, 4, 5];
 
 function startOfDay(date: Date) {
   const d = new Date(date);
@@ -25,6 +25,45 @@ function addDays(date: Date, days: number) {
 function isAllowedWeekday(date: Date) {
   const dow = date.getDay();
   return ALLOWED_WEEKDAYS.includes(dow);
+}
+
+// Wie viele ms ist Europe/Berlin der UTC zu diesem Zeitpunkt voraus (DST-aware).
+function berlinOffsetMs(date: Date) {
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIMEZONE,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const p = Object.fromEntries(
+    dtf.formatToParts(date).map((part) => [part.type, part.value])
+  );
+  const asUTC = Date.UTC(
+    Number(p.year),
+    Number(p.month) - 1,
+    Number(p.day),
+    Number(p.hour),
+    Number(p.minute),
+    Number(p.second)
+  );
+  return asUTC - date.getTime();
+}
+
+// UTC-Instant, dessen Berliner Wanduhr genau (Y-M-D, hour:minute) ist.
+function berlinWallClockToUtc(
+  year: number,
+  monthIndex: number,
+  day: number,
+  hour: number,
+  minute: number
+) {
+  const utcGuess = new Date(Date.UTC(year, monthIndex, day, hour, minute, 0));
+  // 16:00/20:00 liegen nie auf einem DST-Sprung (der passiert nachts), daher reicht ein Schritt.
+  return new Date(utcGuess.getTime() - berlinOffsetMs(utcGuess));
 }
 
 // Slots für ein gegebenes Datum erzeugen, falls noch nicht vorhanden
@@ -62,11 +101,13 @@ async function ensureSlotsForDate(day: Date) {
     isBooked: boolean;
   }[] = [];
 
-  const slotStart = new Date(dayStart);
-  slotStart.setHours(START_HOUR, 0, 0, 0);
+  // Slot-Zeiten in Europe/Berlin erzeugen, unabhängig von der Server-Zeitzone (UTC).
+  const y = dayStart.getFullYear();
+  const m = dayStart.getMonth();
+  const d = dayStart.getDate();
 
-  const slotEndLimit = new Date(dayStart);
-  slotEndLimit.setHours(END_HOUR, 0, 0, 0);
+  const slotStart = berlinWallClockToUtc(y, m, d, START_HOUR, 0);
+  const slotEndLimit = berlinWallClockToUtc(y, m, d, END_HOUR, 0);
 
   let current = slotStart;
   while (current < slotEndLimit) {

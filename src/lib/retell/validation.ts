@@ -6,29 +6,56 @@ export const DEFAULT_APPOINTMENT_MINUTES = 30;
 
 export const projectTypeSchema = z.enum(PROJECT_TYPES);
 
+const optionalString = () =>
+  z
+    .string()
+    .trim()
+    .nullish()
+    .transform((v) => (v == null || v === "" ? undefined : v));
+
+const optionalNonEmptyString = () =>
+  z
+    .string()
+    .trim()
+    .min(1)
+    .nullish()
+    .transform((v) => (v == null || v === "" ? undefined : v));
+
+const optionalProjectType = () =>
+  projectTypeSchema.nullish().transform((v) => (v == null ? undefined : v));
+
 export const bookAppointmentSchema = z.object({
   name: z.string().trim().min(1),
-  company: z.string().trim().optional(),
-  phone: z.string().trim().optional(),
+  company: optionalString(),
+  phone: optionalString(),
   reason: z.string().trim().min(1),
-  projectType: projectTypeSchema.optional(),
+  projectType: optionalProjectType(),
   startDateTime: z.string().trim().min(1),
-  endDateTime: z.string().trim().min(1).optional(),
-  timezone: z.string().trim().min(1).default(DEFAULT_TIMEZONE),
-  callId: z.string().trim().optional(),
-  transcript: z.string().optional(),
+  endDateTime: optionalNonEmptyString(),
+  timezone: z
+    .string()
+    .trim()
+    .min(1)
+    .nullish()
+    .transform((v) => (v == null || v === "" ? DEFAULT_TIMEZONE : v)),
+  callId: optionalString(),
+  transcript: optionalString(),
 });
 
 export const saveLeadSchema = z.object({
-  name: z.string().trim().min(1).default("Unbekannt"),
-  company: z.string().trim().optional(),
-  phone: z.string().trim().optional(),
+  name: z
+    .string()
+    .trim()
+    .nullish()
+    .transform((v) => (v == null || v === "" ? "Unbekannt" : v)),
+  company: optionalString(),
+  phone: optionalString(),
   reason: z.string().trim().min(1),
-  projectType: projectTypeSchema.optional(),
-  callId: z.string().trim().optional(),
-  transcript: z.string().optional(),
-  summary: z.string().optional(),
-  noAppointmentReason: z.string().optional(),
+  projectType: optionalProjectType(),
+  callId: optionalString(),
+  transcript: optionalString(),
+  summary: optionalString(),
+  noAppointmentReason: optionalString(),
 });
 
 export const retellWebhookSchema = z.object({

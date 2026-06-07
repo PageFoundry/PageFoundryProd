@@ -8,15 +8,15 @@ PageFoundry builds and maintains professional web presences with a focus on conv
 
 ## Services
 
-- **Landing Page** — Custom, conversion-optimised landing page (from 249 €)
-- **Landing Page Hosting** — We host your existing page, with optional domain management (from 5 €/month)
-- **All-Inclusive Package** — Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 499 €)
-- **SEO Basic** — Technical and content optimisation for better search visibility (from 49 €)
-- **SEO Advanced** — Keyword strategy, deep audit, and long-term performance tracking (from 99 €)
-- **Speed Optimisation** — Core Web Vitals and load time improvements (from 149 €)
-- **Maintenance Subscription** — Monthly updates, backups, security patches, monitoring (from 39 €/month)
-- **Request Offer** — Custom scope or bundle for unique requirements (on request)
-- **Free Consultation** — 30-minute Zoom strategy call, no commitment
+- [Landing Page](https://pagefoundry.de/#packages): Custom, conversion-optimised landing page (from 249 €)
+- [Landing Page Hosting](https://pagefoundry.de/#packages): We host your existing page, with optional domain management (from 5 €/month)
+- [All-Inclusive Package](https://pagefoundry.de/#packages): Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 499 €)
+- [SEO Basic](https://pagefoundry.de/#packages): Technical and content optimisation for better search visibility (from 49 €)
+- [SEO Advanced](https://pagefoundry.de/#packages): Keyword strategy, deep audit, and long-term performance tracking (from 99 €)
+- [Speed Optimisation](https://pagefoundry.de/#packages): Core Web Vitals and load time improvements (from 149 €)
+- [Maintenance Subscription](https://pagefoundry.de/#packages): Monthly updates, backups, security patches, monitoring (from 39 €/month)
+- [Request Offer](https://pagefoundry.de/#packages): Custom scope or bundle for unique requirements (on request)
+- [Free Consultation](https://pagefoundry.de/consultation): 30-minute Zoom strategy call, no commitment
 
 ## Contact & booking
 

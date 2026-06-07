@@ -16,8 +16,7 @@ type AllowedDate = {
   label: string;
 };
 
-const TIMEZONE = "Europe/Berlin";
-const ALLOWED_WEEKDAYS = [1, 3, 4];
+const ALLOWED_WEEKDAYS = [1, 2, 3, 4, 5];
 const MAX_DAYS_AHEAD = 14;
 
 function formatDateValue(d: Date): string {
@@ -160,6 +159,13 @@ export default function ConsultationPage() {
             {t("consultation.title")}
           </h1>
           <p className="text-pfSubtle text-sm mt-3">{t("consultation.subtitle")}</p>
+          <p className="text-pfMuted text-xs font-mono mt-2 tracking-wide">
+            Lieber telefonisch? Rufen Sie an:{" "}
+            <a href="tel:+4921928743999" className="text-pfAccent">
+              +49 2192 8743999
+            </a>{" "}
+            — unser KI-Assistent nimmt 24/7 an und vereinbart direkt einen Termin.
+          </p>
         </div>
 
         <div className="max-w-lg mx-auto">
@@ -212,7 +218,7 @@ export default function ConsultationPage() {
               {/* Date selection */}
               <div>
                 <span className="font-mono text-[0.62rem] tracking-widest uppercase text-pfMuted block mb-3">
-                  {t("consultation.preferred")} ({TIMEZONE})
+                  {t("consultation.preferred")}
                 </span>
                 {allowedDates.length === 0 ? (
                   <p className="text-pfMuted font-mono text-xs">{t("consultation.noDates")}</p>

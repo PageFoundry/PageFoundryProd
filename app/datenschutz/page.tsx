@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung · PageFoundry",
+  title: "Datenschutzerklärung",
+  alternates: { canonical: "https://pagefoundry.de/datenschutz" },
 };
 
 export default async function DatenschutzPage() {

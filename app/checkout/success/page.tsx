@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Order Confirmed · PageFoundry",
+  title: "Order Confirmed",
   robots: "noindex",
 };
 

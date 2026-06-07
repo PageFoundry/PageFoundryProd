@@ -3,6 +3,7 @@ import { getUserFromCookie } from "@/lib/auth";
 import { getAdminOverview } from "@/lib/adminOverview";
 import { redirect } from "next/navigation";
 import StatusBadge from "@/components/StatusBadge";
+import RegenerateSlotsButton from "@/components/RegenerateSlotsButton";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +18,12 @@ type AdminOrderRow = {
 
 type ConsultationRow = {
   id: string;
+  source: "web" | "ai_call";
   name: string;
   email: string;
   phone: string | null;
+  slotStart: Date;
+  slotEnd: Date;
   preferredTime: string;
   note: string | null;
   createdAt: Date;
@@ -56,15 +60,48 @@ export default async function AdminPage() {
     },
   });
 
-  const consultations: ConsultationRow[] = consultationBookings.map((booking) => ({
+  const aiCalendarEvents = await prisma.calendarEvent.findMany({
+    where: { status: { not: "cancelled" } },
+    orderBy: { startDateTime: "asc" },
+    include: {
+      lead: { select: { name: true, company: true, phone: true, reason: true, projectType: true } },
+    },
+  });
+
+  const webConsultations: ConsultationRow[] = consultationBookings.map((booking) => ({
     id: booking.id,
+    source: "web",
     name: booking.user?.name || booking.email,
     email: booking.email,
     phone: booking.user?.phone ?? null,
+    slotStart: booking.slot.start,
+    slotEnd: booking.slot.end,
     preferredTime: `${booking.slot.start.toISOString()} - ${booking.slot.end.toISOString()}`,
     note: booking.description,
     createdAt: booking.createdAt,
   }));
+
+  const aiConsultations: ConsultationRow[] = aiCalendarEvents.map((event) => {
+    const company = event.lead.company ? ` (${event.lead.company})` : "";
+    const noteParts = [event.lead.reason];
+    if (event.lead.projectType) noteParts.push(`Projekt: ${event.lead.projectType}`);
+    return {
+      id: event.id,
+      source: "ai_call",
+      name: `${event.lead.name}${company}`,
+      email: "",
+      phone: event.lead.phone,
+      slotStart: event.startDateTime,
+      slotEnd: event.endDateTime,
+      preferredTime: `${event.startDateTime.toISOString()} - ${event.endDateTime.toISOString()}`,
+      note: noteParts.join(" — "),
+      createdAt: event.createdAt,
+    };
+  });
+
+  const consultations: ConsultationRow[] = [...webConsultations, ...aiConsultations].sort(
+    (a, b) => a.slotStart.getTime() - b.slotStart.getTime(),
+  );
 
   const now = new Date();
   const year = now.getFullYear();
@@ -75,7 +112,7 @@ export default async function AdminPage() {
 
   const bookingsPerDay = new Map<string, number>();
   for (const c of consultations) {
-    const key = new Date(c.createdAt).toISOString().slice(0, 10);
+    const key = new Date(c.slotStart).toISOString().slice(0, 10);
     bookingsPerDay.set(key, (bookingsPerDay.get(key) ?? 0) + 1);
   }
 
@@ -424,11 +461,14 @@ export default async function AdminPage() {
 
         {/* Calendar */}
         <div className="pf-card p-6">
-          <div className="flex items-baseline justify-between mb-6">
+          <div className="flex items-baseline justify-between mb-6 gap-4">
             <span className="label-mono">Beratungen — {monthLabel}</span>
-            <span className="text-pfMuted font-mono text-[0.6rem]">
-              {consultations.length} Anfragen gesamt
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-pfMuted font-mono text-[0.6rem]">
+                {consultations.length} Anfragen gesamt
+              </span>
+              <RegenerateSlotsButton />
+            </div>
           </div>
 
           {/* Day headers */}
@@ -480,6 +520,7 @@ export default async function AdminPage() {
                 <table className="pf-table">
                   <thead>
                     <tr>
+                      <th>Quelle</th>
                       <th>Name</th>
                       <th>Telefon</th>
                       <th>Slot</th>
@@ -489,7 +530,18 @@ export default async function AdminPage() {
                   </thead>
                   <tbody>
                     {consultations.map((c) => (
-                      <tr key={c.id}>
+                      <tr key={`${c.source}-${c.id}`}>
+                        <td>
+                          <span
+                            className={`font-mono text-[0.55rem] uppercase tracking-widest rounded-sm px-1.5 py-0.5 border ${
+                              c.source === "ai_call"
+                                ? "border-pfBorderAccent bg-pfAccentDim text-pfAccent"
+                                : "border-pfBorder bg-pfSurface/50 text-pfSubtle"
+                            }`}
+                          >
+                            {c.source === "ai_call" ? "KI-Anruf" : "Web"}
+                          </span>
+                        </td>
                         <td className="text-pfText font-medium">{c.name}</td>
                         <td className="text-pfSubtle font-mono text-xs">{c.phone || "–"}</td>
                         <td className="text-pfAccent font-mono text-xs">{c.preferredTime}</td>
