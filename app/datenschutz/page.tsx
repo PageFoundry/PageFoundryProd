@@ -59,20 +59,34 @@ export default async function DatenschutzPage() {
             sowie optionale Notizen, um den Termin zu koordinieren.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">7. Hosting</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">7. KI-Telefonassistenz</h2>
+          <p>
+            Für Kunden unseres Produkts „KI-Telefonassistenz" betreiben wir in deren Auftrag
+            einen KI-gestützten Telefondienst. Anrufende werden zu Beginn des Gesprächs darüber
+            informiert, dass ein digitaler Assistent antwortet. Dabei können Name, Telefonnummer,
+            Anliegen, Terminwunsch sowie Gesprächsinhalte verarbeitet werden, um Termine zu
+            koordinieren oder den Kontakt an den jeweiligen Kunden weiterzugeben. Für die
+            Sprachverarbeitung setzen wir den Dienstleister Retell AI ein; die Verarbeitung
+            erfolgt auf Grundlage eines Auftragsverarbeitungsvertrags (Art. 28 DSGVO).
+            Verantwortlicher für diese Verarbeitung ist der jeweilige Betrieb, der die Assistenz
+            einsetzt; PageFoundry handelt insoweit als Auftragsverarbeiter. Details und
+            Aufbewahrungsfristen regelt der jeweilige Vertrag.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">8. Hosting</h2>
           <p>
             Die Website wird auf Servern innerhalb der EU betrieben. Logdaten werden automatisch
             gelöscht, sofern keine längere Speicherung aus Sicherheitsgründen erforderlich ist.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">8. Rechte der betroffenen Personen</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Rechte der betroffenen Personen</h2>
           <p>
             Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
             Verarbeitung, Datenübertragbarkeit sowie Widerspruch. Anfragen richten Sie bitte an
             admin@pagefoundry.de.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">9. Änderungen</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">10. Änderungen</h2>
           <p>
             Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen.
           </p>
@@ -121,19 +135,32 @@ export default async function DatenschutzPage() {
             and optional notes to schedule the appointment.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">7. Hosting</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">7. AI phone assistant</h2>
+          <p>
+            For customers of our &quot;AI phone assistant&quot; product we operate an AI-based
+            telephone service on their behalf. Callers are informed at the start of the call that
+            a digital assistant is answering. In doing so, name, phone number, request, appointment
+            preferences and call content may be processed in order to schedule appointments or
+            forward the contact to the respective customer. For voice processing we use the provider
+            Retell AI; processing is carried out on the basis of a data processing agreement
+            (Art. 28 GDPR). The controller for this processing is the respective business using the
+            assistant; PageFoundry acts as a processor in this respect. Details and retention
+            periods are governed by the respective contract.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">8. Hosting</h2>
           <p>
             The website is hosted on servers located within the EU. Log data is deleted
             automatically unless longer retention is required for security reasons.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">8. Data subject rights</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Data subject rights</h2>
           <p>
             You have the right to access, rectification, erasure, restriction of processing,
             data portability and objection. Please send requests to admin@pagefoundry.de.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">9. Changes</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">10. Changes</h2>
           <p>
             We may update this privacy policy from time to time as needed.
           </p>
