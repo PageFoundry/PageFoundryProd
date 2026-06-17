@@ -73,20 +73,40 @@ export default async function DatenschutzPage() {
             Aufbewahrungsfristen regelt der jeweilige Vertrag.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">8. Hosting</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">
+            8. Facebook- und Instagram-Nachrichten und Kommentare
+          </h2>
+          <p>
+            Wir betreiben einen zentralen Posteingang („Message Hub"), um Nachrichten und
+            Kommentare zu verarbeiten, die uns über unsere eigene Facebook-Seite und unser
+            Instagram-Konto erreichen. Verarbeitet werden dabei der Inhalt der Nachricht bzw.
+            des Kommentars, der öffentliche Profilname und die plattformseitige Nutzer- bzw.
+            Konversations-ID der schreibenden Person, Zeitstempel sowie – bei Kommentaren – ein
+            Verweis auf den zugehörigen Beitrag. Zweck ist die Sichtung und Beantwortung von
+            Anfragen. Antworten werden ausschließlich manuell durch einen Menschen ausgelöst;
+            ein automatisierter Massenversand findet nicht statt. Die Daten werden über die
+            offiziellen Schnittstellen von Meta (Graph API) bezogen; ergänzend gelten die
+            Datenrichtlinien von Meta (https://www.facebook.com/privacy/policy). Rechtsgrundlage
+            ist unser berechtigtes Interesse an der Kommunikation mit Interessenten und Kunden
+            (Art. 6 Abs. 1 lit. f DSGVO) bzw. die Anbahnung oder Erfüllung eines Vertrags
+            (Art. 6 Abs. 1 lit. b DSGVO). Die Daten werden gelöscht, sobald sie für die
+            Bearbeitung nicht mehr erforderlich sind.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Hosting</h2>
           <p>
             Die Website wird auf Servern innerhalb der EU betrieben. Logdaten werden automatisch
             gelöscht, sofern keine längere Speicherung aus Sicherheitsgründen erforderlich ist.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">9. Rechte der betroffenen Personen</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">10. Rechte der betroffenen Personen</h2>
           <p>
             Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
             Verarbeitung, Datenübertragbarkeit sowie Widerspruch. Anfragen richten Sie bitte an
             admin@pagefoundry.de.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">10. Änderungen</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">11. Änderungen</h2>
           <p>
             Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen.
           </p>
@@ -97,9 +117,9 @@ export default async function DatenschutzPage() {
           <p>
             PageFoundry
             <br />
-            Owner: [Your Name]
+            Owner: Fabian Franke
             <br />
-            [Address]
+            Kastanienweg 20a, 42499 Hückeswagen
             <br />
             E-mail: admin@pagefoundry.de
           </p>
@@ -148,19 +168,36 @@ export default async function DatenschutzPage() {
             periods are governed by the respective contract.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">8. Hosting</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">
+            8. Facebook and Instagram messages and comments
+          </h2>
+          <p>
+            We operate a central inbox (&quot;Message Hub&quot;) to process messages and comments
+            that reach us through our own Facebook page and Instagram account. We process the
+            content of the message or comment, the public profile name and the platform-side
+            user/conversation ID of the sender, timestamps and — for comments — a reference to the
+            related post. The purpose is to review and respond to enquiries. Replies are triggered
+            exclusively manually by a human; no automated bulk sending takes place. Data is obtained
+            via Meta&apos;s official interfaces (Graph API); Meta&apos;s data policies apply in
+            addition (https://www.facebook.com/privacy/policy). The legal basis is our legitimate
+            interest in communicating with prospects and customers (Art. 6(1)(f) GDPR) or the
+            initiation and performance of a contract (Art. 6(1)(b) GDPR). Data is deleted once it is
+            no longer required for processing.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-10 mb-3">9. Hosting</h2>
           <p>
             The website is hosted on servers located within the EU. Log data is deleted
             automatically unless longer retention is required for security reasons.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">9. Data subject rights</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">10. Data subject rights</h2>
           <p>
             You have the right to access, rectification, erasure, restriction of processing,
             data portability and objection. Please send requests to admin@pagefoundry.de.
           </p>
 
-          <h2 className="text-xl font-semibold mt-10 mb-3">10. Changes</h2>
+          <h2 className="text-xl font-semibold mt-10 mb-3">11. Changes</h2>
           <p>
             We may update this privacy policy from time to time as needed.
           </p>
