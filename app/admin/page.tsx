@@ -173,6 +173,12 @@ export default async function AdminPage() {
             >
               Outreach Control
             </a>
+            <a
+              href="/admin/social-audit"
+              className="inline-flex items-center rounded-sm border border-pfBorder px-4 py-2 font-mono text-[0.65rem] uppercase tracking-widest text-pfSubtle transition-colors hover:border-pfBorderAccent hover:text-pfAccent"
+            >
+              PF Social Audit
+            </a>
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  serverExternalPackages: ['better-sqlite3', 'playwright', 'lighthouse', 'chrome-launcher', 'pdfkit'],
   async headers() {
     return [
       {

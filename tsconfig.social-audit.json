@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/social-audit",
+    "types": [],
+    "experimentalDecorators": true
+  },
+  "include": ["src/social-audit/**/*.ts"],
+  "exclude": []
+}

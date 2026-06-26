@@ -2,8 +2,11 @@ node_modules/
 .next/
 .angular/
 dist/
+public/social-audit-ui/
 .env
 *.log
+data/*.sqlite
+data/*.sqlite-*
 .DS_Store
 .idea/
 .vscode/

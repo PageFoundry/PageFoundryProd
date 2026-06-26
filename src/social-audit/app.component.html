@@ -1,0 +1,173 @@
+<div class="pfsa">
+  <section class="metrics" aria-label="Social Audit Kennzahlen">
+    <article>
+      <span>Total</span>
+      <strong>{{ summary.total }}</strong>
+    </article>
+    <article>
+      <span>High Value</span>
+      <strong>{{ summary.hot }}</strong>
+    </article>
+    <article>
+      <span>Neu</span>
+      <strong>{{ summary.new }}</strong>
+    </article>
+    <article>
+      <span>Ø Opportunity</span>
+      <strong>{{ summary.avgOpportunity }}</strong>
+    </article>
+  </section>
+
+  <section class="panel intake">
+    <div class="panel-head">
+      <div>
+        <span class="kicker">Discovery</span>
+        <h2>Social-Profil auditieren</h2>
+      </div>
+      <button class="ghost" type="button" (click)="load()" [disabled]="loading || busy">Aktualisieren</button>
+    </div>
+
+    <form class="intake-grid" (ngSubmit)="createAudit()">
+      <label>
+        <span>Firma</span>
+        <input name="companyName" [(ngModel)]="form.companyName" autocomplete="off">
+      </label>
+      <label>
+        <span>Website</span>
+        <input name="website" [(ngModel)]="form.website" placeholder="https://beispiel.de" autocomplete="off">
+      </label>
+      <label>
+        <span>Instagram URL</span>
+        <input name="instagram" [(ngModel)]="form.instagram" placeholder="https://instagram.com/company" autocomplete="off">
+      </label>
+      <label>
+        <span>Facebook URL</span>
+        <input name="facebook" [(ngModel)]="form.facebook" autocomplete="off">
+      </label>
+      <label>
+        <span>TikTok URL</span>
+        <input name="tiktok" [(ngModel)]="form.tiktok" autocomplete="off">
+      </label>
+      <label>
+        <span>Follower</span>
+        <input name="followers" [(ngModel)]="form.followers" inputmode="numeric" autocomplete="off">
+      </label>
+      <label>
+        <span>Posts</span>
+        <input name="posts" [(ngModel)]="form.posts" inputmode="numeric" autocomplete="off">
+      </label>
+      <label>
+        <span>Ø Likes</span>
+        <input name="avgLikes" [(ngModel)]="form.avgLikes" inputmode="numeric" autocomplete="off">
+      </label>
+      <button class="primary" type="submit" [disabled]="busy">
+        {{ busy ? "Audit läuft..." : "Audit starten" }}
+      </button>
+    </form>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </section>
+
+  <section class="panel">
+    <div class="toolbar">
+      <label class="search">
+        <span>Suche</span>
+        <input [(ngModel)]="search" name="search" placeholder="Firma, Domain oder Social URL">
+      </label>
+
+      <label class="select">
+        <span>Status</span>
+        <select [(ngModel)]="statusFilter" name="statusFilter">
+          <option *ngFor="let status of statuses" [ngValue]="status">{{ statusLabel(status) }}</option>
+        </select>
+      </label>
+
+      <div class="segmented" aria-label="Sortierung">
+        <button
+          *ngFor="let mode of sortModes"
+          type="button"
+          [class.active]="sortMode === mode.value"
+          (click)="sortMode = mode.value"
+        >
+          {{ mode.label }}
+        </button>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">Lade Audits...</div>
+    <div class="empty" *ngIf="!loading && visibleAudits().length === 0">Keine passenden Social-Audits gefunden.</div>
+
+    <div class="table-wrap" *ngIf="!loading && visibleAudits().length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Lead</th>
+            <th>Social</th>
+            <th>Opportunity</th>
+            <th>Website Checks</th>
+            <th>Status</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let audit of visibleAudits(); trackBy: trackById">
+            <td>
+              <div class="lead-name">{{ audit.companyName || "Unbekannt" }}</div>
+              <a class="domain" *ngIf="audit.website" [href]="audit.website" target="_blank" rel="noreferrer">{{ audit.website }}</a>
+              <div class="date">{{ formatDate(audit.createdAt) }}</div>
+              <div class="issues" *ngIf="audit.issues.length > 0">
+                <span *ngFor="let issue of audit.issues.slice(0, 3)">{{ issue }}</span>
+              </div>
+            </td>
+            <td>
+              <strong>{{ formatNumber(audit.followers) }}</strong>
+              <small>Follower</small>
+              <div class="social-links">
+                <a *ngIf="audit.instagramUrl" [href]="audit.instagramUrl" target="_blank" rel="noreferrer">IG</a>
+                <a *ngIf="audit.facebookUrl" [href]="audit.facebookUrl" target="_blank" rel="noreferrer">FB</a>
+                <a *ngIf="audit.tiktokUrl" [href]="audit.tiktokUrl" target="_blank" rel="noreferrer">TT</a>
+              </div>
+            </td>
+            <td>
+              <span [class]="scoreTone(audit.opportunityScore)">{{ audit.opportunityScore || 0 }}</span>
+              <div [class]="actionTone(audit.recommendation.action)">{{ audit.recommendation.label }}</div>
+              <small>Social {{ audit.socialScore || 0 }}/10 · Website {{ audit.websiteScore || 0 }}/10</small>
+            </td>
+            <td>
+              <div class="checks">
+                <span [class.ok]="audit.mobileMenuWorking">Menü</span>
+                <span [class.ok]="audit.impressumClickable">Impressum</span>
+                <span [class.ok]="audit.privacyClickable">Datenschutz</span>
+                <span [class.ok]="audit.contactFormFound || audit.mailtoFound || audit.phoneClickable || audit.whatsappFound">Kontakt</span>
+                <span [class.ok]="audit.robotsTxtFound">Robots</span>
+                <span [class.ok]="audit.sitemapFound">Sitemap</span>
+                <span [class.bad]="audit.brokenPopupDetected">Popup</span>
+              </div>
+              <small>LCP {{ audit.lcp || "-" }}s · CLS {{ audit.cls ?? "-" }} · Load {{ audit.loadTime || "-" }}s</small>
+            </td>
+            <td>
+              <span class="status">{{ statusLabel(audit.status) }}</span>
+              <select [ngModel]="audit.status" (ngModelChange)="updateStatus(audit, $event)" [name]="'status-' + audit.id">
+                <option *ngFor="let status of statuses.slice(1)" [ngValue]="status">{{ statusLabel(status) }}</option>
+              </select>
+            </td>
+            <td>
+              <div class="actions">
+                <a *ngIf="audit.website" [href]="audit.website" target="_blank" rel="noreferrer">Website öffnen</a>
+                <button type="button" (click)="openPdf(audit)">PDF</button>
+                <button
+                  type="button"
+                  *ngFor="let action of statusActions"
+                  (click)="updateStatus(audit, action.value)"
+                  [disabled]="audit.status === action.value"
+                >
+                  {{ action.label }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
