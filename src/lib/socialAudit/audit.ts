@@ -2,6 +2,7 @@ import { load } from "cheerio";
 import { chromium, devices, type BrowserContext, type Page } from "playwright";
 import { normalizeWebsiteUrl } from "./discovery";
 import { calculateOpportunityScore, calculateWebsiteScore } from "./scoring";
+import { assertPublicAuditUrl, blockedAuditUrl } from "./urlSafety";
 import type { SocialAudit, WebsiteAuditResult } from "./types";
 
 const USER_AGENT =
@@ -329,6 +330,7 @@ async function collectLighthouseMetrics(url: string) {
 async function gotoWebsite(page: Page, website: string) {
   const normalized = normalizeWebsiteUrl(website);
   if (!normalized) throw new Error("invalid_website");
+  await assertPublicAuditUrl(normalized);
   await installVitalsObserver(page);
   try {
     return await page.goto(normalized, { waitUntil: "domcontentloaded", timeout: 30_000 });
@@ -354,6 +356,15 @@ export async function runWebsiteAudit(audit: Pick<SocialAudit, "website" | "soci
     userAgent: USER_AGENT,
     ignoreHTTPSErrors: true,
   });
+  if (process.env.SOCIAL_AUDIT_ALLOW_PRIVATE_TARGETS !== "1") {
+    await context.route("**/*", async (route) => {
+      if (blockedAuditUrl(route.request().url())) {
+        await route.abort().catch(() => null);
+        return;
+      }
+      await route.continue().catch(() => null);
+    });
+  }
 
   try {
     const page = await context.newPage();
@@ -362,6 +373,7 @@ export async function runWebsiteAudit(audit: Pick<SocialAudit, "website" | "soci
     await page.waitForTimeout(1500);
 
     const finalUrl = page.url();
+    await assertPublicAuditUrl(finalUrl);
     const source = await page.content();
     const responseStatus = response?.status() ?? 0;
     const httpsEnabled = finalUrl.startsWith("https://");

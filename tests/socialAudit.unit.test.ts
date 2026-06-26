@@ -1,6 +1,7 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { calculateOpportunityScore, calculateSocialScore, calculateWebsiteScore, getRecommendation } from "../src/lib/socialAudit/scoring";
+import { assertPublicAuditUrl, blockedAuditHostname, privateAddress } from "../src/lib/socialAudit/urlSafety";
 
 describe("PF Social Audit scoring", () => {
   test("maps follower counts to the requested social score examples", () => {
@@ -43,5 +44,18 @@ describe("PF Social Audit scoring", () => {
     assert.equal(getRecommendation(72).label, "Instagram DM");
     assert.equal(getRecommendation(55).label, "E-Mail");
     assert.equal(getRecommendation(20).label, "Ignorieren");
+  });
+});
+
+describe("PF Social Audit URL safety", () => {
+  test("blocks local and private audit targets", async () => {
+    assert.equal(privateAddress("127.0.0.1"), true);
+    assert.equal(privateAddress("10.0.0.4"), true);
+    assert.equal(privateAddress("172.16.1.1"), true);
+    assert.equal(privateAddress("192.168.1.2"), true);
+    assert.equal(blockedAuditHostname("localhost"), true);
+    assert.equal(blockedAuditHostname("example.com"), false);
+
+    await assert.rejects(() => assertPublicAuditUrl("http://127.0.0.1:3000"), /private_audit_target_blocked/);
   });
 });
