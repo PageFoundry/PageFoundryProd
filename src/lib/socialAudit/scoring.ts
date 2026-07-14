@@ -118,7 +118,7 @@ export function getRecommendation(opportunityScore?: number | null): SocialAudit
     },
     {
       name: "PF Care",
-      price: "49 EUR/Monat",
+      price: "79 EUR/Monat",
       fit: "Plugin-Updates, Monitoring, Backups, Broken-Link-Erkennung, Monatsreview und 30 Minuten Support.",
     },
     {
