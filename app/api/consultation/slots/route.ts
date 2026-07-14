@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-const MAX_DAYS_AHEAD = 14;
-const SLOT_MINUTES = 30;
-const START_HOUR = 16;
-const END_HOUR = 20;
-const TIMEZONE = "Europe/Berlin";
-
-// Mindestvorlauf: frühestens 24 h nach der Anfrage buchbar.
-// Muss synchron bleiben mit app/api/consultation/route.ts.
-const LEAD_TIME_MS = 24 * 60 * 60 * 1000;
-
-// Mo–Fr = 1–5
-const ALLOWED_WEEKDAYS = [1, 2, 3, 4, 5];
+import {
+  ALLOWED_WEEKDAYS,
+  earliestBookableStart,
+  END_HOUR,
+  MAX_DAYS_AHEAD,
+  SLOT_MINUTES,
+  START_HOUR,
+  TIMEZONE,
+  berlinWallClockToUtc,
+} from "@/lib/consultation/policy";
 
 function startOfDay(date: Date) {
   const d = new Date(date);
@@ -31,51 +28,25 @@ function isAllowedWeekday(date: Date) {
   return ALLOWED_WEEKDAYS.includes(dow);
 }
 
-// Wie viele ms ist Europe/Berlin der UTC zu diesem Zeitpunkt voraus (DST-aware).
-function berlinOffsetMs(date: Date) {
-  const dtf = new Intl.DateTimeFormat("en-US", {
-    timeZone: TIMEZONE,
-    hour12: false,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-  const p = Object.fromEntries(
-    dtf.formatToParts(date).map((part) => [part.type, part.value])
-  );
-  const asUTC = Date.UTC(
-    Number(p.year),
-    Number(p.month) - 1,
-    Number(p.day),
-    Number(p.hour),
-    Number(p.minute),
-    Number(p.second)
-  );
-  return asUTC - date.getTime();
-}
-
-// UTC-Instant, dessen Berliner Wanduhr genau (Y-M-D, hour:minute) ist.
-function berlinWallClockToUtc(
-  year: number,
-  monthIndex: number,
-  day: number,
-  hour: number,
-  minute: number
-) {
-  const utcGuess = new Date(Date.UTC(year, monthIndex, day, hour, minute, 0));
-  // 16:00/20:00 liegen nie auf einem DST-Sprung (der passiert nachts), daher reicht ein Schritt.
-  return new Date(utcGuess.getTime() - berlinOffsetMs(utcGuess));
-}
-
 // Slots für ein gegebenes Datum erzeugen, falls noch nicht vorhanden
-async function ensureSlotsForDate(day: Date) {
+async function ensureSlotsForDate(day: Date, now: Date) {
   const dayStart = startOfDay(day);
   const nextDay = addDays(dayStart, 1);
 
   if (!isAllowedWeekday(dayStart)) return;
+
+  // Slot-Zeiten in Europe/Berlin erzeugen, unabhängig von der Server-Zeitzone (UTC).
+  const y = dayStart.getFullYear();
+  const m = dayStart.getMonth();
+  const d = dayStart.getDate();
+
+  const slotStart = berlinWallClockToUtc(y, m, d, START_HOUR, 0);
+  const slotEndLimit = berlinWallClockToUtc(y, m, d, END_HOUR, 0);
+
+  // Wenn selbst der letzte Slot des Tages den Mindestvorlauf reißt, ist der ganze
+  // Tag unbuchbar — dann gar nicht erst anlegen, sonst sammelt sich toter Bestand an.
+  const lastSlotStart = new Date(slotEndLimit.getTime() - SLOT_MINUTES * 60_000);
+  if (lastSlotStart < earliestBookableStart(now)) return;
 
   const existing = await prisma.consultationSlot.count({
     where: {
@@ -105,18 +76,9 @@ async function ensureSlotsForDate(day: Date) {
     isBooked: boolean;
   }[] = [];
 
-  // Slot-Zeiten in Europe/Berlin erzeugen, unabhängig von der Server-Zeitzone (UTC).
-  const y = dayStart.getFullYear();
-  const m = dayStart.getMonth();
-  const d = dayStart.getDate();
-
-  const slotStart = berlinWallClockToUtc(y, m, d, START_HOUR, 0);
-  const slotEndLimit = berlinWallClockToUtc(y, m, d, END_HOUR, 0);
-
   let current = slotStart;
   while (current < slotEndLimit) {
-    const end = new Date(current);
-    end.setMinutes(end.getMinutes() + SLOT_MINUTES);
+    const end = new Date(current.getTime() + SLOT_MINUTES * 60_000);
 
     slotsData.push({
       start: new Date(current),
@@ -129,8 +91,11 @@ async function ensureSlotsForDate(day: Date) {
   }
 
   if (slotsData.length > 0) {
+    // skipDuplicates + @@unique([start]): zwei parallele GETs auf denselben Tag
+    // erzeugen keine doppelten Slots mehr.
     await prisma.consultationSlot.createMany({
       data: slotsData,
+      skipDuplicates: true,
     });
   }
 }
@@ -155,7 +120,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const today = startOfDay(new Date());
+    const now = new Date();
+    const today = startOfDay(now);
     const upper = addDays(today, MAX_DAYS_AHEAD);
 
     if (day < today || day > upper) {
@@ -174,14 +140,13 @@ export async function GET(req: NextRequest) {
     }
 
     // ggf. für diesen Tag Slots erzeugen
-    await ensureSlotsForDate(day);
+    await ensureSlotsForDate(day, now);
 
     const dayStart = startOfDay(day);
     const nextDay = addDays(dayStart, 1);
 
-    // freie Slots liefern
-    const now = new Date();
-    const earliestStart = new Date(now.getTime() + LEAD_TIME_MS);
+    // freie Slots liefern — frühestens nach Ablauf des Mindestvorlaufs
+    const earliestStart = earliestBookableStart(now);
     const lowerBound = dayStart > earliestStart ? dayStart : earliestStart;
 
     const slots = await prisma.consultationSlot.findMany({
@@ -191,7 +156,7 @@ export async function GET(req: NextRequest) {
         isBooked: false,
         OR: [
           { temporaryReservedUntil: null },
-          { temporaryReservedUntil: { lt: now } },
+          { temporaryReservedUntil: { lte: now } },
         ],
       },
       orderBy: { start: "asc" },

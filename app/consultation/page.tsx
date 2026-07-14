@@ -3,6 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/useI18n";
 import type { ConsultationType } from "@prisma/client";
+import {
+  ALLOWED_WEEKDAYS,
+  END_HOUR,
+  MAX_DAYS_AHEAD,
+  SLOT_MINUTES,
+  berlinWallClockToUtc,
+  earliestBookableStart,
+} from "@/lib/consultation/policy";
 
 type ApiSlot = {
   id: string;
@@ -16,9 +24,6 @@ type AllowedDate = {
   label: string;
 };
 
-const ALLOWED_WEEKDAYS = [1, 2, 3, 4, 5];
-const MAX_DAYS_AHEAD = 14;
-
 function formatDateValue(d: Date): string {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -26,16 +31,30 @@ function formatDateValue(d: Date): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function computeAllowedDates(): AllowedDate[] {
-  const today = new Date();
+function computeAllowedDates(now: Date = new Date()): AllowedDate[] {
   const out: AllowedDate[] = [];
+  const earliest = earliestBookableStart(now);
 
-  // Erst ab morgen: Termine brauchen 24 h Vorlauf (siehe api/consultation/slots).
+  // Erst ab morgen: Termine brauchen 24 h Vorlauf (siehe lib/consultation/policy).
   for (let i = 1; i <= MAX_DAYS_AHEAD; i++) {
-    const d = new Date(today);
+    const d = new Date(now);
     d.setDate(d.getDate() + i);
     const dow = d.getDay();
     if (!ALLOWED_WEEKDAYS.includes(dow)) continue;
+
+    // Tage, an denen selbst der letzte Slot den Vorlauf reißt, gar nicht erst anbieten —
+    // sonst zeigt der Chip nur "keine freien Termine". Betrifft abends den Folgetag.
+    const lastSlotStart = new Date(
+      berlinWallClockToUtc(
+        d.getFullYear(),
+        d.getMonth(),
+        d.getDate(),
+        END_HOUR,
+        0
+      ).getTime() -
+        SLOT_MINUTES * 60_000
+    );
+    if (lastSlotStart < earliest) continue;
 
     out.push({
       value: formatDateValue(d),

@@ -281,20 +281,22 @@ model ConsultationSlot {
   // zukünftige Nutzung für temporäre Reservierungen
   temporaryReservedUntil DateTime?
 
-  // Relation zu Buchungen
-  bookings  ConsultationBooking[]
+  // Ein Slot kann höchstens einmal gebucht werden (DB-seitig erzwungen, s. slotId @unique)
+  booking   ConsultationBooking?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([start])
+  // unique statt index: verhindert doppelte Slots aus paralleler Lazy-Generierung
+  @@unique([start])
   @@index([isBooked, temporaryReservedUntil])
 }
 
 model ConsultationBooking {
   id      String   @id @default(cuid())
 
-  slotId  String
+  // unique: macht Doppelbuchung desselben Slots DB-seitig unmöglich
+  slotId  String   @unique
   slot    ConsultationSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
 
   userId  String?

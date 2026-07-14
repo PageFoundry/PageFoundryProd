@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/email";
 import type { ConsultationType } from "@prisma/client";
+import { TIMEZONE } from "@/lib/consultation/policy";
+import { bookSlot, SlotUnavailableError } from "@/lib/consultation/booking";
 
 const CONSULTATION_ADMIN_EMAIL =
   process.env.CONSULTATION_ADMIN_EMAIL || "admin@pagefoundry.de";
 const ZOOM_URL =
   process.env.NEXT_PUBLIC_ZOOM_URL || "https://zoom.us/j/0000000000";
-
-const TIMEZONE = "Europe/Berlin";
-
-// Mindestvorlauf: frühestens 24 h nach der Buchung.
-// Muss synchron bleiben mit app/api/consultation/slots/route.ts.
-const LEAD_TIME_MS = 24 * 60 * 60 * 1000;
 
 type Body = {
   name: string;
@@ -48,44 +43,14 @@ export async function POST(req: NextRequest) {
       Math.max(1, Number(body.participants || 1))
     );
 
-    const now = new Date();
-    const earliestStart = new Date(now.getTime() + LEAD_TIME_MS);
-
-    const result = await prisma.$transaction(async (tx) => {
-      const slot = await tx.consultationSlot.findUnique({
-        where: { id: body.slotId! },
-      });
-
-      if (
-        !slot ||
-        slot.isDisabled ||
-        slot.isBooked ||
-        slot.start < earliestStart ||
-        (slot.temporaryReservedUntil && slot.temporaryReservedUntil > now)
-      ) {
-        throw new Error("Slot not available");
-      }
-
-      const booking = await tx.consultationBooking.create({
-        data: {
-          slotId: slot.id,
-          email: body.email!,
-          participants,
-          consultationType: body.consultationType as ConsultationType,
-          description: body.note!,
-          zoomUrl: ZOOM_URL,
-        },
-      });
-
-      await tx.consultationSlot.update({
-        where: { id: slot.id },
-        data: { isBooked: true, temporaryReservedUntil: null },
-      });
-
-      return { slot, booking };
+    const { slot, booking } = await bookSlot({
+      slotId: body.slotId,
+      email: body.email,
+      participants,
+      consultationType: body.consultationType as ConsultationType,
+      description: body.note,
+      zoomUrl: ZOOM_URL,
     });
-
-    const { slot, booking } = result;
 
     const dateFormatter = new Intl.DateTimeFormat("de-DE", {
       year: "numeric",
@@ -168,7 +133,7 @@ PageFoundry
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
     console.error("consultation POST error", err);
-    if (err instanceof Error && err.message === "Slot not available") {
+    if (err instanceof SlotUnavailableError) {
       return NextResponse.json(
         { message: "Slot not available anymore" },
         { status: 409 }

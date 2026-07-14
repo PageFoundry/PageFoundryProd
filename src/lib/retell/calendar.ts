@@ -3,10 +3,44 @@ import { prisma } from "@/lib/prisma";
 import type { CalendarBookingRequest, CalendarBookingResult, CalendarProvider, SlotAlternative } from "./types";
 import { addMinutes, DEFAULT_APPOINTMENT_MINUTES, DEFAULT_TIMEZONE, parseDateTime } from "./validation";
 import { formatIsoInTimezone, isBusinessSlot } from "./time";
+// Derselbe Mindestvorlauf wie bei der Web-Consultation: der Telefonagent darf keine
+// Termine vergeben, die die Website ablehnen würde.
+import { BOOKING_LOCK_KEY, earliestBookableStart } from "@/lib/consultation/policy";
 
 export type SlotValidationResult =
   | { ok: true; start: Date; end: Date; timezone: string }
-  | { ok: false; reason: "invalid_datetime" | "past" | "invalid_duration" | "outside_business_hours" };
+  | { ok: false; reason: "invalid_datetime" | "past" | "too_soon" | "invalid_duration" | "outside_business_hours" };
+
+type DbClient = Prisma.TransactionClient | typeof prisma;
+
+// Kollidiert der Zeitraum mit einem Telefontermin ODER einem gebuchten Consultation-Slot?
+// Der Telefonagent bucht 09–17 Uhr in CalendarEvent, die Website 16–20 Uhr in
+// ConsultationSlot — im Fenster 16–17 Uhr können sich beide in die Quere kommen.
+async function hasConflict(db: DbClient, start: Date, end: Date) {
+  const phoneAppointment = await db.calendarEvent.findFirst({
+    where: {
+      status: { not: "cancelled" },
+      startDateTime: { lt: end },
+      endDateTime: { gt: start },
+    },
+    select: { id: true },
+  });
+
+  if (phoneAppointment) return true;
+
+  const consultation = await db.consultationSlot.findFirst({
+    where: {
+      start: { lt: end },
+      end: { gt: start },
+      // isBooked ist ein redundantes Flag — die Buchungsrelation ist die Wahrheit,
+      // also beides prüfen.
+      OR: [{ isBooked: true }, { booking: { isNot: null } }],
+    },
+    select: { id: true },
+  });
+
+  return Boolean(consultation);
+}
 
 export function normalizeBookingInput(input: CalendarBookingRequest) {
   const timezone = input.timezone || DEFAULT_TIMEZONE;
@@ -31,6 +65,10 @@ export function validateBookingSlot(input: CalendarBookingRequest, now = new Dat
     return { ok: false, reason: "past" };
   }
 
+  if (start.getTime() < earliestBookableStart(now).getTime()) {
+    return { ok: false, reason: "too_soon" };
+  }
+
   const durationMinutes = (end.getTime() - start.getTime()) / 60_000;
   if (durationMinutes <= 0 || durationMinutes > 120) {
     return { ok: false, reason: "invalid_duration" };
@@ -44,16 +82,7 @@ export function validateBookingSlot(input: CalendarBookingRequest, now = new Dat
 }
 
 export async function isSlotAvailable(start: Date, end: Date) {
-  const existing = await prisma.calendarEvent.findFirst({
-    where: {
-      status: { not: "cancelled" },
-      startDateTime: { lt: end },
-      endDateTime: { gt: start },
-    },
-    select: { id: true },
-  });
-
-  return !existing;
+  return !(await hasConflict(prisma, start, end));
 }
 
 export async function findSlotAlternatives(
@@ -61,9 +90,15 @@ export async function findSlotAlternatives(
   timezone = DEFAULT_TIMEZONE,
   durationMinutes = DEFAULT_APPOINTMENT_MINUTES,
   limit = 3,
+  now = new Date(),
 ): Promise<SlotAlternative[]> {
   const alternatives: SlotAlternative[] = [];
-  let cursor = addMinutes(preferredStart, 30);
+  const earliest = earliestBookableStart(now);
+
+  // Vorschläge dürfen den Mindestvorlauf nicht unterlaufen — sonst schlägt der Agent
+  // genau die Termine vor, die die Buchung anschließend mit "too_soon" ablehnt.
+  const scanStart = preferredStart.getTime() > earliest.getTime() ? preferredStart : earliest;
+  let cursor = addMinutes(scanStart, 30);
 
   for (let attempts = 0; attempts < 240 && alternatives.length < limit; attempts += 1) {
     const minutes = cursor.getUTCMinutes();
@@ -75,7 +110,11 @@ export async function findSlotAlternatives(
     }
 
     const end = addMinutes(cursor, durationMinutes);
-    if (cursor.getTime() > Date.now() && isBusinessSlot(cursor, end, timezone) && (await isSlotAvailable(cursor, end))) {
+    if (
+      cursor.getTime() >= earliest.getTime() &&
+      isBusinessSlot(cursor, end, timezone) &&
+      (await isSlotAvailable(cursor, end))
+    ) {
       alternatives.push({
         startDateTime: formatIsoInTimezone(cursor),
         endDateTime: formatIsoInTimezone(end),
@@ -117,6 +156,10 @@ export class InternalCalendarProvider implements CalendarProvider {
     try {
       const result = await prisma.$transaction(
         async (tx) => {
+          // Denselben Lock nehmen wie die Web-Consultation (app/api/consultation/route.ts).
+          // Ohne ihn prüfen beide Pfade unabhängig auf Kollisionen und buchen beide.
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(${BOOKING_LOCK_KEY}::bigint)`;
+
           const existingLead = input.callId
             ? await tx.callLead.findUnique({
                 where: { retellCallId: input.callId },
@@ -132,16 +175,7 @@ export class InternalCalendarProvider implements CalendarProvider {
             return { eventId: existingLead.calendarEvents[0].id, leadId: existingLead.id };
           }
 
-          const overlapping = await tx.calendarEvent.findFirst({
-            where: {
-              status: { not: "cancelled" },
-              startDateTime: { lt: slot.end },
-              endDateTime: { gt: slot.start },
-            },
-            select: { id: true },
-          });
-
-          if (overlapping) {
+          if (await hasConflict(tx, slot.start, slot.end)) {
             throw new Error("slot_unavailable");
           }
 
