@@ -32,37 +32,37 @@
     "landing_page": {
       "title": "Landingpage",
       "desc": "Moderne, ästhetische Landingpage mit Fokus auf maximale Conversion.",
-      "from": "ab 249 €"
+      "from": "ab 590 €"
     },
     "landing_page_hosting": {
       "title": "Landingpage-Hosting",
       "desc": "Wir hosten deine bestehende Landingpage. Optional mit Domainverwaltung.",
-      "from": "ab 5 €/Monat"
+      "from": "ab 19 €/Monat"
     },
     "all_inclusive": {
       "title": "All-Inclusive-Paket",
       "desc": "Landingpage, Hosting, Domain, Basic-SEO & Google-Indexing – alles enthalten.",
-      "from": "ab 499 €"
+      "from": "ab 790 €"
     },
     "seo_basic": {
       "title": "SEO Basic",
       "desc": "Technische und inhaltliche Optimierung für bessere Sichtbarkeit.",
-      "from": "ab 49 €"
+      "from": "ab 149 €"
     },
     "seo_advanced": {
       "title": "SEO Advanced",
       "desc": "Erweiterte Analyse, Keyword-Strategie und langfristige Optimierung.",
-      "from": "ab 99 €"
+      "from": "ab 299 €"
     },
     "speed_opt": {
       "title": "Speed-Optimierung",
       "desc": "Beschleunige deine Website für UX und Rankings.",
-      "from": "ab 149 €"
+      "from": "ab 299 €"
     },
     "maintenance": {
       "title": "Wartungs-Abo",
       "desc": "Monatliche Wartung, Backups, Sicherheitsupdates & Checks.",
-      "from": "ab 39 €/Monat"
+      "from": "ab 79 €/Monat"
     },
     "request_offer": {
       "title": "Angebot anfragen",

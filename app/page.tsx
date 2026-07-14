@@ -73,7 +73,7 @@ const organizationSchema = {
         },
         priceSpecification: {
           "@type": "PriceSpecification",
-          price: "249",
+          price: "590",
           priceCurrency: "EUR",
         },
       },
@@ -87,7 +87,7 @@ const organizationSchema = {
         },
         priceSpecification: {
           "@type": "PriceSpecification",
-          price: "49",
+          price: "149",
           priceCurrency: "EUR",
         },
       },
@@ -101,7 +101,7 @@ const organizationSchema = {
         },
         priceSpecification: {
           "@type": "PriceSpecification",
-          price: "99",
+          price: "299",
           priceCurrency: "EUR",
         },
       },
@@ -115,7 +115,7 @@ const organizationSchema = {
         },
         priceSpecification: {
           "@type": "PriceSpecification",
-          price: "149",
+          price: "299",
           priceCurrency: "EUR",
         },
       },
@@ -129,7 +129,7 @@ const organizationSchema = {
         },
         priceSpecification: {
           "@type": "PriceSpecification",
-          price: "499",
+          price: "790",
           priceCurrency: "EUR",
         },
       },
@@ -221,7 +221,7 @@ const copy = {
     faq: [
       {
         q: "Was kostet eine professionelle Website?",
-        a: "Eine Landingpage startet aktuell ab 249 Euro. Erweiterte Pakete, SEO, Hosting, Wartung und individuelle Angebote laufen über die bestehenden Produkt- und Checkout-Flows.",
+        a: "Eine Landingpage startet aktuell ab 590 Euro. Erweiterte Pakete, SEO, Hosting, Wartung und individuelle Angebote laufen über die bestehenden Produkt- und Checkout-Flows.",
       },
       {
         q: "Warum gibt es Impressionen, aber keine Klicks?",
@@ -320,7 +320,7 @@ const copy = {
     faq: [
       {
         q: "What does a professional website cost?",
-        a: "A landing page currently starts at 249 euro. Extended packages, SEO, hosting, maintenance, and custom offers run through the existing product and checkout flows.",
+        a: "A landing page currently starts at 590 euro. Extended packages, SEO, hosting, maintenance, and custom offers run through the existing product and checkout flows.",
       },
       {
         q: "Why do impressions not turn into clicks?",

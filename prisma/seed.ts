@@ -10,7 +10,7 @@ async function main() {
       name: "Landing Page",
       description:
         "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-      priceCents: 24900,
+      priceCents: 59000,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -20,9 +20,9 @@ async function main() {
       name: "Landing Page Hosting",
       description:
         "We host your existing landing page. Choose with or without domain management.",
-      priceCents: 500,
+      priceCents: 1900,
       recurring: true,
-      recurringInfo: "from €5/month",
+      recurringInfo: "from €19/month",
       restricted: true,
     },
     {
@@ -30,7 +30,7 @@ async function main() {
       name: "All-Inclusive Package",
       description:
         "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
-      priceCents: 49900,
+      priceCents: 79000,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -40,7 +40,7 @@ async function main() {
       name: "SEO Basic",
       description:
         "Technical and content-based optimization for better visibility in search engines.",
-      priceCents: 4900,
+      priceCents: 14900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -50,7 +50,7 @@ async function main() {
       name: "SEO Advanced",
       description:
         "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-      priceCents: 9900,
+      priceCents: 29900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -60,7 +60,7 @@ async function main() {
       name: "Speed Optimization",
       description:
         "Boost your website speed for optimal user experience and top Google rankings.",
-      priceCents: 14900,
+      priceCents: 29900,
       recurring: false,
       recurringInfo: null,
       restricted: true,
@@ -70,9 +70,9 @@ async function main() {
       name: "Maintenance Subscription",
       description:
         "Monthly maintenance, backups, security updates & continuous performance checks.",
-      priceCents: 3900,
+      priceCents: 7900,
       recurring: true,
-      recurringInfo: "from €39/month",
+      recurringInfo: "from €79/month",
       restricted: true,
     },
     {

@@ -3,7 +3,7 @@ import ServiceLanding, { type ServiceLandingData } from "@/components/landing/Se
 
 const TITLE = "Website-Wache";
 const DESCRIPTION =
-  "Website-Wache von PageFoundry: Wir überwachen Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melden Probleme früh und halten die Seite sauber. Ab 39 €/Monat.";
+  "Website-Wache von PageFoundry: Wir überwachen Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melden Probleme früh und halten die Seite sauber. Ab 49 €/Monat.";
 const URL = "https://pagefoundry.de/website-wache";
 
 const TAX_NOTE =
@@ -67,7 +67,7 @@ const data: ServiceLandingData = {
     tiers: [
       {
         name: "Basic",
-        price: "39 €",
+        price: "49 €",
         priceNote: "pro Monat",
         features: [
           "Uptime-, SSL- & Ladezeit-Überwachung",
@@ -77,7 +77,7 @@ const data: ServiceLandingData = {
       },
       {
         name: "Care",
-        price: "79 €",
+        price: "99 €",
         priceNote: "pro Monat",
         highlight: true,
         features: [
@@ -89,7 +89,7 @@ const data: ServiceLandingData = {
       },
       {
         name: "Care+SEO",
-        price: "149 €",
+        price: "199 €",
         priceNote: "pro Monat",
         features: [
           "Alles aus Care",

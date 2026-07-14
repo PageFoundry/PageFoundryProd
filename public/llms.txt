@@ -8,17 +8,17 @@ PageFoundry builds and maintains professional web presences with a focus on conv
 
 ## Services
 
-- [Landing Page](https://pagefoundry.de/#packages): Custom, conversion-optimised landing page (from 249 €)
-- [Landing Page Hosting](https://pagefoundry.de/#packages): We host your existing page, with optional domain management (from 5 €/month)
-- [All-Inclusive Package](https://pagefoundry.de/#packages): Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 499 €)
-- [SEO Basic](https://pagefoundry.de/#packages): Technical and content optimisation for better search visibility (from 49 €)
-- [SEO Advanced](https://pagefoundry.de/#packages): Keyword strategy, deep audit, and long-term performance tracking (from 99 €)
-- [Speed Optimisation](https://pagefoundry.de/#packages): Core Web Vitals and load time improvements (from 149 €)
-- [Maintenance Subscription](https://pagefoundry.de/#packages): Monthly updates, backups, security patches, monitoring (from 39 €/month)
+- [Landing Page](https://pagefoundry.de/#packages): Custom, conversion-optimised landing page (from 590 €)
+- [Landing Page Hosting](https://pagefoundry.de/#packages): We host your existing page, with optional domain management (from 19 €/month)
+- [All-Inclusive Package](https://pagefoundry.de/#packages): Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 790 €)
+- [SEO Basic](https://pagefoundry.de/#packages): Technical and content optimisation for better search visibility (from 149 €)
+- [SEO Advanced](https://pagefoundry.de/#packages): Keyword strategy, deep audit, and long-term performance tracking (from 299 €)
+- [Speed Optimisation](https://pagefoundry.de/#packages): Core Web Vitals and load time improvements (from 299 €)
+- [Maintenance Subscription](https://pagefoundry.de/#packages): Monthly updates, backups, security patches, monitoring (from 79 €/month)
 - [Request Offer](https://pagefoundry.de/#packages): Custom scope or bundle for unique requirements (on request)
-- [AI Phone Assistant](https://pagefoundry.de/ki-telefonassistenz): AI assistant answers calls, books appointments and captures leads on a real landline (from 690 € setup + 199 €/month)
-- [Website Watch](https://pagefoundry.de/website-wache): Uptime, SSL and load-time monitoring with a monthly report and small fixes (from 39 €/month)
-- [Website Rescue](https://pagefoundry.de/website-rettung): Rescue sprint for weak sites — audit, preview and a new high-converting page (from 690 €)
+- [AI Phone Assistant](https://pagefoundry.de/ki-telefonassistenz): AI assistant answers calls, books appointments and captures leads on a real landline (from 790 € setup + 249 €/month)
+- [Website Watch](https://pagefoundry.de/website-wache): Uptime, SSL and load-time monitoring with a monthly report and small fixes (from 49 €/month)
+- [Website Rescue](https://pagefoundry.de/website-rettung): Rescue sprint for weak sites — audit, preview and a new high-converting page (from 890 €)
 - [Free Consultation](https://pagefoundry.de/consultation): 30-minute Zoom strategy call, no commitment
 
 ## Contact & booking
@@ -38,5 +38,5 @@ Book a free consultation at: https://pagefoundry.de/consultation
 ## Notes for AI agents
 
 - Checkout, dashboard, settings, and admin routes require authentication and should not be crawled.
-- All prices are in EUR and exclude VAT unless stated otherwise.
+- All prices are in EUR and are final prices. As a small business under § 19 UStG, PageFoundry does not charge or show VAT.
 - The site is available in English and German.

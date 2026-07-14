@@ -3,7 +3,7 @@ import ServiceLanding, { type ServiceLandingData } from "@/components/landing/Se
 
 const TITLE = "KI-Telefonassistenz";
 const DESCRIPTION =
-  "Die KI-Telefonassistenz von PageFoundry nimmt Anrufe an, erfasst das Anliegen, bucht Termine und gibt jeden Kontakt sauber an Sie weiter. 690 € Einrichtung, 199 €/Monat.";
+  "Die KI-Telefonassistenz von PageFoundry nimmt Anrufe an, erfasst das Anliegen, bucht Termine und gibt jeden Kontakt sauber an Sie weiter. 790 € Einrichtung, 249 €/Monat.";
 const URL = "https://pagefoundry.de/ki-telefonassistenz";
 
 const TAX_NOTE =
@@ -67,7 +67,7 @@ const data: ServiceLandingData = {
     tiers: [
       {
         name: "Einrichtung",
-        price: "690 €",
+        price: "790 €",
         priceNote: "einmalig",
         features: [
           "Komplette technische Einrichtung",
@@ -78,13 +78,13 @@ const data: ServiceLandingData = {
       },
       {
         name: "Betrieb",
-        price: "199 €",
+        price: "249 €",
         priceNote: "pro Monat",
         highlight: true,
         features: [
           "Laufender Betrieb der Assistenz",
           "300 Gesprächsminuten inklusive",
-          "Danach 0,39 € je weitere Minute",
+          "Danach 0,45 € je weitere Minute",
           "Laufende Anpassungen des Ablaufs",
         ],
       },

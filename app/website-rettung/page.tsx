@@ -3,7 +3,7 @@ import ServiceLanding, { type ServiceLandingData } from "@/components/landing/Se
 
 const TITLE = "Website-Rettung";
 const DESCRIPTION =
-  "Website-Rettung von PageFoundry: Aus einer veralteten oder schwachen Seite machen wir eine, die verständlich positioniert, schnell lädt und zum Kontakt bewegt — mit Vorschau vorab. Ab 690 €.";
+  "Website-Rettung von PageFoundry: Aus einer veralteten oder schwachen Seite machen wir eine, die verständlich positioniert, schnell lädt und zum Kontakt bewegt — mit Vorschau vorab. Ab 890 €.";
 const URL = "https://pagefoundry.de/website-rettung";
 
 const TAX_NOTE =
@@ -67,7 +67,7 @@ const data: ServiceLandingData = {
     tiers: [
       {
         name: "Sprint",
-        price: "690 €",
+        price: "890 €",
         priceNote: "einmalig",
         features: [
           "Eine starke Startseite/Landingpage",
@@ -78,7 +78,7 @@ const data: ServiceLandingData = {
       },
       {
         name: "Sprint+",
-        price: "1.290 €",
+        price: "1.490 €",
         priceNote: "einmalig",
         highlight: true,
         features: [
@@ -90,7 +90,7 @@ const data: ServiceLandingData = {
       },
       {
         name: "Komplett",
-        price: "1.990 €",
+        price: "2.290 €",
         priceNote: "einmalig",
         features: [
           "Alles aus Sprint+",
