@@ -93,13 +93,52 @@
     "loadingSlots": "Verfügbare Zeiten werden geladen…",
     "noSlots": "Keine freien Zeiten für diesen Tag.",
     "noDates": "Keine verfügbaren Termine in den nächsten 14 Tagen.",
-    "notesRequired": "Bitte eine kurze Projektbeschreibung ergänzen.",
     "ok": "Anfrage erhalten. Wir haben dir die Zoom-Details gemailt.",
     "failed": "Übermittlung fehlgeschlagen. Bitte erneut versuchen.",
     "slot": {
       "Mon": "Mo",
       "Tue": "Di",
       "Wed": "Mi"
+    },
+    "eyebrow": "Kostenlose Erstberatung",
+    "phoneHint": "Lieber telefonisch? Rufen Sie an:",
+    "phoneHintSuffix": "— unser KI-Assistent nimmt 24/7 an und vereinbart direkt einen Termin.",
+    "phoneOptional": "Telefon (optional)",
+    "phoneHelp": "Nur falls wir Sie für Rückfragen anrufen sollen.",
+    "requiredLegend": "* Pflichtfeld",
+    "packageBanner": "Ihre Anfrage zu",
+    "packageRemove": "Entfernen",
+    "meta": {
+      "typeLabel": "Terminart",
+      "typeValue": "Zoom-Videocall",
+      "durationLabel": "Dauer",
+      "durationValue": "{minutes} Minuten",
+      "timezoneLabel": "Zeitzone",
+      "costLabel": "Kosten",
+      "costValue": "Kostenlos & unverbindlich"
+    },
+    "errors": {
+      "summary": "Bitte prüfen Sie die folgenden Angaben:",
+      "name": "Bitte geben Sie Ihren Namen an.",
+      "email": "Bitte geben Sie eine gültige E-Mail-Adresse an.",
+      "slot": "Bitte wählen Sie einen freien Termin aus."
+    },
+    "success": {
+      "title": "Termin angefragt.",
+      "nextLabel": "So geht es weiter",
+      "next1": "Sie erhalten sofort eine Bestätigungs-E-Mail mit dem Zoom-Link.",
+      "next2": "Zum Termin treffen wir uns im Zoom-Call – Kamera optional.",
+      "next3": "Nach dem Gespräch erhalten Sie eine klare Empfehlung, ohne Verpflichtung."
+    },
+    "types": {
+      "LANDING_PAGE": "Landingpage-Beratung",
+      "SEO_AUDIT": "SEO / Technisches Audit",
+      "CONTENT_COPY": "Content & Texte",
+      "ECOMMERCE_OPTIMIZATION": "E-Commerce-Optimierung",
+      "FULL_SITE_REVIEW": "Komplette Website-Analyse",
+      "CONVERSION_OPT": "Conversion-Optimierung",
+      "SYSTEMS_AUTOMATION": "Systeme & Automatisierung",
+      "SPEED_AUDIT": "Performance & Speed-Audit"
     }
   },
   "api": {

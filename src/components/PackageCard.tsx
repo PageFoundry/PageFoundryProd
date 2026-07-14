@@ -59,7 +59,9 @@ export default async function PackageCard({ id, isAuthed }: Props) {
         </Link>
       ) : (
         <Link
-          href={isAuthed ? href : "/login"}
+          // Neukunden landen in der Beratung mit vorausgewaehltem Paket —
+          // nie auf /login. Eingeloggte Bestandskunden gehen direkt in den Checkout.
+          href={isAuthed ? href : `/consultation?package=${id}`}
           className="btn-outline mt-auto self-start text-[0.68rem] px-4 py-2"
           prefetch={false}
         >

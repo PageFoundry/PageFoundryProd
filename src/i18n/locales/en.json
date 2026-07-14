@@ -93,13 +93,52 @@
     "loadingSlots": "Loading available slots…",
     "noSlots": "No slots available for this day.",
     "noDates": "No available dates in the next 14 days.",
-    "notesRequired": "Please add a short description of your project.",
     "ok": "Request received. We emailed you the Zoom details.",
     "failed": "Submission failed. Please try again.",
     "slot": {
       "Mon": "Mon",
       "Tue": "Tue",
       "Wed": "Wed"
+    },
+    "eyebrow": "Free consultation",
+    "phoneHint": "Prefer to call? Reach us at",
+    "phoneHintSuffix": "— our AI assistant answers 24/7 and books an appointment for you.",
+    "phoneOptional": "Phone (optional)",
+    "phoneHelp": "Only if you want us to call you back with questions.",
+    "requiredLegend": "* Required field",
+    "packageBanner": "Your request for",
+    "packageRemove": "Remove",
+    "meta": {
+      "typeLabel": "Format",
+      "typeValue": "Zoom video call",
+      "durationLabel": "Duration",
+      "durationValue": "{minutes} minutes",
+      "timezoneLabel": "Time zone",
+      "costLabel": "Cost",
+      "costValue": "Free, no obligation"
+    },
+    "errors": {
+      "summary": "Please review the following fields:",
+      "name": "Please enter your name.",
+      "email": "Please enter a valid email address.",
+      "slot": "Please choose an available time slot."
+    },
+    "success": {
+      "title": "Request received.",
+      "nextLabel": "What happens next",
+      "next1": "You will get a confirmation email with the Zoom link right away.",
+      "next2": "We meet in the Zoom call at your chosen time – camera optional.",
+      "next3": "After the call you get a clear recommendation, with no obligation."
+    },
+    "types": {
+      "LANDING_PAGE": "Landing page consultation",
+      "SEO_AUDIT": "SEO / technical audit",
+      "CONTENT_COPY": "Content & copywriting",
+      "ECOMMERCE_OPTIMIZATION": "E-commerce optimization",
+      "FULL_SITE_REVIEW": "Full website assessment",
+      "CONVERSION_OPT": "Conversion optimization",
+      "SYSTEMS_AUTOMATION": "Systems & automation",
+      "SPEED_AUDIT": "Performance & speed audit"
     }
   },
   "api": {
