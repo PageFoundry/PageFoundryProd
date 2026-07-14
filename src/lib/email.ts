@@ -26,6 +26,14 @@ export type SendMailArgs = {
 export async function sendMail(args: SendMailArgs) {
   const from = process.env.EMAIL_FROM || "no-reply@pagefoundry.de";
 
+  // EMAIL_ENABLED stand seit jeher in der .env, wurde aber nie ausgewertet — die Tests
+  // haben dadurch echte Mails über den Prod-SMTP verschickt. Alles außer "true" schaltet
+  // den Versand ab (Prod setzt EMAIL_ENABLED="true").
+  if (process.env.EMAIL_ENABLED !== "true") {
+    console.info(`[email] Versand deaktiviert (EMAIL_ENABLED != "true") — an: ${args.to}, Betreff: ${args.subject}`);
+    return { messageId: "email-disabled", accepted: [], rejected: [args.to] };
+  }
+
   const info = await transporter.sendMail({
     from,
     to: args.to,

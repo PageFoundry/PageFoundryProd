@@ -18,4 +18,5 @@ stripe-cli.*
 # env backups + build info
 .env.*
 !.env.example
+!.env.test.example
 *.tsbuildinfo
