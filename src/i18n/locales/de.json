@@ -78,18 +78,15 @@
   "consultation": {
     "title": "Kostenlose Beratung",
     "subtitle": "Buche ein kostenloses Zoom-Gespräch.",
-
     "name": "Dein Name",
     "email": "E-Mail",
     "phone": "Telefon",
     "preferred": "Bevorzugte Zeit (Europe/Berlin)",
-
     "timeOfDay": "Uhrzeit",
     "participants": "Teilnehmer",
     "typeOfConsultation": "Art der Beratung",
     "notesLabel": "Notizen (optional)",
     "notesPlaceholder": "Kurze Beschreibung deines Projekts oder deiner Fragen…",
-
     "notes": "Notizen (optional)",
     "book": "Beratung buchen",
     "submitting": "Wird gesendet…",
@@ -131,6 +128,26 @@
     "mail": {
       "welcomeSubject": "Willkommen bei PageFoundry",
       "welcomeText": "Danke für deine Registrierung."
+    },
+    "login": {
+      "label": "Kundenportal",
+      "title": "Willkommen zurück.",
+      "subtitle": "Login zum Kundenportal – für Bestandskunden von PageFoundry.",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort verbergen",
+      "forgot": "Passwort vergessen?",
+      "submit": "Anmelden",
+      "failed": "Anmeldung fehlgeschlagen. Bitte erneut versuchen.",
+      "noAccount": "Noch kein Konto?",
+      "create": "Konto erstellen",
+      "or": "oder",
+      "newHere": "Neu bei PageFoundry? Für eine Anfrage brauchen Sie kein Konto.",
+      "newHereCta": "Kostenlose Beratung buchen"
+    },
+    "providers": {
+      "google": "Weiter mit Google"
     }
   },
   "checkout": {
@@ -190,13 +207,11 @@
   "settings": {
     "title": "Einstellungen",
     "subtitle": "Profil verwalten & Passwort ändern",
-
     "profile": "Profil",
     "email": "E-Mail",
     "name": "Name",
     "phone": "Telefon",
     "saveProfile": "Profil speichern",
-
     "password": "Passwort ändern",
     "currentPassword": "Aktuelles Passwort",
     "newPassword": "Neues Passwort",

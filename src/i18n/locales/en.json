@@ -78,18 +78,15 @@
   "consultation": {
     "title": "Free Consultation",
     "subtitle": "Book a free Zoom call.",
-
     "name": "Your name",
     "email": "Email",
     "phone": "Phone",
     "preferred": "Preferred time (Europe/Berlin)",
-
     "timeOfDay": "Time of day",
     "participants": "Participants",
     "typeOfConsultation": "Type of consultation",
     "notesLabel": "Notes (optional)",
     "notesPlaceholder": "Brief description of your project or questions…",
-
     "notes": "Notes (optional)",
     "book": "Book consultation",
     "submitting": "Submitting…",
@@ -131,6 +128,26 @@
     "mail": {
       "welcomeSubject": "Welcome to PageFoundry",
       "welcomeText": "Thanks for signing up."
+    },
+    "login": {
+      "label": "Customer portal",
+      "title": "Welcome back.",
+      "subtitle": "Sign in to the customer portal – for existing PageFoundry clients.",
+      "email": "Email",
+      "password": "Password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "failed": "Sign-in failed. Please try again.",
+      "noAccount": "No account yet?",
+      "create": "Create one",
+      "or": "or",
+      "newHere": "New to PageFoundry? You do not need an account to get in touch.",
+      "newHereCta": "Book a free consultation"
+    },
+    "providers": {
+      "google": "Continue with Google"
     }
   },
   "checkout": {
@@ -190,13 +207,11 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your profile & update your password",
-
     "profile": "Profile",
     "email": "Email",
     "name": "Name",
     "phone": "Phone",
     "saveProfile": "Save profile",
-
     "password": "Change password",
     "currentPassword": "Current password",
     "newPassword": "New password",

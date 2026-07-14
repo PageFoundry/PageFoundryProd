@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { googleAuthUrl } from "@/lib/oauth";
 import { randomBytes } from "crypto";
+import { safeRelativePath } from "@/lib/safePath";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${publicOrigin(req)}/login?err=oauth_not_configured`);
   }
   const state = randomBytes(16).toString("hex");
-  const next = new URL(req.nextUrl).searchParams.get("next") || "/dashboard";
+  const next = safeRelativePath(new URL(req.nextUrl).searchParams.get("next"));
   const res = NextResponse.redirect(googleAuthUrl(state));
   const opts = { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 600 } as const;
   res.cookies.set("pf_oauth_state", state, opts);
