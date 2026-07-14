@@ -8,40 +8,52 @@ import {
   SLOT_MINUTES,
   START_HOUR,
   TIMEZONE,
+  berlinParts,
   berlinWallClockToUtc,
 } from "@/lib/consultation/policy";
 
-function startOfDay(date: Date) {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
+type BerlinDate = { year: number; monthIndex: number; day: number; weekday: number };
+
+function parseBerlinDate(value: string): BerlinDate | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const monthIndex = Number(match[2]) - 1;
+  const day = Number(match[3]);
+  const normalized = new Date(Date.UTC(year, monthIndex, day));
+  if (
+    normalized.getUTCFullYear() !== year ||
+    normalized.getUTCMonth() !== monthIndex ||
+    normalized.getUTCDate() !== day
+  ) return null;
+  return { year, monthIndex, day, weekday: normalized.getUTCDay() };
 }
 
-function addDays(date: Date, days: number) {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
+function dayNumber(year: number, monthIndex: number, day: number): number {
+  return year * 10000 + (monthIndex + 1) * 100 + day;
 }
 
-function isAllowedWeekday(date: Date) {
-  const dow = date.getDay();
-  return ALLOWED_WEEKDAYS.includes(dow);
+function addBerlinDays(date: BerlinDate, days: number): BerlinDate {
+  const shifted = new Date(Date.UTC(date.year, date.monthIndex, date.day + days));
+  return {
+    year: shifted.getUTCFullYear(),
+    monthIndex: shifted.getUTCMonth(),
+    day: shifted.getUTCDate(),
+    weekday: shifted.getUTCDay(),
+  };
 }
 
 // Slots für ein gegebenes Datum erzeugen, falls noch nicht vorhanden
-async function ensureSlotsForDate(day: Date, now: Date) {
-  const dayStart = startOfDay(day);
-  const nextDay = addDays(dayStart, 1);
+async function ensureSlotsForDate(day: BerlinDate, now: Date) {
+  if (!ALLOWED_WEEKDAYS.includes(day.weekday)) return;
 
-  if (!isAllowedWeekday(dayStart)) return;
+  const next = addBerlinDays(day, 1);
+  const dayStart = berlinWallClockToUtc(day.year, day.monthIndex, day.day, 0, 0);
+  const nextDay = berlinWallClockToUtc(next.year, next.monthIndex, next.day, 0, 0);
 
   // Slot-Zeiten in Europe/Berlin erzeugen, unabhängig von der Server-Zeitzone (UTC).
-  const y = dayStart.getFullYear();
-  const m = dayStart.getMonth();
-  const d = dayStart.getDate();
-
-  const slotStart = berlinWallClockToUtc(y, m, d, START_HOUR, 0);
-  const slotEndLimit = berlinWallClockToUtc(y, m, d, END_HOUR, 0);
+  const slotStart = berlinWallClockToUtc(day.year, day.monthIndex, day.day, START_HOUR, 0);
+  const slotEndLimit = berlinWallClockToUtc(day.year, day.monthIndex, day.day, END_HOUR, 0);
 
   // Wenn selbst der letzte Slot des Tages den Mindestvorlauf reißt, ist der ganze
   // Tag unbuchbar — dann gar nicht erst anlegen, sonst sammelt sich toter Bestand an.
@@ -112,8 +124,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const day = new Date(dateStr + "T00:00:00");
-    if (Number.isNaN(day.getTime())) {
+    const day = parseBerlinDate(dateStr);
+    if (!day) {
       return NextResponse.json(
         { error: "Invalid date format" },
         { status: 400 }
@@ -121,10 +133,20 @@ export async function GET(req: NextRequest) {
     }
 
     const now = new Date();
-    const today = startOfDay(now);
-    const upper = addDays(today, MAX_DAYS_AHEAD);
+    const todayParts = berlinParts(now);
+    const today: BerlinDate = {
+      year: todayParts.year,
+      monthIndex: todayParts.month - 1,
+      day: todayParts.day,
+      weekday: new Date(Date.UTC(todayParts.year, todayParts.month - 1, todayParts.day)).getUTCDay(),
+    };
+    const upper = addBerlinDays(today, MAX_DAYS_AHEAD);
 
-    if (day < today || day > upper) {
+    const requestedDay = dayNumber(day.year, day.monthIndex, day.day);
+    if (
+      requestedDay < dayNumber(today.year, today.monthIndex, today.day) ||
+      requestedDay > dayNumber(upper.year, upper.monthIndex, upper.day)
+    ) {
       return NextResponse.json(
         { slots: [], message: "Date out of allowed range" },
         { status: 200 }
@@ -132,7 +154,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Nur erlaubte Wochentage
-    if (!isAllowedWeekday(day)) {
+    if (!ALLOWED_WEEKDAYS.includes(day.weekday)) {
       return NextResponse.json(
         { slots: [], message: "No consultations on this weekday" },
         { status: 200 }
@@ -142,8 +164,9 @@ export async function GET(req: NextRequest) {
     // ggf. für diesen Tag Slots erzeugen
     await ensureSlotsForDate(day, now);
 
-    const dayStart = startOfDay(day);
-    const nextDay = addDays(dayStart, 1);
+    const next = addBerlinDays(day, 1);
+    const dayStart = berlinWallClockToUtc(day.year, day.monthIndex, day.day, 0, 0);
+    const nextDay = berlinWallClockToUtc(next.year, next.monthIndex, next.day, 0, 0);
 
     // freie Slots liefern — frühestens nach Ablauf des Mindestvorlaufs
     const earliestStart = earliestBookableStart(now);

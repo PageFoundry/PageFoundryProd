@@ -114,7 +114,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const jwt = signJWT({ sub: user.id, role: user.role });
+    const jwt = signJWT({ sub: user.id, role: user.role, sv: user.sessionVersion });
 
     const next = safeRelativePath(req.cookies.get("pf_oauth_next")?.value);
     const res = NextResponse.redirect(`${origin}${next}`);

@@ -14,7 +14,9 @@
     "settings": "Settings",
     "language": "Language",
     "en": "English",
-    "de": "Deutsch"
+    "de": "Deutsch",
+    "menu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "hero": {
     "badge": "CONVERSION FIRST",
@@ -162,7 +164,9 @@
       "password": "Password",
       "submit": "Sign up",
       "haveAccount": "Already have an account?",
-      "toLogin": "Go to login"
+      "toLogin": "Go to login",
+      "subtitle": "Create an account for the customer portal – for orders and project status.",
+      "or": "or"
     },
     "mail": {
       "welcomeSubject": "Welcome to PageFoundry",
@@ -187,6 +191,25 @@
     },
     "providers": {
       "google": "Continue with Google"
+    },
+    "reset": {
+      "forgotTitle": "Reset your password.",
+      "forgotSubtitle": "Enter the email address for your customer account.",
+      "email": "Email address",
+      "send": "Request reset link",
+      "sentTitle": "Check your inbox.",
+      "sentText": "If a matching account exists, a password reset link has been sent.",
+      "backToLogin": "Back to login",
+      "resetTitle": "Choose a new password.",
+      "resetSubtitle": "The link is valid for 30 minutes and can only be used once.",
+      "password": "New password",
+      "confirm": "Confirm password",
+      "submit": "Save password",
+      "mismatch": "The passwords do not match.",
+      "tooShort": "The password must be at least 8 characters long.",
+      "invalid": "The link is invalid or has expired.",
+      "successTitle": "Password changed.",
+      "successText": "All previous sessions have been signed out. You can now log in again."
     }
   },
   "checkout": {

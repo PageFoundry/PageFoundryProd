@@ -14,7 +14,9 @@
     "settings": "Einstellungen",
     "language": "Sprache",
     "en": "Englisch",
-    "de": "Deutsch"
+    "de": "Deutsch",
+    "menu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
   },
   "hero": {
     "badge": "CONVERSION FIRST",
@@ -162,7 +164,9 @@
       "password": "Passwort",
       "submit": "Registrieren",
       "haveAccount": "Bereits ein Konto?",
-      "toLogin": "Zum Login"
+      "toLogin": "Zum Login",
+      "subtitle": "Konto für das Kundenportal anlegen – für Bestellungen und Projektstatus.",
+      "or": "oder"
     },
     "mail": {
       "welcomeSubject": "Willkommen bei PageFoundry",
@@ -187,6 +191,25 @@
     },
     "providers": {
       "google": "Weiter mit Google"
+    },
+    "reset": {
+      "forgotTitle": "Passwort zurücksetzen.",
+      "forgotSubtitle": "Gib die E-Mail-Adresse deines Kundenkontos ein.",
+      "email": "E-Mail-Adresse",
+      "send": "Reset-Link anfordern",
+      "sentTitle": "Postfach prüfen.",
+      "sentText": "Falls ein passendes Konto existiert, wurde ein Link zum Zurücksetzen versendet.",
+      "backToLogin": "Zurück zum Login",
+      "resetTitle": "Neues Passwort.",
+      "resetSubtitle": "Der Link ist 30 Minuten gültig und kann nur einmal verwendet werden.",
+      "password": "Neues Passwort",
+      "confirm": "Passwort bestätigen",
+      "submit": "Passwort speichern",
+      "mismatch": "Die Passwörter stimmen nicht überein.",
+      "tooShort": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+      "invalid": "Der Link ist ungültig oder abgelaufen.",
+      "successTitle": "Passwort geändert.",
+      "successText": "Alle bisherigen Sitzungen wurden abgemeldet. Du kannst dich jetzt neu anmelden."
     }
   },
   "checkout": {

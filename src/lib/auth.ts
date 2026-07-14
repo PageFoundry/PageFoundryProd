@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { prisma } from "@/lib/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET || "DEV_ONLY_CHANGE_ME";
 
@@ -20,7 +21,7 @@ export function sessionCookieOpts(maxAgeDays = 7) {
 }
 
 export type Role = "ADMIN" | "USER";
-export type JwtPayload = { sub: string; role: Role };
+export type JwtPayload = { sub: string; role: Role; sv: number };
 
 export function signJWT(payload: JwtPayload) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
@@ -40,7 +41,18 @@ export async function getUserFromCookie(): Promise<JwtPayload | null> {
       store.get("session")?.value || // Fallback, falls alt
       null;
     if (!raw) return null;
-    return jwt.verify(raw, JWT_SECRET) as JwtPayload;
+    const payload = jwt.verify(raw, JWT_SECRET) as Partial<JwtPayload>;
+    if (!payload.sub || typeof payload.sv !== "number") return null;
+
+    // sessionVersion macht Passwort-Reset und explizite Session-Widerrufe wirksam.
+    // Ein Reset erhoeht den Wert in der DB; alle vorher ausgestellten JWTs sind
+    // danach sofort ungueltig, auch wenn ihre Ablaufzeit noch nicht erreicht ist.
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { role: true, sessionVersion: true },
+    });
+    if (!user || user.sessionVersion !== payload.sv) return null;
+    return { sub: payload.sub, role: user.role as Role, sv: user.sessionVersion };
   } catch {
     return null;
   }

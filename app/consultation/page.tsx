@@ -150,7 +150,15 @@ export default function ConsultationPage() {
       const res = await fetch(`/api/consultation/slots?date=${d}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to load slots");
-      const list = (data.slots ?? []) as ApiSlot[];
+      const timeFormat = new Intl.DateTimeFormat(locale, {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: TIMEZONE,
+      });
+      const list = ((data.slots ?? []) as ApiSlot[]).map((slot) => ({
+        ...slot,
+        label: `${timeFormat.format(new Date(slot.start))}–${timeFormat.format(new Date(slot.end))} (${TIMEZONE})`,
+      }));
       setSlots(list);
       if (list.length > 0) setSlotId(list[0].id);
       if (list.length === 0) setSlotsError(t("consultation.noSlots"));

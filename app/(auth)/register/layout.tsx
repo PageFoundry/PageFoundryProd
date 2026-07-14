@@ -4,12 +4,12 @@ import { getServerI18n } from "@/i18n/server";
 export async function generateMetadata(): Promise<Metadata> {
   const { lang } = await getServerI18n();
   return {
-    title: lang === "de" ? "Kostenlose Beratung" : "Free Consultation",
+    title: lang === "de" ? "Registrieren – Kundenportal" : "Register – customer portal",
     description:
       lang === "de"
-        ? "Kostenloses Zoom-Beratungsgespräch buchen – 30 Minuten, unverbindlich."
-        : "Book a free Zoom strategy call – 30 minutes, no obligation.",
-    alternates: { canonical: "https://pagefoundry.de/consultation" },
+        ? "Konto für das PageFoundry-Kundenportal anlegen."
+        : "Create an account for the PageFoundry customer portal.",
+    robots: "noindex",
   };
 }
 

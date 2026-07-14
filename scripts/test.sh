@@ -54,7 +54,7 @@ echo "✓ Migrationen auf der Test-DB"
 
 # ── Build: nur neu bauen, wenn der Standalone-Server veraltet ist ────────────
 SERVER=".next/standalone/server.js"
-NEWEST_SRC="$(find app src prisma package.json -type f -newer "$SERVER" -print -quit 2>/dev/null || true)"
+NEWEST_SRC="$(find app src prisma package.json next.config.js middleware.ts -type f -newer "$SERVER" -print -quit 2>/dev/null || true)"
 if [ ! -f "$SERVER" ] || [ -n "$NEWEST_SRC" ]; then
   echo "→ Build (Standalone fehlt oder ist aelter als der Quellcode)…"
   npm run build >/dev/null
@@ -94,14 +94,19 @@ for i in $(seq 1 40); do
 done
 
 # ── Suites ───────────────────────────────────────────────────────────────────
-run_auth()         { node --test tests/auth.test.mjs; }
+run_auth()         {
+  node --test tests/auth.test.mjs
+  npx tsx --test tests/safePath.unit.test.ts tests/passwordReset.unit.test.ts
+}
 run_retell()       { npx tsx --test tests/retell.unit.test.ts; }
 run_consultation() { npx tsx --test tests/consultation.unit.test.ts; }
+run_flows()        { node --test tests/customerFlows.integration.test.mjs; }
 
 case "$SUITE" in
   auth)         run_auth ;;
   retell)       run_retell ;;
   consultation) run_consultation ;;
-  all)          run_auth && run_retell && run_consultation ;;
-  *) echo "Unbekannte Suite '$SUITE' (auth|retell|consultation)" >&2; exit 1 ;;
+  flows)        run_flows ;;
+  all)          run_auth && run_retell && run_consultation && run_flows ;;
+  *) echo "Unbekannte Suite '$SUITE' (auth|retell|consultation|flows)" >&2; exit 1 ;;
 esac

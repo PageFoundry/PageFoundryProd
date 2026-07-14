@@ -13,10 +13,14 @@ export const config = {
 export function middleware(req: NextRequest) {
   const hasAuth = !!(req.cookies.get("pf_session")?.value || req.cookies.get("session")?.value || req.cookies.get("pf_auth")?.value);
   if (!hasAuth) {
+    // Vor dem Mutieren des geklonten URL-Objekts sichern. NextURL.clone() teilt in
+    // bestimmten Runtime-Versionen intern Search-State; sonst geht die Query verloren.
+    const requestUrl = new URL(req.url);
+    const next = requestUrl.pathname + requestUrl.search;
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
-    url.searchParams.set("next", req.nextUrl.pathname + req.nextUrl.search);
+    url.searchParams.set("next", next);
     return NextResponse.redirect(url);
   }
   return NextResponse.next();

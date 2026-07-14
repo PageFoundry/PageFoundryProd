@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       html: `<p>${t("auth.mail.welcomeText")}</p>`,
     });
 
-    const jwt = signJWT({ sub: user.id, role: user.role });
+    const jwt = signJWT({ sub: user.id, role: user.role, sv: user.sessionVersion });
     const res = NextResponse.json({ id: user.id });
     const cookieOpts = sessionCookieOpts(7);
     res.cookies.set("pf_session", jwt, cookieOpts);

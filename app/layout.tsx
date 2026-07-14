@@ -70,6 +70,7 @@ export const metadata: Metadata = {
     url: BASE,
     locale: "de_DE",
     alternateLocale: ["en_US"],
+    images: [{ url: "/PAGEfoundry.png", alt: "PageFoundry" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -77,6 +78,7 @@ export const metadata: Metadata = {
     description:
       "Hochkonvertierende Landing Pages, Hosting, SEO & Speed-Optimierung.",
     site: "@pagefoundry",
+    images: ["/PAGEfoundry.png"],
   },
 };
 
@@ -95,10 +97,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <span className="font-mono tracking-widest uppercase text-[0.6rem] text-pfMuted">
                   © {new Date().getFullYear()} PageFoundry
                 </span>
+                <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-mono text-[0.6rem] tracking-widest uppercase">
+                  <a href="mailto:admin@pagefoundry.de" className="hover:text-pfAccent transition-colors">admin@pagefoundry.de</a>
+                  <a href="tel:+4921928743999" className="hover:text-pfAccent transition-colors">+49 2192 8743999</a>
+                </div>
                 <div className="flex gap-6 font-mono text-[0.6rem] tracking-widest uppercase">
-                  <a href="/impressum" className="hover:text-pfAccent transition-colors">Impressum</a>
-                  <a href="/datenschutz" className="hover:text-pfAccent transition-colors">Datenschutz</a>
-                  <a href="/agb" className="hover:text-pfAccent transition-colors">AGB</a>
+                  <a href="/impressum" className="hover:text-pfAccent transition-colors">{lang === "de" ? "Impressum" : "Imprint"}</a>
+                  <a href="/datenschutz" className="hover:text-pfAccent transition-colors">{lang === "de" ? "Datenschutz" : "Privacy"}</a>
+                  <a href="/agb" className="hover:text-pfAccent transition-colors">{lang === "de" ? "AGB" : "Terms"}</a>
                 </div>
               </div>
             </footer>

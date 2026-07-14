@@ -37,9 +37,6 @@ export default async function ImpressumPage() {
           </p>
           <br />
           <p>
-            Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS)
-            bereit: https://ec.europa.eu/consumers/odr
-            <br />
             Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren
             vor einer Verbraucherschlichtungsstelle teilzunehmen.
           </p>
@@ -67,9 +64,6 @@ export default async function ImpressumPage() {
 
           <h2 className="text-xl font-semibold mt-10 mb-3">Dispute resolution</h2>
           <p>
-            The European Commission provides an Online Dispute Resolution (ODR) platform:
-            https://ec.europa.eu/consumers/odr
-            <br />
             We are neither obliged nor willing to participate in dispute resolution proceedings
             before a consumer arbitration board.
           </p>

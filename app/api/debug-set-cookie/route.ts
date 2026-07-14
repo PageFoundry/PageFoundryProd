@@ -13,7 +13,7 @@ export async function GET() {
     });
   }
 
-  const jwt = signJWT({ sub: user.id, role: user.role as any });
+  const jwt = signJWT({ sub: user.id, role: user.role as any, sv: user.sessionVersion });
 
   const res = NextResponse.redirect("https://pagefoundry.de/"); // 307/302 egal
   res.cookies.set("pf_session", jwt, {

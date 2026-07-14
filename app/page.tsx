@@ -159,7 +159,7 @@ const copy = {
     packagesLabel: "03 - Pakete",
     packagesHeading: "Fairer Preis. Volle Leistung.",
     packagesText:
-      "Die Karten bleiben an die echte Produktlogik angebunden: Login, Checkout, Beratung und spätere Bestellungen laufen unverändert weiter.",
+      "Wähle ein Paket als Ausgangspunkt. Den genauen Umfang, Zeitplan und die nächsten Schritte klären wir transparent in der kostenlosen Erstberatung.",
     processLabel: "04 - Prozess",
     processHeading: "So arbeiten wir.",
     faqLabel: "05 - FAQ",
@@ -258,7 +258,7 @@ const copy = {
     packagesLabel: "03 - Packages",
     packagesHeading: "Fair price. Full delivery.",
     packagesText:
-      "The cards remain connected to the real product logic: login, checkout, consultation, and later orders keep working unchanged.",
+      "Choose a package as a starting point. We clarify the exact scope, timeline, and next steps transparently in the free consultation.",
     processLabel: "04 - Process",
     processHeading: "How we work.",
     faqLabel: "05 - FAQ",

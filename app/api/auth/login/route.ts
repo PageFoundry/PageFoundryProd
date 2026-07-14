@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = signJWT({ sub: user.id, role: user.role });
+    const token = signJWT({ sub: user.id, role: user.role, sv: user.sessionVersion });
 
     const res = NextResponse.json({ id: user.id, role: user.role });
 

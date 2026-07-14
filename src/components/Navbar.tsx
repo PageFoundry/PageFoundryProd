@@ -20,6 +20,8 @@ export default async function Navbar() {
     getStarted:   t("navbar.getStarted"),
     logout:       t("navbar.logout"),
     language:     t("navbar.language"),
+    menu:         t("navbar.menu"),
+    closeMenu:    t("navbar.closeMenu"),
   };
 
   return (

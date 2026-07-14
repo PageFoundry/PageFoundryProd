@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import LanguageSwitch from "./LanguageSwitch";
 
 type Labels = {
   packages: string; consultation: string; dashboard: string; admin: string;
   login: string; getStarted: string; logout: string; language: string;
+  menu: string; closeMenu: string;
 };
 type Props = { isAuthed: boolean; isAdmin: boolean; labels: Labels; };
 
@@ -35,7 +37,7 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
   return (
     <>
       <button
-        aria-label="Menu"
+        aria-label={labels.menu}
         aria-expanded={open}
         aria-controls="mobile-navigation"
         onClick={() => setOpen(true)}
@@ -71,7 +73,7 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
             PAGEFOUNDRY
           </span>
           <button
-            aria-label="Close"
+            aria-label={labels.closeMenu}
             onClick={close}
             className="border border-pfBorderMid bg-black/30 rounded-sm px-3 py-2 text-pfSubtle hover:text-pfAccent hover:border-pfAccent transition-colors font-mono text-xs"
           >
@@ -115,8 +117,11 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
           )}
         </nav>
 
-        <div className="relative border-t border-white/10 px-6 pb-8 pt-4">
+        <div className="relative flex items-center justify-between gap-4 border-t border-white/10 px-6 pb-8 pt-4">
           <span className="label-mono">© {new Date().getFullYear()} PageFoundry</span>
+          <div aria-label={labels.language}>
+            <LanguageSwitch />
+          </div>
         </div>
       </aside>
     </>

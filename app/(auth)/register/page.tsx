@@ -38,7 +38,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm fade-in">
 
         <div className="mb-10">
-          <span className="label-mono block mb-5">Create Account</span>
+          <span className="label-mono block mb-5">{t("auth.login.label")}</span>
           <h1
             className="text-pfText leading-none mb-3"
             style={{
@@ -48,18 +48,20 @@ export default function RegisterPage() {
           >
             {t("auth.register.title")}
           </h1>
-          <p className="text-pfSubtle text-sm">Join the PageFoundry network.</p>
+          <p className="text-pfSubtle text-sm">{t("auth.register.subtitle")}</p>
         </div>
 
         <form onSubmit={submit} className="flex flex-col gap-8">
           <div className="flex flex-col gap-1">
             <label
+              htmlFor="register-email"
               className="font-mono text-[0.62rem] tracking-widest uppercase text-pfMuted"
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {t("auth.register.email")}
             </label>
             <input
+              id="register-email"
               className="pf-input"
               type="email"
               autoComplete="email"
@@ -72,6 +74,7 @@ export default function RegisterPage() {
 
           <div className="flex flex-col gap-1">
             <label
+              htmlFor="register-password"
               className="font-mono text-[0.62rem] tracking-widest uppercase text-pfMuted"
               style={{ fontFamily: "var(--font-mono)" }}
             >
@@ -79,6 +82,7 @@ export default function RegisterPage() {
             </label>
             <div className="relative">
               <input
+                id="register-password"
                 className="pf-input pr-10"
                 type={showPw ? "text" : "password"}
                 autoComplete="new-password"
@@ -90,7 +94,9 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPw(v => !v)}
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-pfMuted hover:text-pfAccent transition-colors font-mono text-xs px-1"
+                aria-label={showPw ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
+                aria-pressed={showPw}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-pfMuted hover:text-pfAccent transition-colors font-mono text-xs px-2 py-2"
               >
                 {showPw ? "○" : "●"}
               </button>
@@ -98,7 +104,7 @@ export default function RegisterPage() {
           </div>
 
           {err && (
-            <div className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-sm px-3 py-2 font-mono">
+            <div role="alert" className="text-xs text-red-400 bg-red-900/20 border border-red-800/40 rounded-sm px-3 py-2 font-mono">
               {err}
             </div>
           )}
@@ -121,7 +127,7 @@ export default function RegisterPage() {
 
         <div className="my-8 flex items-center gap-4">
           <div className="flex-1 h-px bg-pfBorder" />
-          <span className="text-pfMuted font-mono text-[0.6rem] tracking-widest uppercase">or</span>
+          <span className="text-pfMuted font-mono text-[0.6rem] tracking-widest uppercase">{t("auth.register.or")}</span>
           <div className="flex-1 h-px bg-pfBorder" />
         </div>
 

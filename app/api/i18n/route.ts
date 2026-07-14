@@ -5,16 +5,16 @@ export async function POST(req: Request) {
   const { lang } = await req.json().catch(() => ({}));
   if (!isLang(lang)) return NextResponse.json({ ok: false }, { status: 400 });
 
+  const requestUrl = new URL(req.url);
   const res = NextResponse.json({ ok: true });
   res.cookies.set({
-    name: LANG_COOKIE,           // "lang"
+    name: LANG_COOKIE,
     value: lang,
-    httpOnly: true,              // Server kann es sicher lesen
-    secure: true,
+    httpOnly: true,
+    secure: requestUrl.protocol === "https:",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 365,  // 1 Jahr
-    domain: "pagefoundry.de",    // wichtig für Prod
+    maxAge: 60 * 60 * 24 * 365,
   });
   return res;
 }
