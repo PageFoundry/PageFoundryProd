@@ -7,6 +7,7 @@ public/social-audit-ui/
 *.log
 data/*.sqlite
 data/*.sqlite-*
+backups/
 .DS_Store
 .idea/
 .vscode/
