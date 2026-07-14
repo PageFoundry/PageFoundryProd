@@ -8,9 +8,26 @@
 
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
+import { PrismaClient } from "@prisma/client";
 
 const BASE = process.env.TEST_BASE_URL || "http://localhost:3000";
 const uid  = () => Math.random().toString(36).slice(2, 8);
+
+// Die Tests registrieren echte User über die API. Ohne Cleanup bleiben sie liegen —
+// bis 2026-07-14 hatten sich so 248 Karteileichen in der Live-DB angesammelt.
+const prisma = new PrismaClient();
+
+after(async () => {
+  await prisma.user.deleteMany({
+    where: {
+      OR: [
+        { email: { startsWith: "test+", endsWith: "@example.com" } },
+        { email: { startsWith: "nobody+", endsWith: "@example.com" } },
+      ],
+    },
+  });
+  await prisma.$disconnect();
+});
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
