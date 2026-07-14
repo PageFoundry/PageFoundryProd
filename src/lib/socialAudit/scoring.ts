@@ -113,7 +113,7 @@ export function getRecommendation(opportunityScore?: number | null): SocialAudit
   const services = [
     {
       name: "PF Fix",
-      price: "250 EUR-500 EUR",
+      price: "490 EUR-890 EUR",
       fit: "Defekte Menus, Elementor-Probleme, Impressum, Datenschutz und Kontaktbuttons reparieren.",
     },
     {
@@ -123,7 +123,7 @@ export function getRecommendation(opportunityScore?: number | null): SocialAudit
     },
     {
       name: "PF Signature Relaunch",
-      price: "1500 EUR-3000 EUR",
+      price: "1990 EUR-3900 EUR",
       fit: "Mobile-first Redesign, SEO, schnelle Ladezeiten, Social-Media-Integration, Leadtracking und Analytics.",
     },
   ];
