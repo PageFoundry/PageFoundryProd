@@ -7,6 +7,10 @@ const START_HOUR = 16;
 const END_HOUR = 20;
 const TIMEZONE = "Europe/Berlin";
 
+// Mindestvorlauf: frühestens 24 h nach der Anfrage buchbar.
+// Muss synchron bleiben mit app/api/consultation/route.ts.
+const LEAD_TIME_MS = 24 * 60 * 60 * 1000;
+
 // Mo–Fr = 1–5
 const ALLOWED_WEEKDAYS = [1, 2, 3, 4, 5];
 
@@ -177,9 +181,12 @@ export async function GET(req: NextRequest) {
 
     // freie Slots liefern
     const now = new Date();
+    const earliestStart = new Date(now.getTime() + LEAD_TIME_MS);
+    const lowerBound = dayStart > earliestStart ? dayStart : earliestStart;
+
     const slots = await prisma.consultationSlot.findMany({
       where: {
-        start: { gte: dayStart, lt: nextDay },
+        start: { gte: lowerBound, lt: nextDay },
         isDisabled: false,
         isBooked: false,
         OR: [

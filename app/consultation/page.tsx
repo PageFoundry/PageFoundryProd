@@ -30,7 +30,8 @@ function computeAllowedDates(): AllowedDate[] {
   const today = new Date();
   const out: AllowedDate[] = [];
 
-  for (let i = 0; i < MAX_DAYS_AHEAD; i++) {
+  // Erst ab morgen: Termine brauchen 24 h Vorlauf (siehe api/consultation/slots).
+  for (let i = 1; i <= MAX_DAYS_AHEAD; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() + i);
     const dow = d.getDay();

@@ -10,6 +10,10 @@ const ZOOM_URL =
 
 const TIMEZONE = "Europe/Berlin";
 
+// Mindestvorlauf: frühestens 24 h nach der Buchung.
+// Muss synchron bleiben mit app/api/consultation/slots/route.ts.
+const LEAD_TIME_MS = 24 * 60 * 60 * 1000;
+
 type Body = {
   name: string;
   email: string;
@@ -45,6 +49,7 @@ export async function POST(req: NextRequest) {
     );
 
     const now = new Date();
+    const earliestStart = new Date(now.getTime() + LEAD_TIME_MS);
 
     const result = await prisma.$transaction(async (tx) => {
       const slot = await tx.consultationSlot.findUnique({
@@ -55,6 +60,7 @@ export async function POST(req: NextRequest) {
         !slot ||
         slot.isDisabled ||
         slot.isBooked ||
+        slot.start < earliestStart ||
         (slot.temporaryReservedUntil && slot.temporaryReservedUntil > now)
       ) {
         throw new Error("Slot not available");
