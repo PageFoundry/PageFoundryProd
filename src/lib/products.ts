@@ -11,7 +11,7 @@ export const productDisplayInfo = {
   },
   all_inclusive: {
     title: "All-Inclusive Package",
-    desc: "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
+    desc: "Landing Page, Domain, Basic SEO & Google Indexing – all included, incl. 12 months of hosting.",
     from: "from €790",
   },
   seo_basic: {

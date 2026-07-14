@@ -29,7 +29,7 @@ async function main() {
       id: "all_inclusive",
       name: "All-Inclusive Package",
       description:
-        "Landing Page, Hosting, Domain, Basic SEO & Google Indexing – all included.",
+        "Landing Page, Domain, Basic SEO & Google Indexing – all included, incl. 12 months of hosting.",
       priceCents: 79000,
       recurring: false,
       recurringInfo: null,

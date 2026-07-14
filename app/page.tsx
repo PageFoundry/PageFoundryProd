@@ -125,7 +125,7 @@ const organizationSchema = {
           "@type": "Service",
           name: "All-Inclusive Package",
           description:
-            "Landing Page, Hosting, Domain, Basic SEO & Google-Indexierung - alles inklusive.",
+            "Landing Page, Domain, Basic SEO & Google-Indexierung - alles inklusive, inkl. 12 Monate Hosting.",
         },
         priceSpecification: {
           "@type": "PriceSpecification",

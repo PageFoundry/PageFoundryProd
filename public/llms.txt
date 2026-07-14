@@ -10,7 +10,7 @@ PageFoundry builds and maintains professional web presences with a focus on conv
 
 - [Landing Page](https://pagefoundry.de/#packages): Custom, conversion-optimised landing page (from 590 €)
 - [Landing Page Hosting](https://pagefoundry.de/#packages): We host your existing page, with optional domain management (from 19 €/month)
-- [All-Inclusive Package](https://pagefoundry.de/#packages): Landing Page + Hosting + Domain + Basic SEO + Google Indexing (from 790 €)
+- [All-Inclusive Package](https://pagefoundry.de/#packages): Landing Page + Domain + Basic SEO + Google Indexing, incl. 12 months of hosting (from 790 €)
 - [SEO Basic](https://pagefoundry.de/#packages): Technical and content optimisation for better search visibility (from 149 €)
 - [SEO Advanced](https://pagefoundry.de/#packages): Keyword strategy, deep audit, and long-term performance tracking (from 299 €)
 - [Speed Optimisation](https://pagefoundry.de/#packages): Core Web Vitals and load time improvements (from 299 €)
