@@ -96,7 +96,7 @@ done
 # ── Suites ───────────────────────────────────────────────────────────────────
 run_auth()         {
   node --test tests/auth.test.mjs
-  npx tsx --test tests/safePath.unit.test.ts tests/passwordReset.unit.test.ts
+  npx tsx --test tests/safePath.unit.test.ts tests/passwordReset.unit.test.ts tests/clientIp.unit.test.ts
 }
 run_retell()       { npx tsx --test tests/retell.unit.test.ts; }
 run_consultation() { npx tsx --test tests/consultation.unit.test.ts; }

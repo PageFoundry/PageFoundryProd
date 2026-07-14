@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/email";
 import { createPasswordResetToken } from "@/lib/passwordReset";
+import { clientIpFromForwardedFor } from "@/lib/clientIp";
 
 const requestSchema = z.object({
   email: z.string().trim().email().max(320),
@@ -14,7 +15,7 @@ const MAX_BUCKETS = 1000;
 const buckets = new Map<string, { count: number; resetAt: number }>();
 
 function clientIp(req: NextRequest): string {
-  return (req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown").trim();
+  return clientIpFromForwardedFor(req.headers.get("x-forwarded-for"));
 }
 
 function allowAttempt(key: string, now = Date.now()): boolean {
@@ -50,18 +51,24 @@ export async function POST(req: NextRequest) {
     select: { id: true, email: true, passwordHash: true },
   });
 
-  // Gleiche Antwort und moeglichst gleicher Kontrollfluss verhindern Account-Enumeration.
-  // Google-only-Konten ohne lokales Passwort erhalten bewusst keine Reset-Mail.
+  // Versand und Token-Erzeugung laufen nach der Response. So bleiben Antwortcode und
+  // SMTP-Latenz unabhaengig davon, ob ein lokales Konto existiert.
   if (user?.passwordHash) {
-    const { token } = await createPasswordResetToken(user.id);
-    const baseUrl = (process.env.APP_BASE_URL || "https://pagefoundry.de").replace(/\/$/, "");
-    const resetUrl = `${baseUrl}/reset-password?token=${encodeURIComponent(token)}`;
-    const text = `Du hast ein neues Passwort für dein PageFoundry-Konto angefordert.\n\n${resetUrl}\n\nDer Link ist 30 Minuten gültig. Falls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.`;
-    await sendMail({
-      to: user.email,
-      subject: "PageFoundry · Passwort zurücksetzen",
-      text,
-      html: `<p>Du hast ein neues Passwort für dein PageFoundry-Konto angefordert.</p><p><a href="${resetUrl}">Passwort zurücksetzen</a></p><p>Der Link ist 30 Minuten gültig. Falls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.</p>`,
+    after(async () => {
+      try {
+        const { token } = await createPasswordResetToken(user.id);
+        const baseUrl = (process.env.APP_BASE_URL || "https://pagefoundry.de").replace(/\/$/, "");
+        const resetUrl = `${baseUrl}/reset-password?token=${encodeURIComponent(token)}`;
+        const text = `Du hast ein neues Passwort für dein PageFoundry-Konto angefordert.\n\n${resetUrl}\n\nDer Link ist 30 Minuten gültig. Falls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.`;
+        await sendMail({
+          to: user.email,
+          subject: "PageFoundry · Passwort zurücksetzen",
+          text,
+          html: `<p>Du hast ein neues Passwort für dein PageFoundry-Konto angefordert.</p><p><a href="${resetUrl}">Passwort zurücksetzen</a></p><p>Der Link ist 30 Minuten gültig. Falls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.</p>`,
+        });
+      } catch (error) {
+        console.error("PASSWORD_RESET_DISPATCH_FAILED", error);
+      }
     });
   }
 

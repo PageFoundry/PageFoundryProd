@@ -9,6 +9,7 @@
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 
 const BASE = process.env.TEST_BASE_URL || "http://localhost:3000";
 const uid  = () => Math.random().toString(36).slice(2, 8);
@@ -86,6 +87,19 @@ async function logout(cookies) {
     redirect: "manual",
   });
   return { status: res.status };
+}
+
+async function changePassword(cookies, currentPassword, newPassword) {
+  const res = await fetch(`${BASE}/api/settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookieHeader(cookies),
+    },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  const body = await res.json().catch(() => ({}));
+  return { status: res.status, body };
 }
 
 // ── server reachability ───────────────────────────────────────────────────────
@@ -184,6 +198,41 @@ describe("Session", () => {
     const { status, body } = await whoami({ pf_session: "invalid.jwt.token" });
     assert.equal(status, 200);
     assert.equal(body.user, null, "invalid token whoami should return user: null");
+  });
+
+  test("legacy session without sv remains valid until the user session version changes", async () => {
+    const email = `test+${uid()}@example.com`;
+    const reg = await register(email, "Legacy1234!");
+    const legacyToken = jwt.sign(
+      { sub: reg.body.id, role: "USER" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    const before = await whoami({ pf_session: legacyToken });
+    assert.equal(before.body.user?.id, reg.body.id);
+
+    await prisma.user.update({
+      where: { id: reg.body.id },
+      data: { sessionVersion: { increment: 1 } },
+    });
+    const after = await whoami({ pf_session: legacyToken });
+    assert.equal(after.body.user, null);
+  });
+
+  test("password change revokes the existing session", async () => {
+    const email = `test+${uid()}@example.com`;
+    const currentPassword = "Current1234!";
+    const nextPassword = "Changed1234!";
+    const reg = await register(email, currentPassword);
+
+    const changed = await changePassword(reg.cookies, currentPassword, nextPassword);
+    assert.equal(changed.status, 200, JSON.stringify(changed.body));
+
+    const revoked = await whoami(reg.cookies);
+    assert.equal(revoked.body.user, null);
+    assert.equal((await login(email, currentPassword)).status, 401);
+    assert.equal((await login(email, nextPassword)).status, 200);
   });
 });
 

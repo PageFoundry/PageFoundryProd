@@ -42,7 +42,7 @@ export async function getUserFromCookie(): Promise<JwtPayload | null> {
       null;
     if (!raw) return null;
     const payload = jwt.verify(raw, JWT_SECRET) as Partial<JwtPayload>;
-    if (!payload.sub || typeof payload.sv !== "number") return null;
+    if (!payload.sub) return null;
 
     // sessionVersion macht Passwort-Reset und explizite Session-Widerrufe wirksam.
     // Ein Reset erhoeht den Wert in der DB; alle vorher ausgestellten JWTs sind
@@ -51,7 +51,8 @@ export async function getUserFromCookie(): Promise<JwtPayload | null> {
       where: { id: payload.sub },
       select: { role: true, sessionVersion: true },
     });
-    if (!user || user.sessionVersion !== payload.sv) return null;
+    const tokenSessionVersion = typeof payload.sv === "number" ? payload.sv : 0;
+    if (!user || user.sessionVersion !== tokenSessionVersion) return null;
     return { sub: payload.sub, role: user.role as Role, sv: user.sessionVersion };
   } catch {
     return null;

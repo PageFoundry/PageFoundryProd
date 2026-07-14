@@ -5,12 +5,16 @@ import { PrismaClient } from "@prisma/client";
 const BASE = process.env.TEST_BASE_URL || "http://127.0.0.1:3011";
 const prisma = new PrismaClient();
 const touchedSlotIds = new Set();
+const touchedUserIds = new Set();
 
 after(async () => {
   const ids = [...touchedSlotIds];
   if (ids.length) {
     await prisma.consultationBooking.deleteMany({ where: { slotId: { in: ids } } });
     await prisma.consultationSlot.deleteMany({ where: { id: { in: ids } } });
+  }
+  if (touchedUserIds.size) {
+    await prisma.user.deleteMany({ where: { id: { in: [...touchedUserIds] } } });
   }
   await prisma.$disconnect();
 });
@@ -49,6 +53,19 @@ test("geschützte Checkout-URL bewahrt das interne Redirect-Ziel", async () => {
 });
 
 test("Passwort-Reset verrät nicht, ob ein Konto existiert", async () => {
+  const email = `test+forgot-${Date.now()}@example.com`;
+  const user = await prisma.user.create({
+    data: { email, passwordHash: "local-password-placeholder" },
+  });
+  touchedUserIds.add(user.id);
+  const known = await fetch(`${BASE}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Forwarded-For": "spoofed, 127.0.0.1",
+    },
+    body: JSON.stringify({ email }),
+  });
   const unknown = await fetch(`${BASE}/api/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -61,7 +78,18 @@ test("Passwort-Reset verrät nicht, ob ein Konto existiert", async () => {
   });
   assert.equal(unknown.status, 200);
   assert.equal(invalid.status, 200);
+  assert.equal(known.status, 200);
+  assert.deepEqual(await known.json(), await unknown.clone().json());
   assert.deepEqual(await unknown.json(), await invalid.json());
+
+  let resetToken = null;
+  for (let attempt = 0; attempt < 20 && !resetToken; attempt += 1) {
+    resetToken = await prisma.passwordResetToken.findFirst({ where: { userId: user.id } });
+    if (!resetToken) await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  assert.ok(resetToken, "after()-Task should create the reset token");
+  await prisma.user.delete({ where: { id: user.id } });
+  touchedUserIds.delete(user.id);
 });
 
 test("Beratung akzeptiert optionale Telefon-/Notizfelder und speichert den Paketkontext", async () => {

@@ -17,6 +17,8 @@ Arbeitsbereich: isolierter Git-Worktree auf dem VPS
 - Terminslots strikt nach `Europe/Berlin`, Geschäftszeiten und Sommer-/Winterzeit berechnet.
 - Vollständiger Passwort-Reset mit zufälligen, gehashten, ablaufenden Einmal-Tokens umgesetzt.
 - Passwortänderungen widerrufen bestehende Sessions über `sessionVersion`.
+- Reset-Anfragen antworten unabhängig von SMTP-Ergebnis und Kontobestand generisch; das IP-Limit nutzt den vertrauenswürdigen letzten nginx-Proxy-Hop.
+- Bestehende Sessions ohne `sessionVersion` bleiben beim Rollout kompatibel und werden nach dem ersten Widerruf ungültig.
 - Eigene 404-Seite mit echtem HTTP-404-Status ergänzt.
 - Favicon und Open-Graph-/Twitter-Bild ergänzt bzw. korrigiert.
 - Sprach-Cookie als sicheres Host-Cookie für Produktion, Vorschau und lokale Tests korrigiert.
@@ -26,7 +28,7 @@ Arbeitsbereich: isolierter Git-Worktree auf dem VPS
 ## Verifikation
 
 - `npx tsc --noEmit`: erfolgreich
-- `npm test`: 41 Tests, 41 bestanden, 0 fehlgeschlagen
+- `npm test`: 45 Tests, 45 bestanden, 0 fehlgeschlagen
 - Produktions-Build: erfolgreich
 - Browser-Smoke (Playwright CLI): Desktop 1440×1000 und Mobile 390×844 erfolgreich
 - Geprüfte Flows: Sprache, Mobile-Menü, Paket → Beratung, Login → Passwort vergessen, Termin-Slots, 404

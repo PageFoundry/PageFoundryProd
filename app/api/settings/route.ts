@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
 
     const hash = await bcrypt.hash(newPassword, 10);
     data.passwordHash = hash;
+    data.sessionVersion = { increment: 1 };
   }
 
   if (Object.keys(data).length === 0) {
