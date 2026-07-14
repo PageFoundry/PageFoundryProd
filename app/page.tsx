@@ -125,7 +125,7 @@ const organizationSchema = {
           "@type": "Service",
           name: "All-Inclusive Package",
           description:
-            "Landing Page, Domain, Basic SEO & Google-Indexierung - alles inklusive, inkl. 12 Monate Hosting.",
+            "Landing Page, Domain, Basic SEO & Google-Indexierung - alles inklusive, inkl. 12 Monate Hosting, danach 19 €/Monat. Domain-Verlängerung separat.",
         },
         priceSpecification: {
           "@type": "PriceSpecification",
