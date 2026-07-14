@@ -90,6 +90,16 @@ html, body {
   .drawer-backdrop,
   .drawer-panel,
   .menu-in { animation: none; opacity: 1; transform: none; }
+  .animate-\[marquee_32s_linear_infinite\] { animation: none; }
+}
+
+/* ── Fokus-Sichtbarkeit (Tastatur) ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.pf-input:focus-visible {
+  outline: none; /* Unterstrich wechselt auf Gold, siehe .pf-input:focus */
 }
 
 /* ── Typography helpers ── */

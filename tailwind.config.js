@@ -14,8 +14,10 @@ module.exports = {
         pfCard:        "#0d0d0d",
         pfCardHover:   "#131313",
         pfText:        "#f0ede8",
-        pfSubtle:      "rgba(240,237,232,0.5)",
-        pfMuted:       "rgba(240,237,232,0.22)",
+        // Kontrast-Baseline: pfSubtle/pfMuted muessen auf pfBg/pfCard mindestens
+        // WCAG-AA (4.5:1) fuer Fliess- und Labeltext halten. 0.22 lag bei ~1.9:1.
+        pfSubtle:      "rgba(240,237,232,0.65)",
+        pfMuted:       "rgba(240,237,232,0.5)",
 
         // ── Accent (refined gold) ──
         pfAccent:      "#c9a84c",
