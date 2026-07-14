@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const scrambleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+// Kurz halten: der Uebergang darf nie sekundenlang Buchstabensalat zeigen.
+const FRAME_MS = 30;
+const CHARS_PER_FRAME = 3;
+const ROTATE_MS = 3600;
 
 type Props = {
   phrases: readonly string[];
@@ -11,6 +16,7 @@ type Props = {
 export default function HeroRotatingTitle({ phrases }: Props) {
   const [index, setIndex] = useState(0);
   const [display, setDisplay] = useState(phrases[0] ?? "");
+  const reduceMotionRef = useRef(false);
 
   const longestPhrase = useMemo(
     () => phrases.reduce((longest, phrase) => (phrase.length > longest.length ? phrase : longest), ""),
@@ -20,41 +26,54 @@ export default function HeroRotatingTitle({ phrases }: Props) {
   useEffect(() => {
     if (phrases.length < 2) return;
 
-    const interval = window.setInterval(() => {
-      setIndex((current) => (current + 1) % phrases.length);
-    }, 3200);
+    // Bei reduzierter Bewegung bleibt die erste Phrase dauerhaft stehen —
+    // auch der Phrasenwechsel selbst ist Bewegung.
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reduceMotionRef.current = media.matches;
+    const onChange = (event: MediaQueryListEvent) => {
+      reduceMotionRef.current = event.matches;
+    };
+    media.addEventListener("change", onChange);
 
-    return () => window.clearInterval(interval);
+    const interval = window.setInterval(() => {
+      if (reduceMotionRef.current || document.hidden) return;
+      setIndex((current) => (current + 1) % phrases.length);
+    }, ROTATE_MS);
+
+    return () => {
+      media.removeEventListener("change", onChange);
+      window.clearInterval(interval);
+    };
   }, [phrases.length]);
 
   useEffect(() => {
     const target = phrases[index] ?? "";
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (reduceMotion) {
+    if (index === 0 || reduceMotionRef.current) {
       setDisplay(target);
       return;
     }
 
-    let frame = 0;
-    const maxFrames = Math.max(18, target.length + 8);
+    // Progressive Aufloesung von links: bei 3 Zeichen pro Frame ist selbst die
+    // laengste Phrase nach ~0,4 s vollstaendig lesbar.
+    let resolved = 0;
     const interval = window.setInterval(() => {
+      resolved += CHARS_PER_FRAME;
+      if (resolved >= target.length) {
+        window.clearInterval(interval);
+        setDisplay(target);
+        return;
+      }
       setDisplay(
         target
           .split("")
           .map((char, charIndex) => {
-            if (char === " " || charIndex < frame - 4) return char;
+            if (char === " " || charIndex < resolved) return char;
             return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
           })
           .join(""),
       );
-
-      frame += 1;
-      if (frame > maxFrames) {
-        window.clearInterval(interval);
-        setDisplay(target);
-      }
-    }, 32);
+    }, FRAME_MS);
 
     return () => window.clearInterval(interval);
   }, [index, phrases]);
@@ -64,7 +83,11 @@ export default function HeroRotatingTitle({ phrases }: Props) {
       <span className="invisible block" aria-hidden="true">
         {longestPhrase}
       </span>
-      <span className="absolute inset-0 block">{display}</span>
+      {/* Screenreader bekommen den stabilen Text, nie den Scramble-Zwischenstand. */}
+      <span className="sr-only">{phrases[index] ?? phrases[0] ?? ""}</span>
+      <span className="absolute inset-0 block" aria-hidden="true">
+        {display}
+      </span>
     </span>
   );
 }
