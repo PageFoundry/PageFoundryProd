@@ -197,12 +197,13 @@ const copy = {
     workLabel: "02 - Ausgewählte Arbeiten",
     workHeading: "Nicht behauptet. Live.",
     workText:
-      "Zwei Unternehmen, zwei unterschiedliche Aufgaben und ein gemeinsamer Anspruch: Die Website muss im echten Betrieb funktionieren.",
+      "Zwei Unternehmen, zwei unterschiedliche Aufgaben und ein gemeinsamer Anspruch: Die Website muss im echten Betrieb funktionieren. Alle Zahlen stammen aus dokumentierten Projekt- oder Plattformständen.",
     caseLabels: {
       caseFile: "Projektakte",
-      problem: "Ausgangslage",
-      delivery: "Umgesetzt",
-      result: "Ergebnis",
+      before: "Vorher",
+      after: "Nachher",
+      result: "Belegter Stand",
+      proof: "Geprüfte Projektfakten",
       visit: "Live-Website öffnen",
       liveProject: "Live-Projekt",
     },
@@ -217,11 +218,17 @@ const copy = {
         scope: "Landingpage · Rechnungssoftware",
         headline: "Vom Neustart zur funktionierenden digitalen Basis.",
         problem:
-          "Ein neu gegründetes Unternehmen ohne Website und ohne wiederholbaren digitalen Ablauf für die Rechnungsstellung.",
+          "0 eigene Web-Systeme: weder Website noch eigener, wiederholbarer Rechnungsablauf.",
         delivery:
-          "Eine fokussierte Landingpage für die Kundengewinnung und eine maßgeschneiderte Rechnungsanwendung für den täglichen Betrieb.",
+          "2 Systeme live: eine fokussierte Landingpage und eine individuelle Rechnungssoftware für den täglichen Betrieb.",
         result:
-          "Carbon Care erreichte bereits in den ersten Wochen eine zweistellige Zahl an 5-Sterne-Bewertungen bei Google.",
+          "Projektstand nach dem Go-live: Website und Rechnungstool sind live; der gespeicherte Google-Stand vom 22.04.2026 weist 10 Bewertungen mit Ø 5,0 aus.",
+        evidenceSource: "Stand 22.04.26",
+        metrics: [
+          { value: "2", label: "Systeme live", detail: "Website + Rechnungstool" },
+          { value: "10", label: "Google-Rezensionen", detail: "Ø 5,0 am 22.04.26" },
+          { value: "02/26", label: "Go-live", detail: "im laufenden Betrieb" },
+        ],
       },
       {
         client: "The Loft",
@@ -233,11 +240,17 @@ const copy = {
         scope: "Website-Relaunch · Gastronomie",
         headline: "Eine Website, die sich so hochwertig anfühlt wie der Ort.",
         problem:
-          "Die bestehende Website transportierte weder die Atmosphäre des Restaurants noch die wichtigsten Informationen mit ausreichender Klarheit.",
+          "WordPress-Theme mit Plugin-Stack; Atmosphäre, Öffnungszeiten und Besucherführung waren nicht klar priorisiert.",
         delivery:
-          "Ein visueller Relaunch mit bewussterem Spacing, stärkerer Hierarchie, direktem Speisekarten-Zugang und klarer mobiler Führung.",
+          "Statischer Relaunch ohne CMS-Laufzeit; Speisekarte, Atmosphäre und Besuchsinformationen werden klar geführt.",
         result:
-          "Die Live-Seite führt jetzt mit Atmosphäre, Speisekarte und genau den Informationen, die Gäste vor einem Besuch benötigen.",
+          "Fünf Kernwünsche aus der Kundenfeedback-Runde sind im Relaunch umgesetzt; die statische Website ist live.",
+        evidenceSource: "Archiv + Live · 07/26",
+        metrics: [
+          { value: "5", label: "Kernwünsche", detail: "aus Kundenfeedback" },
+          { value: "0", label: "WordPress-Plugins", detail: "statische Auslieferung" },
+          { value: "06/26", label: "Go-live", detail: "Relaunch live" },
+        ],
       },
     ],
     founder: {
@@ -290,6 +303,8 @@ const copy = {
     ],
     allServicesHeading: "Alle Leistungen und Preise",
     allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab.",
+    mobilePricesSummary: "Preisliste öffnen",
+    mobilePricesHint: "Landingpage ab 590 € · Betreuung ab 19 €/Monat",
     processLabel: "05 - Prozess",
     processHeading: "So arbeiten wir.",
     faqLabel: "06 - FAQ",
@@ -381,12 +396,13 @@ const copy = {
     workLabel: "02 - Selected work",
     workHeading: "Not claimed. Live.",
     workText:
-      "Two businesses, two different challenges, and one shared standard: the website has to work in the real world.",
+      "Two businesses, two different challenges, and one shared standard: the website has to work in the real world. Every figure comes from documented project or platform records.",
     caseLabels: {
       caseFile: "Case file",
-      problem: "Starting point",
-      delivery: "Delivered",
-      result: "Result",
+      before: "Before",
+      after: "After",
+      result: "Documented status",
+      proof: "Verified project facts",
       visit: "Visit live website",
       liveProject: "Live project",
     },
@@ -401,11 +417,17 @@ const copy = {
         scope: "Landing page · Invoicing software",
         headline: "From a new business to a working digital base.",
         problem:
-          "A newly founded business without a website or a repeatable digital workflow for creating invoices.",
+          "0 dedicated web systems: no website and no dedicated, repeatable invoicing workflow.",
         delivery:
-          "A focused landing page for customer acquisition and a tailored invoicing application for daily operations.",
+          "2 systems live: a focused landing page and a tailored invoicing application for daily operations.",
         result:
-          "Carbon Care reached a double-digit number of 5-star Google reviews within its first weeks.",
+          "Project status after launch: the website and invoicing tool are live; the saved Google snapshot from 22 April 2026 records 10 reviews at a 5.0 average.",
+        evidenceSource: "As of 22 Apr 2026",
+        metrics: [
+          { value: "2", label: "Systems live", detail: "website + invoicing tool" },
+          { value: "10", label: "Google reviews", detail: "5.0 avg · 22 Apr 2026" },
+          { value: "02/26", label: "Go-live", detail: "used in daily operations" },
+        ],
       },
       {
         client: "The Loft",
@@ -417,11 +439,17 @@ const copy = {
         scope: "Website relaunch · Hospitality",
         headline: "A website that feels as premium as the place.",
         problem:
-          "The existing website did not communicate the restaurant's atmosphere or make essential visitor information clear enough.",
+          "A WordPress theme with a plugin stack; atmosphere, opening hours, and visitor guidance were not clearly prioritized.",
         delivery:
-          "A visual relaunch with more deliberate spacing, stronger hierarchy, direct menu access, and clearer mobile guidance.",
+          "A static relaunch without a CMS runtime; menu access, atmosphere, and visitor information are clearly guided.",
         result:
-          "The live site now leads with atmosphere, menu access, and the information guests need before they visit.",
+          "Five core requests from the client feedback round are implemented in the relaunch; the static website is live.",
+        evidenceSource: "Archive + live · 07/26",
+        metrics: [
+          { value: "5", label: "Core requests", detail: "from client feedback" },
+          { value: "0", label: "WordPress plugins", detail: "static delivery" },
+          { value: "06/26", label: "Go-live", detail: "relaunch live" },
+        ],
       },
     ],
     founder: {
@@ -474,6 +502,8 @@ const copy = {
     ],
     allServicesHeading: "All services and prices",
     allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins.",
+    mobilePricesSummary: "Open full price list",
+    mobilePricesHint: "Landing pages from €590 · care from €19/month",
     processLabel: "05 - Process",
     processHeading: "How we work.",
     faqLabel: "06 - FAQ",
@@ -609,7 +639,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="overflow-hidden border-y border-pfBorder bg-pfSurface/70 py-4">
+      <section className="hidden overflow-hidden border-y border-pfBorder bg-pfSurface/70 py-4 sm:block">
         <div className="flex w-max animate-[marquee_32s_linear_infinite] gap-8 whitespace-nowrap font-mono text-[0.65rem] uppercase tracking-[0.22em] text-pfMuted">
           {[...c.proof, ...c.proof, ...c.proof].map((item, index) => (
             <span key={`${item}-${index}`} className="flex items-center gap-8">
@@ -620,12 +650,12 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="border-b border-pfBorder bg-pfSurface/40 px-6 py-24 md:px-10">
+      <section className="border-b border-pfBorder bg-pfSurface/40 px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
               <span className="label-mono mb-5 block">{c.workLabel}</span>
-              <h2 className="font-display text-6xl leading-none text-pfText md:text-8xl">{c.workHeading}</h2>
+              <h2 className="font-display text-5xl leading-none text-pfText md:text-8xl">{c.workHeading}</h2>
             </div>
             <p className="max-w-2xl text-base leading-8 text-pfSubtle lg:justify-self-end md:text-lg">{c.workText}</p>
           </div>
@@ -636,9 +666,9 @@ export default async function LandingPage() {
 
       <FounderTrust copy={c.founder} />
 
-      <section className="px-6 py-24 md:px-10">
+      <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-12 max-w-2xl">
+          <div className="mb-8 max-w-2xl md:mb-12">
             <span className="label-mono mb-5 block">{c.servicesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.servicesHeading}
@@ -648,44 +678,19 @@ export default async function LandingPage() {
 
           <div className="grid overflow-hidden rounded-3xl border border-pfBorder bg-pfBorder sm:grid-cols-2">
             {c.services.map((service) => (
-              <article key={service.n} className="min-h-64 bg-pfCard p-8 transition-colors hover:bg-pfCardHover">
+              <article key={service.n} className="bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-64 md:p-8">
                 <span className="font-mono text-[0.62rem] tracking-widest text-pfAccent">{service.n}</span>
-                <h3 className="mt-12 font-display text-4xl leading-none text-pfText">{service.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-pfSubtle">{service.text}</p>
+                <h3 className="mt-8 font-display text-3xl leading-none text-pfText md:mt-12 md:text-4xl">{service.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-pfSubtle md:mt-4 md:leading-7">{service.text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden px-6 py-20 md:px-10">
-        <div className="mx-auto grid max-w-screen-xl gap-14 lg:grid-cols-2 lg:items-center">
-          <div>
-            <span className="label-mono mb-5 block">{c.painLabel}</span>
-            <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
-              {c.painHeading}
-            </h2>
-            <Link href="/consultation" className="btn-accent mt-10">
-              {c.painCta} →
-            </Link>
-          </div>
-
-          <div>
-            {c.pain.map((item, index) => (
-              <div key={item} className="flex gap-5 border-b border-pfBorder py-5 last:border-b-0">
-                <span className="mt-1 shrink-0 font-mono text-[0.62rem] tracking-widest text-pfAccent">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="text-sm leading-7 text-pfSubtle md:text-base">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="packages" className="bg-pfSurface px-6 py-24 md:px-10">
+      <section id="packages" className="bg-pfSurface px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-12 max-w-2xl">
+          <div className="mb-10 max-w-2xl md:mb-12">
             <span className="label-mono mb-5 block">{c.packagesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.packagesHeading}
@@ -694,17 +699,17 @@ export default async function LandingPage() {
           </div>
 
           <span className="label-mono mb-5 block">{c.offerPathsLabel}</span>
-          <div className="mb-20 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder lg:grid-cols-3">
+          <div className="mb-12 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder md:mb-20 lg:grid-cols-3">
             {c.offerPaths.map((path) => (
               <Link
                 key={path.key}
                 href={path.href}
-                className="group flex min-h-72 flex-col bg-pfCard p-8 transition-colors hover:bg-pfCardHover md:p-10"
+                className="group flex flex-col bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-72 md:p-10"
               >
                 <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-pfAccent">{path.key}</span>
-                <h3 className="mt-8 font-display text-4xl leading-none text-pfText md:text-5xl">{path.title}</h3>
-                <p className="mt-5 flex-1 text-sm leading-7 text-pfSubtle">{path.text}</p>
-                <span className="mt-8 inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfText transition-colors group-hover:text-pfAccent">
+                <h3 className="mt-6 font-display text-3xl leading-none text-pfText md:mt-8 md:text-5xl">{path.title}</h3>
+                <p className="mt-4 flex-1 text-sm leading-6 text-pfSubtle md:mt-5 md:leading-7">{path.text}</p>
+                <span className="mt-6 inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfText transition-colors group-hover:text-pfAccent md:mt-8">
                   {path.cta} <span aria-hidden="true">→</span>
                 </span>
               </Link>
@@ -716,7 +721,24 @@ export default async function LandingPage() {
             <p className="mt-4 max-w-2xl text-sm leading-7 text-pfSubtle">{c.allServicesText}</p>
           </div>
 
-          <div className="grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 lg:grid-cols-3">
+          <details className="group overflow-hidden rounded-xl border border-pfBorder bg-pfCard lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-5 p-5">
+              <span>
+                <span className="block font-display text-2xl leading-none text-pfText">{c.mobilePricesSummary}</span>
+                <span className="mt-2 block text-xs leading-5 text-pfSubtle">{c.mobilePricesHint}</span>
+              </span>
+              <span className="shrink-0 font-mono text-xl text-pfAccent transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <div className="grid gap-px border-t border-pfBorder bg-pfBorder sm:grid-cols-2">
+              {productOrderKeys.map((id) => (
+                <div key={id} className="bg-pfSurface">
+                  <PackageCard id={id} isAuthed={isAuthed} />
+                </div>
+              ))}
+            </div>
+          </details>
+
+          <div className="hidden gap-px overflow-hidden rounded-3xl bg-pfBorder lg:grid lg:grid-cols-3">
             {productOrderKeys.map((id) => (
               <div key={id} className="bg-pfSurface">
                 <PackageCard id={id} isAuthed={isAuthed} />
@@ -741,30 +763,30 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="px-6 py-24 md:px-10">
+      <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-12">
+          <div className="mb-8 md:mb-12">
             <span className="label-mono mb-5 block">{c.processLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.processHeading}
             </h2>
           </div>
 
-          <div className="grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-pfBorder lg:grid-cols-4">
             {c.process.map((step, index) => (
-              <article key={step.title} className="min-h-64 bg-pfCard p-8">
-                <div className="font-display text-7xl leading-none text-pfAccent opacity-60">
+              <article key={step.title} className="min-h-60 bg-pfCard p-5 md:min-h-64 md:p-8">
+                <div className="font-display text-5xl leading-none text-pfAccent opacity-60 md:text-7xl">
                   {String(index + 1).padStart(2, "0")}
                 </div>
-                <h3 className="mt-8 font-display text-3xl leading-none text-pfText">{step.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-pfSubtle">{step.text}</p>
+                <h3 className="mt-6 font-display text-2xl leading-none text-pfText md:mt-8 md:text-3xl">{step.title}</h3>
+                <p className="mt-3 text-xs leading-5 text-pfSubtle md:mt-4 md:text-sm md:leading-7">{step.text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-pfSurface px-6 py-24 md:px-10">
+      <section className="bg-pfSurface px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-3xl">
           <span className="label-mono mb-5 block">{c.faqLabel}</span>
           <h2 className="mb-12 font-display text-5xl leading-none text-pfText md:text-7xl">
@@ -787,7 +809,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden px-6 py-32 text-center md:px-10">
+      <section className="relative overflow-hidden px-6 py-20 text-center md:px-10 md:py-32">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfAccentDim md:h-[38rem] md:w-[38rem]" />
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[16rem] w-[16rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfBorderAccent md:h-[26rem] md:w-[26rem]" />
 
@@ -795,7 +817,7 @@ export default async function LandingPage() {
           <span className="label-mono mb-8 block">{c.nextLabel}</span>
           <h2
             className="font-display leading-[0.9] text-pfText"
-            style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)" }}
           >
             {c.nextHeading}
           </h2>

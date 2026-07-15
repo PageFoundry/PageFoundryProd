@@ -110,7 +110,7 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
           ) : (
             <>
               <Link href="/login" onClick={close} className={navLinkClass}>{labels.login}</Link>
-              <Link href="/register" onClick={close} className="btn-accent mt-2 w-full">
+              <Link href="/consultation" onClick={close} className="btn-accent mt-2 w-full">
                 {labels.getStarted}
               </Link>
             </>

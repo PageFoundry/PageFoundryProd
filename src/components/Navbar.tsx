@@ -112,7 +112,7 @@ export default async function Navbar() {
                 {t("navbar.login")}
               </Link>
 
-              <Link href="/register" className="btn-accent text-[0.62rem] px-4 py-2">
+              <Link href="/consultation" className="btn-accent text-[0.62rem] px-4 py-2">
                 {t("navbar.getStarted")}
               </Link>
             </>
