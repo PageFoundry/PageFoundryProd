@@ -5,6 +5,7 @@ export type CaseStudy = {
   date: string;
   domain: string;
   url: string;
+  visitLabel?: string;
   image: string;
   imageAlt: string;
   scope: string;
@@ -133,7 +134,7 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
               rel="noreferrer"
               className="btn-outline mt-6 self-start md:mt-8"
             >
-              {labels.visit} ↗
+              {item.visitLabel ?? labels.visit} ↗
             </a>
           </div>
         </article>

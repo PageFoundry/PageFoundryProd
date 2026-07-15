@@ -211,10 +211,11 @@ const copy = {
       {
         client: "Carbon Care",
         date: "Februar 2026",
-        domain: "carbon-care.de",
+        domain: "rechnung.carbon-care.de",
         url: "https://carbon-care.de",
+        visitLabel: "Kundenwebsite öffnen",
         image: "/work/carbon-care.jpg",
-        imageAlt: "Startseite von Carbon Care mit dem Angebot zur Premium-Fahrzeugaufbereitung",
+        imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
         scope: "Landingpage · Rechnungssoftware",
         headline: "Vom Neustart zur funktionierenden digitalen Basis.",
         problem:
@@ -415,10 +416,11 @@ const copy = {
       {
         client: "Carbon Care",
         date: "February 2026",
-        domain: "carbon-care.de",
+        domain: "rechnung.carbon-care.de",
         url: "https://carbon-care.de",
+        visitLabel: "Visit customer website",
         image: "/work/carbon-care.jpg",
-        imageAlt: "Carbon Care homepage presenting its premium vehicle detailing service",
+        imageAlt: "Tailored invoicing software for Carbon Care: invoice overview with status and payment state (demo view with sample data)",
         scope: "Landing page · Invoicing software",
         headline: "From a new business to a working digital base.",
         problem:
