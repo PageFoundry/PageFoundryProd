@@ -302,7 +302,12 @@ const copy = {
       },
     ],
     allServicesHeading: "Alle Leistungen und Preise",
-    allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab.",
+    allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
+    detailLinks: [
+      { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
+      { label: "Website-Wache", href: "/website-wache" },
+      { label: "Website-Rettung", href: "/website-rettung" },
+    ],
     mobilePricesSummary: "Preisliste öffnen",
     mobilePricesHint: "Landingpage ab 590 € · Betreuung ab 19 €/Monat",
     processLabel: "05 - Prozess",
@@ -490,18 +495,19 @@ const copy = {
         title: "Make the current site work harder.",
         text: "For websites whose positioning, mobile experience, SEO, or speed no longer does enough.",
         cta: "Improve a website",
-        href: "/website-rettung",
+        href: "/consultation?package=request_offer",
       },
       {
         key: "Care",
         title: "Keep it running.",
         text: "For hosting, monitoring, updates, and clear technical ownership after launch.",
         cta: "Explore ongoing care",
-        href: "/website-wache",
+        href: "/consultation?package=maintenance",
       },
     ],
     allServicesHeading: "All services and prices",
-    allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins.",
+    allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins. All prices are final prices — as a small business under § 19 UStG (German VAT law), PageFoundry does not charge VAT.",
+    detailLinks: [] as { label: string; href: string }[],
     mobilePricesSummary: "Open full price list",
     mobilePricesHint: "Landing pages from €590 · care from €19/month",
     processLabel: "05 - Process",
@@ -746,20 +752,18 @@ export default async function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col gap-4 border-t border-pfBorder pt-8 sm:flex-row sm:flex-wrap sm:items-center">
-            <span className="font-mono text-[0.7rem] uppercase tracking-widest text-pfMuted">
-              {c.detailLabel}
-            </span>
-            <Link href="/ki-telefonassistenz" className="btn-outline">
-              KI-Telefonassistenz
-            </Link>
-            <Link href="/website-wache" className="btn-outline">
-              Website-Wache
-            </Link>
-            <Link href="/website-rettung" className="btn-outline">
-              Website-Rettung
-            </Link>
-          </div>
+          {c.detailLinks.length > 0 && (
+            <div className="mt-10 flex flex-col gap-4 border-t border-pfBorder pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+              <span className="font-mono text-[0.7rem] uppercase tracking-widest text-pfMuted">
+                {c.detailLabel}
+              </span>
+              {c.detailLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="btn-outline">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
