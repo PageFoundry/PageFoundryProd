@@ -83,6 +83,13 @@ export default async function Navbar() {
                     Outreach
                   </Link>
                   <Link
+                    href="/admin/hq"
+                    className="font-mono text-[0.65rem] tracking-widest uppercase text-pfSubtle hover:text-pfAccent transition-colors"
+                    style={{ fontFamily: "var(--font-mono)" }}
+                  >
+                    HQ · Rechnungen
+                  </Link>
+                  <Link
                     href="/admin"
                     className="font-mono text-[0.65rem] tracking-widest uppercase border border-pfBorderAccent text-pfAccent px-3 py-1.5 rounded-sm hover:bg-pfAccentDim transition-all"
                     style={{ fontFamily: "var(--font-mono)" }}

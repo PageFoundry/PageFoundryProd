@@ -92,6 +92,7 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
               {isAdmin && (
                 <>
                   <Link href="/outreach" onClick={close} className={navLinkClass}>Outreach</Link>
+                  <Link href="/admin/hq" onClick={close} className={navLinkClass}>HQ · Rechnungen</Link>
                   <Link
                     href="/admin"
                     onClick={close}
