@@ -1,12 +1,26 @@
 import { prisma } from "@/lib/prisma";
 import { sendDiscordLeadNotification } from "./discord";
 import { extractLeadInputFromRetellCall, upsertCallLead } from "./leads";
+import { notifyCrmEvent } from "@/lib/crmBridge";
 
 const FINAL_EVENTS = new Set(["call_ended", "call_analyzed"]);
 
 export async function handleRetellWebhookEvent(event: string, call: Record<string, unknown>) {
   const leadInput = extractLeadInputFromRetellCall(event, call);
   const lead = await upsertCallLead(leadInput);
+  await notifyCrmEvent({
+    type: "calllead.upserted",
+    data: {
+      id: lead.id,
+      name: lead.name,
+      company: lead.company,
+      phone: lead.phone,
+      reason: lead.reason,
+      summary: lead.summary,
+      callId: lead.retellCallId,
+      updatedAt: lead.updatedAt.toISOString(),
+    },
+  });
 
   if (!FINAL_EVENTS.has(event)) {
     return { leadId: lead.id, notified: false };

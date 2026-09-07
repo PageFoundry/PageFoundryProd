@@ -5,6 +5,7 @@ import { TIMEZONE } from "@/lib/consultation/policy";
 import { bookSlot, SlotUnavailableError } from "@/lib/consultation/booking";
 import { productOrderKeys, type ProductKey } from "@/lib/products";
 import deMessages from "@/i18n/locales/de.json";
+import { notifyCrmEvent } from "@/lib/crmBridge";
 
 const CONSULTATION_ADMIN_EMAIL =
   process.env.CONSULTATION_ADMIN_EMAIL || "admin@pagefoundry.de";
@@ -154,6 +155,20 @@ PageFoundry
       subject: customerSubject,
       text: customerText,
       html: customerHtml,
+    });
+
+    await notifyCrmEvent({
+      type: "consultation.created",
+      data: {
+        id: booking.id,
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        consultationType: booking.consultationType,
+        appointmentDateTime: slot.start.toISOString(),
+        updatedAt: booking.createdAt.toISOString(),
+        summary: body.note || packageLine || "Website-Consultation gebucht",
+      },
     });
 
     return NextResponse.json({ ok: true }, { status: 200 });

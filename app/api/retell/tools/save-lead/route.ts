@@ -3,6 +3,7 @@ import { sendDiscordLeadNotification } from "@/lib/retell/discord";
 import { upsertCallLead } from "@/lib/retell/leads";
 import { verifyRetellSignature } from "@/lib/retell/signature";
 import { parseRetellToolBody, saveLeadSchema } from "@/lib/retell/validation";
+import { notifyCrmEvent } from "@/lib/crmBridge";
 
 export const runtime = "nodejs";
 
@@ -31,6 +32,20 @@ export async function POST(req: NextRequest) {
     appointmentRequested: false,
     appointmentBooked: false,
     callStatus: "lead_saved",
+  });
+
+  await notifyCrmEvent({
+    type: "calllead.upserted",
+    data: {
+      id: lead.id,
+      name: lead.name,
+      company: lead.company,
+      phone: lead.phone,
+      reason: lead.reason,
+      summary: lead.summary,
+      callId: lead.retellCallId,
+      updatedAt: lead.updatedAt.toISOString(),
+    },
   });
 
   try {

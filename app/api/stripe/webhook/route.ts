@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { generateInvoicePDF } from "@/lib/invoice";
 import { sendMail } from "@/lib/email";
 import { buildInvoiceMailHTML, buildInvoiceMailText } from "@/lib/mailTemplates";
+import { notifyCrmEvent } from "@/lib/crmBridge";
 
 export const runtime = "nodejs"; // für raw body
 
@@ -52,6 +53,18 @@ export async function POST(req: NextRequest) {
         status: "RECEIVED",
         stripeSession: session.id,
         brief: brief,
+      },
+    });
+
+    await notifyCrmEvent({
+      type: "order.paid",
+      data: {
+        id: order.id,
+        orderId: order.id,
+        email: user.email,
+        summary: `Stripe checkout abgeschlossen: ${product.name}`,
+        sourceSystemId: session.id,
+        updatedAt: order.createdAt.toISOString(),
       },
     });
 

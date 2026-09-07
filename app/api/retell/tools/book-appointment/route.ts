@@ -9,6 +9,7 @@ import {
   parseRetellToolBody,
 } from "@/lib/retell/validation";
 import { formatGermanDateTime } from "@/lib/retell/time";
+import { notifyCrmEvent } from "@/lib/crmBridge";
 
 export const runtime = "nodejs";
 
@@ -68,6 +69,15 @@ export async function POST(req: NextRequest) {
   }
 
   if (result.leadId) {
+    await notifyCrmEvent({
+      type: "consultation.booked",
+      data: {
+        id: result.eventId,
+        leadId: result.leadId,
+        appointmentDateTime: slot.start.toISOString(),
+        summary: "Telefonische Consultation gebucht",
+      },
+    });
     try {
       await sendDiscordLeadNotification(result.leadId);
     } catch (error) {
