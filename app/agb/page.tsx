@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import { getServerI18n } from "@/i18n/server";
+import { createPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "AGB",
-  alternates: { canonical: "https://pagefoundry.de/agb" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { lang } = await getServerI18n();
+  const isDe = lang === "de";
+  return createPageMetadata({
+    path: "/agb",
+    title: isDe ? "AGB" : "Terms & Conditions",
+    description: isDe
+      ? "Allgemeine Geschäftsbedingungen von PageFoundry für Landing Pages, Hosting und laufende technische Betreuung."
+      : "PageFoundry's terms and conditions for landing pages, hosting, and ongoing technical care.",
+    locale: isDe ? "de_DE" : "en_US",
+  });
+}
 
 export default async function AgbPage() {
   const { lang } = await getServerI18n();

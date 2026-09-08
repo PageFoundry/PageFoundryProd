@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import { getServerI18n } from "@/i18n/server";
+import { createPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Impressum",
-  alternates: { canonical: "https://pagefoundry.de/impressum" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { lang } = await getServerI18n();
+  const isDe = lang === "de";
+  return createPageMetadata({
+    path: "/impressum",
+    title: isDe ? "Impressum" : "Imprint",
+    description: isDe
+      ? "Impressum von PageFoundry gemäß § 5 TMG."
+      : "PageFoundry's legal notice / imprint.",
+    locale: isDe ? "de_DE" : "en_US",
+  });
+}
 
 export default async function ImpressumPage() {
   const { lang } = await getServerI18n();

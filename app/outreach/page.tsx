@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { getUserFromCookie } from "@/lib/auth";
 import OutreachAdminPanel from "@/components/OutreachAdminPanel";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
+// Access is enforced by the redirect() below, not by this metadata — this
+// only keeps the internal admin panel out of search index listings.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+};
 
 export default async function OutreachPage() {
   const me = await getUserFromCookie();

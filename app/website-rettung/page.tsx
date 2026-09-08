@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
+import JsonLd, { getServiceSchema } from "@/components/JsonLd";
+import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Website-Rettung";
 const DESCRIPTION =
@@ -9,12 +10,12 @@ const URL = "https://pagefoundry.de/website-rettung";
 const TAX_NOTE =
   "Alle Preise sind Endpreise. PageFoundry ist Kleinunternehmer nach § 19 UStG — es wird keine Umsatzsteuer ausgewiesen.";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
+  path: "/website-rettung",
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: URL },
-  openGraph: { url: URL, title: `${TITLE} · PageFoundry`, description: DESCRIPTION },
-};
+  locale: "de_DE",
+});
 
 const data: ServiceLandingData = {
   eyebrow: "Website-Rettung",
@@ -131,5 +132,10 @@ const data: ServiceLandingData = {
 };
 
 export default function WebsiteRettungPage() {
-  return <ServiceLanding data={data} />;
+  return (
+    <>
+      <JsonLd data={getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL })} />
+      <ServiceLanding data={data} />
+    </>
+  );
 }

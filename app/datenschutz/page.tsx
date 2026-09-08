@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import { getServerI18n } from "@/i18n/server";
+import { createPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Datenschutzerklärung",
-  alternates: { canonical: "https://pagefoundry.de/datenschutz" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { lang } = await getServerI18n();
+  const isDe = lang === "de";
+  return createPageMetadata({
+    path: "/datenschutz",
+    title: isDe ? "Datenschutzerklärung" : "Privacy Policy",
+    description: isDe
+      ? "Datenschutzerklärung von PageFoundry: welche Daten wir erheben, wofür und wie Sie Ihre Rechte wahrnehmen."
+      : "PageFoundry's privacy policy: what data we collect, why, and how to exercise your rights.",
+    locale: isDe ? "de_DE" : "en_US",
+  });
+}
 
 export default async function DatenschutzPage() {
   const { lang } = await getServerI18n();
