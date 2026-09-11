@@ -12,6 +12,8 @@ export interface ServiceLandingData {
   pricing: { label: string; heading: string; tiers: PricingTier[]; footnote?: string };
   faq: { label: string; heading: string; items: { q: string; a: string }[] };
   cta: { heading: string; text: string };
+  references?: { heading: string; items: { name: string; text: string; href: string; label: string }[] };
+  related?: { label: string; items: { label: string; href: string }[] };
 }
 
 export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
@@ -133,6 +135,38 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
           </div>
         </div>
       </section>
+
+      {data.references && (
+        <section className="px-6 py-20 md:px-10">
+          <div className="mx-auto max-w-screen-xl">
+            <h2 className="mb-10 font-display text-4xl leading-none text-pfText md:text-6xl">{data.references.heading}</h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              {data.references.items.map((item) => (
+                <article key={item.href} className="pf-card p-7 md:p-9">
+                  <h3 className="font-display text-3xl text-pfText">{item.name}</h3>
+                  <p className="mt-4 text-sm leading-7 text-pfSubtle">{item.text}</p>
+                  <a href={item.href} className="mt-6 inline-flex text-sm text-pfAccent underline underline-offset-4">{item.label} ↗</a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {data.related && data.related.items.length > 0 && (
+        <section className="border-t border-pfBorder bg-pfSurface/40 px-6 py-14 md:px-10">
+          <div className="mx-auto max-w-screen-xl">
+            <span className="label-mono mb-5 block">{data.related.label}</span>
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+              {data.related.items.map((link) => (
+                <Link key={link.href} href={link.href} className="btn-outline">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <ServiceCTA heading={data.cta.heading} text={data.cta.text} />
     </div>

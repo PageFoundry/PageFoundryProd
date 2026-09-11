@@ -27,6 +27,9 @@ type ConsultationRow = {
   preferredTime: string;
   note: string | null;
   createdAt: Date;
+  selfReportedSource: string | null;
+  observedSource: string | null;
+  entryPathname: string | null;
 };
 
 export default async function AdminPage() {
@@ -79,6 +82,9 @@ export default async function AdminPage() {
     preferredTime: `${booking.slot.start.toISOString()} - ${booking.slot.end.toISOString()}`,
     note: booking.description,
     createdAt: booking.createdAt,
+    selfReportedSource: booking.selfReportedSource,
+    observedSource: booking.observedSource,
+    entryPathname: booking.entryPathname,
   }));
 
   const aiConsultations: ConsultationRow[] = aiCalendarEvents.map((event) => {
@@ -96,6 +102,7 @@ export default async function AdminPage() {
       preferredTime: `${event.startDateTime.toISOString()} - ${event.endDateTime.toISOString()}`,
       note: noteParts.join(" — "),
       createdAt: event.createdAt,
+      selfReportedSource: null, observedSource: null, entryPathname: null,
     };
   });
 
@@ -527,6 +534,7 @@ export default async function AdminPage() {
                   <thead>
                     <tr>
                       <th>Quelle</th>
+                      <th>Herkunft</th>
                       <th>Name</th>
                       <th>Telefon</th>
                       <th>Slot</th>
@@ -548,6 +556,7 @@ export default async function AdminPage() {
                             {c.source === "ai_call" ? "KI-Anruf" : "Web"}
                           </span>
                         </td>
+                        <td className="text-pfMuted font-mono text-[0.6rem]">Browser-Hinweis: {c.observedSource || "unbekannt"}<br/>Selbstauskunft: {c.selfReportedSource || "keine Angabe"}<br/>Einstiegsseite: {c.entryPathname || "unbekannt"}</td>
                         <td className="text-pfText font-medium">{c.name}</td>
                         <td className="text-pfSubtle font-mono text-xs">{c.phone || "–"}</td>
                         <td className="text-pfAccent font-mono text-xs">{c.preferredTime}</td>

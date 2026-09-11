@@ -128,6 +128,14 @@ const data: ServiceLandingData = {
     heading: "Sollen wir Ihre Seite in die Wache nehmen?",
     text: "Wir schauen uns Ihre Website kurz an und sagen Ihnen ehrlich, welches Paket sinnvoll ist — kostenlos und unverbindlich.",
   },
+  related: {
+    label: "Passende Seiten",
+    items: [
+      { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
+      { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "Website-Rettung", href: "/website-rettung" },
+    ],
+  },
 };
 
 export default function WebsiteWachePage() {

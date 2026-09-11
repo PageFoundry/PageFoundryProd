@@ -6,6 +6,7 @@ import { bookSlot, SlotUnavailableError } from "@/lib/consultation/booking";
 import { productOrderKeys, type ProductKey } from "@/lib/products";
 import deMessages from "@/i18n/locales/de.json";
 import { notifyCrmEvent } from "@/lib/crmBridge";
+import { isSelfReportedSource, OBSERVED_SOURCES, ALLOWED_ENTRY_PATHS } from "@/lib/attribution";
 
 const CONSULTATION_ADMIN_EMAIL =
   process.env.CONSULTATION_ADMIN_EMAIL || "admin@pagefoundry.de";
@@ -34,6 +35,9 @@ const bodySchema = z.object({
   participants: z.coerce.number().int().min(1).max(10).optional().default(1),
   consultationType: z.enum(CONSULTATION_TYPES),
   packageKey: z.string().trim().max(100).optional(),
+  selfReportedSource: z.string().refine(isSelfReportedSource).optional(),
+  observedSource: z.enum(OBSERVED_SOURCES).optional(),
+  entryPathname: z.string().refine((v) => (ALLOWED_ENTRY_PATHS as readonly string[]).includes(v)).nullable().optional(),
 });
 
 function escapeHtml(value: string): string {
@@ -79,6 +83,9 @@ export async function POST(req: NextRequest) {
       consultationType: body.consultationType,
       description,
       zoomUrl: ZOOM_URL,
+      selfReportedSource: body.selfReportedSource,
+      observedSource: body.observedSource,
+      entryPathname: body.entryPathname,
     });
 
     const dateFormatter = new Intl.DateTimeFormat("de-DE", {
@@ -167,7 +174,10 @@ PageFoundry
         consultationType: booking.consultationType,
         appointmentDateTime: slot.start.toISOString(),
         updatedAt: booking.createdAt.toISOString(),
-        summary: body.note || packageLine || "Website-Consultation gebucht",
+        summary: [body.note || packageLine || "Website-Consultation gebucht", `Browser-Hinweis: ${booking.observedSource || "direct_or_unknown"}`, `Selbstauskunft: ${booking.selfReportedSource || "keine Angabe"}`, `Einstieg: ${booking.entryPathname || "unbekannt"}`].join(" | "),
+        selfReportedSource: booking.selfReportedSource,
+        observedSource: booking.observedSource,
+        entryPathname: booking.entryPathname,
       },
     });
 

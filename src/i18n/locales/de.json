@@ -141,6 +141,15 @@
       "CONVERSION_OPT": "Conversion-Optimierung",
       "SYSTEMS_AUTOMATION": "Systeme & Automatisierung",
       "SPEED_AUDIT": "Performance & Speed-Audit"
+    },
+    "sourceLabel": "Wie sind Sie auf uns aufmerksam geworden?",
+    "sourcePlaceholder": "Keine Angabe",
+    "sourcePrivacy": "Optional. Ihre Antwort hilft uns nur zu verstehen, wie Menschen uns finden.",
+    "sources": {
+      "search": "Suchmaschine",
+      "recommendation": "Empfehlung",
+      "social": "Soziale Medien",
+      "other": "Sonstiges"
     }
   },
   "api": {

@@ -13,6 +13,11 @@ export function pickFromAcceptLanguage(al: string | null | undefined): Lang {
 }
 
 export async function detectLangFromRequest(): Promise<Lang> {
+  // x-pf-forced-lang wird ausschliesslich von der eigenen Middleware gesetzt
+  // (inbound-Werte werden dort geloescht): deutsche Detailseiten liefern immer
+  // deutschen Inhalt, unabhaengig von Cookie und Accept-Language.
+  const forced = (await headers()).get("x-pf-forced-lang");
+  if (isLang(forced)) return forced;
   const c = (await cookies()).get(LANG_COOKIE)?.value;
   if (isLang(c)) return c;
   const h = (await headers()).get('accept-language');

@@ -99,7 +99,7 @@ run_auth()         {
   npx tsx --test tests/safePath.unit.test.ts tests/passwordReset.unit.test.ts tests/clientIp.unit.test.ts
 }
 run_retell()       { npx tsx --test tests/retell.unit.test.ts; }
-run_consultation() { npx tsx --test tests/consultation.unit.test.ts; }
+run_consultation() { npx tsx --test tests/consultation.unit.test.ts tests/attribution.unit.test.ts tests/consultationAttribution.integration.test.ts; }
 run_flows()        { node --test tests/customerFlows.integration.test.mjs; }
 
 case "$SUITE" in

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/i18n/useI18n";
+import { useAttribution } from "@/components/AttributionProvider";
 import type { ConsultationType } from "@prisma/client";
 import {
   ALLOWED_WEEKDAYS,
@@ -14,6 +15,7 @@ import {
   earliestBookableStart,
 } from "@/lib/consultation/policy";
 import { productOrderKeys, type ProductKey } from "@/lib/products";
+import { parseObservedProvenance, SELF_REPORTED_SOURCES } from "@/lib/attribution";
 
 type ApiSlot = {
   id: string;
@@ -99,6 +101,7 @@ type FieldErrors = {
 export default function ConsultationPage() {
   const { t, lang } = useI18n();
   const locale = lang === "de" ? "de-DE" : "en-US";
+  const attribution = useAttribution();
 
   const allowedDates = useMemo(() => computeAllowedDates(locale), [locale]);
   const [date, setDate] = useState<string>(() => allowedDates[0]?.value ?? "");
@@ -116,6 +119,7 @@ export default function ConsultationPage() {
   const [consultationType, setConsultationType] =
     useState<ConsultationType>("FULL_SITE_REVIEW");
   const [packageKey, setPackageKey] = useState<ProductKey | null>(null);
+  const [selfReportedSource, setSelfReportedSource] = useState("");
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [ok, setOk] = useState(false);
@@ -205,6 +209,7 @@ export default function ConsultationPage() {
 
     setSubmitting(true);
     try {
+      const provenance = attribution;
       const res = await fetch("/api/consultation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -217,6 +222,9 @@ export default function ConsultationPage() {
           participants,
           consultationType,
           ...(packageKey ? { packageKey } : {}),
+          ...(selfReportedSource ? { selfReportedSource } : {}),
+          observedSource: provenance.observedSource,
+          entryPathname: provenance.entryPathname,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -521,6 +529,18 @@ export default function ConsultationPage() {
                     <option key={value} value={value}>{t(`consultation.types.${value}`)}</option>
                   ))}
                 </select>
+              </div>
+
+              {/* Self reported source (optional) */}
+              <div className="flex flex-col gap-1">
+                <label htmlFor="c-source" className="font-mono text-[0.62rem] tracking-widest uppercase text-pfMuted">
+                  {t("consultation.sourceLabel")}
+                </label>
+                <select id="c-source" className="pf-input" value={selfReportedSource} onChange={(e) => setSelfReportedSource(e.target.value)}>
+                  <option value="">{t("consultation.sourcePlaceholder")}</option>
+                  {SELF_REPORTED_SOURCES.map((value) => <option key={value} value={value}>{t(`consultation.sources.${value}`)}</option>)}
+                </select>
+                <p className="text-xs text-pfMuted">{t("consultation.sourcePrivacy")}</p>
               </div>
 
               {/* Notes (optional) */}

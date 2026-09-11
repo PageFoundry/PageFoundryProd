@@ -129,6 +129,14 @@ const data: ServiceLandingData = {
     heading: "Holen wir das Potenzial aus Ihrer Seite?",
     text: "In der kostenlosen Erstberatung schauen wir auf Ihre aktuelle Website und zeigen die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
   },
+  related: {
+    label: "Passende Seiten",
+    items: [
+      { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
+      { label: "Website-Wache", href: "/website-wache" },
+    ],
+  },
 };
 
 export default function WebsiteRettungPage() {

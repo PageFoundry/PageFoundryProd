@@ -65,7 +65,7 @@ export default async function DatenschutzPage() {
           <h2 className="text-xl font-semibold mt-10 mb-3">6. Beratungsanfragen</h2>
           <p>
             Bei Beratungsanfragen verarbeiten wir Name, E-Mail, Telefon, gewählten Zeit-Slot
-            sowie optionale Notizen, um den Termin zu koordinieren.
+            sowie optionale Notizen, um den Termin zu koordinieren. Bei Absenden speichern wir zusätzlich einen groben Browser-Hinweis (organische Suche, Empfehlung, Kampagne oder direkt/unbekannt), eine begrenzte erlaubte Einstiegsseite und freiwillig die Antwort, wie Sie uns gefunden haben. Diese Angaben helfen uns, Anfragen zu verstehen, werden mit der Anfrage und gegebenenfalls im CRM gespeichert und nur beim Absenden übertragen; dafür verwenden wir keine zusätzlichen Cookies, keinen Browser-Speicher und kein Fingerprinting.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">7. KI-Telefonassistenz</h2>
@@ -161,7 +161,13 @@ export default async function DatenschutzPage() {
           <h2 className="text-xl font-semibold mt-10 mb-3">6. Consultation requests</h2>
           <p>
             For consultation requests we process name, e-mail, phone number, selected time slot
-            and optional notes to schedule the appointment.
+            and optional notes to schedule the appointment. When you submit the request, we also
+            process a coarse browser hint (organic search, referral, campaign or direct/unknown),
+            a limited allowlisted entry pathname, and your voluntary answer to how you found us.
+            These details help us understand enquiries and are stored with the request and, where
+            configured, forwarded to our CRM for that purpose. We do not use additional cookies,
+            local storage or fingerprinting for this; the details are transmitted only when the
+            consultation request is submitted.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">7. AI phone assistant</h2>

@@ -325,6 +325,9 @@ model ConsultationBooking {
 
   // Art der Beratung
   consultationType ConsultationType
+  selfReportedSource String? @db.VarChar(64)
+  observedSource String? @db.VarChar(32)
+  entryPathname String? @db.VarChar(128)
 
   // Freitext-Beschreibung des Kunden
   description String

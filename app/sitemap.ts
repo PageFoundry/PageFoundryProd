@@ -37,6 +37,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE}/webdesign-bergisches-land`,
+      lastModified: new Date("2026-09-11"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE}/seo-hueckeswagen`,
+      lastModified: new Date("2026-09-11"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE}/agb`,
       lastModified: now,
       changeFrequency: "yearly",

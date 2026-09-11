@@ -39,11 +39,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: current.description,
     alternates: {
       canonical: "https://pagefoundry.de",
-      languages: {
-        de: "https://pagefoundry.de",
-        en: "https://pagefoundry.de",
-        "x-default": "https://pagefoundry.de",
-      },
     },
     openGraph: {
       title: current.title,
@@ -305,10 +300,13 @@ const copy = {
     allServicesHeading: "Alle Leistungen und Preise",
     allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
     detailLinks: [
+      { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
       { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
       { label: "Website-Wache", href: "/website-wache" },
       { label: "Website-Rettung", href: "/website-rettung" },
-    ],
+      { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de", external: true },
+    ] as { label: string; href: string; external?: boolean }[],
     mobilePricesSummary: "Preisliste öffnen",
     mobilePricesHint: "Landingpage ab 590 € · Betreuung ab 19 €/Monat",
     processLabel: "05 - Prozess",
@@ -509,7 +507,14 @@ const copy = {
     ],
     allServicesHeading: "All services and prices",
     allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins. All prices are final prices — as a small business under § 19 UStG (German VAT law), PageFoundry does not charge VAT.",
-    detailLinks: [] as { label: string; href: string }[],
+    detailLinks: [
+      { label: "Webdesign Bergisches Land (German)", href: "/webdesign-bergisches-land" },
+      { label: "SEO Hückeswagen (German)", href: "/seo-hueckeswagen" },
+      { label: "AI Phone Assistant (German)", href: "/ki-telefonassistenz" },
+      { label: "Website Watch (German)", href: "/website-wache" },
+      { label: "Website Rescue (German)", href: "/website-rettung" },
+      { label: "AI Search Readiness Check (German)", href: "https://audit.pagefoundry.de", external: true },
+    ] as { label: string; href: string; external?: boolean }[],
     mobilePricesSummary: "Open full price list",
     mobilePricesHint: "Landing pages from €590 · care from €19/month",
     processLabel: "05 - Process",
@@ -759,11 +764,23 @@ export default async function LandingPage() {
               <span className="font-mono text-[0.7rem] uppercase tracking-widest text-pfMuted">
                 {c.detailLabel}
               </span>
-              {c.detailLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="btn-outline">
-                  {link.label}
-                </Link>
-              ))}
+              {c.detailLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="btn-outline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.label} ↗
+                  </a>
+                ) : (
+                  <Link key={link.href} href={link.href} className="btn-outline">
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
           )}
         </div>

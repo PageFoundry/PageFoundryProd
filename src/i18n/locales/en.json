@@ -141,6 +141,15 @@
       "CONVERSION_OPT": "Conversion optimization",
       "SYSTEMS_AUTOMATION": "Systems & automation",
       "SPEED_AUDIT": "Performance & speed audit"
+    },
+    "sourceLabel": "How did you hear about us?",
+    "sourcePlaceholder": "Prefer not to say",
+    "sourcePrivacy": "Optional. We use your answer only to understand how people find us.",
+    "sources": {
+      "search": "Search engine",
+      "recommendation": "Recommendation",
+      "social": "Social media",
+      "other": "Other"
     }
   },
   "api": {

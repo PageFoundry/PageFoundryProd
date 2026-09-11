@@ -19,6 +19,8 @@ PageFoundry builds and maintains professional web presences with a focus on conv
 - [AI Phone Assistant](https://pagefoundry.de/ki-telefonassistenz): AI assistant answers calls, books appointments and captures leads on a real landline (from 790 € setup + 249 €/month)
 - [Website Watch](https://pagefoundry.de/website-wache): Uptime, SSL and load-time monitoring with a monthly report and small fixes (from 49 €/month)
 - [Website Rescue](https://pagefoundry.de/website-rettung): Rescue sprint for weak sites — audit, preview and a new high-converting page (from 890 €)
+- [Webdesign Bergisches Land](https://pagefoundry.de/webdesign-bergisches-land): Regional web design page for the Bergisches Land area around Hückeswagen, Remscheid, Wermelskirchen and Wipperfürth (German, landing pages from 590 €)
+- [SEO Hückeswagen](https://pagefoundry.de/seo-hueckeswagen): Honest technical and content SEO from Hückeswagen — no ranking guarantees (German, SEO Basic from 149 €; ongoing SEO is part of Website Watch Care+SEO at 199 €/month)
 - [Free Consultation](https://pagefoundry.de/consultation): 30-minute Zoom strategy call, no commitment
 
 ## Contact & booking
@@ -32,6 +34,8 @@ Book a free consultation at: https://pagefoundry.de/consultation
 - AI Phone Assistant: https://pagefoundry.de/ki-telefonassistenz
 - Website Watch: https://pagefoundry.de/website-wache
 - Website Rescue: https://pagefoundry.de/website-rettung
+- Webdesign Bergisches Land: https://pagefoundry.de/webdesign-bergisches-land
+- SEO Hückeswagen: https://pagefoundry.de/seo-hueckeswagen
 - Consultation: https://pagefoundry.de/consultation
 - Login: https://pagefoundry.de/login
 

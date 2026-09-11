@@ -6,6 +6,7 @@ import BackgroundAnimated from '@/components/BackgroundAnimated';
 import Navbar from '@/components/Navbar';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { getServerI18n } from '@/i18n/server';
+import { AttributionProvider } from '@/components/AttributionProvider';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -55,11 +56,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE,
-    languages: {
-      "de": BASE,
-      "en": BASE,
-      "x-default": BASE,
-    },
   },
   openGraph: {
     type: "website",
@@ -89,6 +85,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body className="relative min-h-screen bg-pfBg text-pfText">
         <BackgroundAnimated />
         <I18nProvider lang={lang} messages={messages}>
+          <AttributionProvider>
           <div className="relative z-10 flex min-h-screen flex-col">
             <Navbar />
             <main className="flex-1">{children}</main>
@@ -109,6 +106,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               </div>
             </footer>
           </div>
+          </AttributionProvider>
         </I18nProvider>
       </body>
     </html>
