@@ -1,68 +1,65 @@
 import { MetadataRoute } from "next";
 
 const BASE = "https://pagefoundry.de";
+const LAST_UPDATED = new Date("2026-09-11T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   return [
     {
       url: BASE,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 1.0,
     },
     {
       url: `${BASE}/consultation`,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE}/ki-telefonassistenz`,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/website-wache`,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/website-rettung`,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/webdesign-bergisches-land`,
-      lastModified: new Date("2026-09-11"),
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/seo-hueckeswagen`,
-      lastModified: new Date("2026-09-11"),
+      lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/agb`,
-      lastModified: now,
       changeFrequency: "yearly",
       priority: 0.2,
     },
     {
       url: `${BASE}/datenschutz`,
-      lastModified: now,
+      lastModified: LAST_UPDATED,
       changeFrequency: "yearly",
       priority: 0.2,
     },
     {
       url: `${BASE}/impressum`,
-      lastModified: now,
       changeFrequency: "yearly",
       priority: 0.2,
     },
