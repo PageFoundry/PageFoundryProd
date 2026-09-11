@@ -73,7 +73,7 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
           <div className="grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 lg:grid-cols-3">
             {data.steps.items.map((step, index) => (
               <article key={step.title} className="min-h-56 bg-pfSurface p-8">
-                <div className="font-display text-7xl leading-none text-pfAccentDim">
+                <div className="font-display text-7xl leading-none text-pfAccent/70">
                   {String(index + 1).padStart(2, "0")}
                 </div>
                 <h3 className="mt-8 font-display text-3xl leading-none text-pfText">{step.title}</h3>
