@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import PricingTiers, { type PricingTier } from "./PricingTiers";
 import ServiceCTA from "./ServiceCTA";
 
@@ -10,7 +11,7 @@ export interface ServiceLandingData {
   steps: { label: string; heading: string; items: { title: string; text: string }[] };
   included: { label: string; heading: string; items: string[]; note?: string };
   pricing: { label: string; heading: string; tiers: PricingTier[]; footnote?: string };
-  faq: { label: string; heading: string; items: { q: string; a: string }[] };
+  faq: { label: string; heading: string; items: { q: string; a: ReactNode }[] };
   cta: { heading: string; text: string };
   references?: { heading: string; items: { name: string; text: string; href: string; label: string }[] };
   related?: { label: string; items: { label: string; href: string }[] };

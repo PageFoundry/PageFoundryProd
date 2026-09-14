@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -109,6 +110,18 @@ const data: ServiceLandingData = {
       {
         q: "Muss ich meinen Hoster wechseln?",
         a: "Nein. Die Website-Wache läuft unabhängig von Ihrem Hoster und überwacht Ihre Seite von außen.",
+      },
+      {
+        q: "Was ist der Unterschied zwischen Website-Überwachung und Website-Wartung?",
+        a: "Die Überwachung prüft, ob Ihre Website erreichbar ist, das SSL-Zertifikat gültig bleibt und die Antwortzeiten auffällig werden. Wartung umfasst konkrete Arbeiten an der Website. Bei der Website-Wache enthält Basic die Überwachung und einen monatlichen Kurzbericht. Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. So können Sie den Umfang passend zu Ihrer Website wählen.",
+      },
+      {
+        q: "Wird ein erkannter Fehler automatisch repariert?",
+        a: (
+          <>
+            Die Website-Wache erkennt Auffälligkeiten und meldet Probleme früh. Sie repariert nicht automatisch jede Störung. Kleine Korrekturen sind je nach Paket enthalten; größere Arbeiten stimmen wir vorab mit Ihnen ab. Wenn Ihre Website grundsätzlich überarbeitet werden muss, finden Sie unter <Link href="/website-rettung" className="text-pfAccent underline underline-offset-4">Website-Rettung</Link> das passende Angebot.
+          </>
+        ),
       },
       {
         q: "Was kostet es, wenn mal mehr zu tun ist?",
