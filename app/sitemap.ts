@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const BASE = "https://pagefoundry.de";
-const LAST_UPDATED = new Date("2026-09-11T00:00:00.000Z");
+const LAST_UPDATED = new Date("2026-09-14T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
