@@ -5,7 +5,6 @@ import { productOrderKeys } from "@/lib/products";
 import { getServerI18n } from "@/i18n/server";
 import { getUserFromCookie } from "@/lib/auth";
 import JsonLd from "@/components/JsonLd";
-import HeroRotatingTitle from "@/components/HeroRotatingTitle";
 import CaseStudyShowcase from "@/components/landing/CaseStudyShowcase";
 import FounderTrust from "@/components/landing/FounderTrust";
 
@@ -30,20 +29,29 @@ const homeMetadata = {
   },
 } as const;
 
+const BASE_URL = "https://pagefoundry.de";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { lang } = await getServerI18n();
   const current = homeMetadata[lang];
+  const path = lang === "en" ? "/en" : "/";
+  const url = `${BASE_URL}${path}`;
 
   return {
     title: { absolute: current.title },
     description: current.description,
     alternates: {
-      canonical: "https://pagefoundry.de",
+      canonical: url,
+      languages: {
+        de: `${BASE_URL}/`,
+        en: `${BASE_URL}/en`,
+        "x-default": `${BASE_URL}/`,
+      },
     },
     openGraph: {
       title: current.title,
       description: current.openGraphDescription,
-      url: "https://pagefoundry.de",
+      url,
       siteName: "PageFoundry",
       locale: current.locale,
       alternateLocale: [current.alternateLocale],
@@ -179,15 +187,21 @@ function getOrganizationSchema(lang: "de" | "en") {
 
 const copy = {
   de: {
-    eyebrow: "01 - Creative Digital Studio",
+    eyebrow: "Websites & Software · Hückeswagen",
     subline:
-      "Wir verbinden klare Conversion-Strategie, sauberen Code und laufende technische Betreuung. Ohne Baukasten. Ohne aufgeblasenen Agenturprozess.",
-    proof: ["Landingpages", "Hosting", "SEO", "Speed", "Wartung", "Checkout"],
-    heroPhrases: [
-      "Landingpages, die verkaufen.",
-      "SEO, das gefunden wird.",
-      "Hosting, das einfach läuft.",
-      "Speed, der spürbar ist.",
+      "Für lokale und inhabergeführte Unternehmen: Wir machen Ihr Angebot online verständlich und entlasten Abläufe, die heute noch unnötig Zeit kosten.",
+    proof: ["Websites", "Landingpages", "Betriebliche Software", "SEO", "Hosting", "Bergisches Land"],
+    heroHeading: "Websites und Software für Unternehmen, die vorankommen.",
+    heroLocation: "Hückeswagen · Bergisches Land · deutschlandweit",
+    heroOffers: [
+      {
+        title: "Websites & Landingpages",
+        text: "Für mehr Vertrauen beim ersten Kontakt und einen klaren Weg zur Anfrage.",
+      },
+      {
+        title: "Betriebliche Software",
+        text: "Für Rechnungen, Daten und Abläufe, die zuverlässig zu Ihrem Betrieb passen.",
+      },
     ],
     workLabel: "02 - Ausgewählte Arbeiten",
     workHeading: "Nicht behauptet. Live.",
@@ -238,7 +252,7 @@ const copy = {
         problem:
           "WordPress-Theme mit Plugin-Stack; Atmosphäre, Öffnungszeiten und Besucherführung waren nicht klar priorisiert.",
         delivery:
-          "Statischer Relaunch ohne CMS-Laufzeit; Speisekarte, Atmosphäre und Besuchsinformationen werden klar geführt.",
+          "Relaunch ohne zusätzliche Redaktionssoftware; Speisekarte, Atmosphäre und Besuchsinformationen werden klar geführt.",
         result:
           "Fünf Kernwünsche aus der Kundenfeedback-Runde sind im Relaunch umgesetzt; die statische Website ist live.",
         evidenceSource: "Archiv + Live · 07/26",
@@ -262,37 +276,37 @@ const copy = {
       phoneLabel: "Direkter Kontakt",
       emailLabel: "E-Mail",
     },
-    servicesLabel: "03 - Leistungen",
-    servicesHeading: "Eine Website ist kein Deko-Objekt.",
+    servicesLabel: "03 - Was wir bauen",
+    servicesHeading: "Websites für Kunden. Software für den Betrieb.",
     servicesText:
-      "PageFoundry baut Seiten, die verständlich positionieren, schnell laden und technisch so sauber stehen, dass Marketing nicht an der Infrastruktur scheitert.",
+      "Zwei klare Angebote, ein direkter Ansprechpartner: nach außen eine Website, die Vertrauen schafft; nach innen Software, die Arbeit abnimmt.",
     painLabel: "Das Problem",
     painHeading: "Was kostet eine schlechte Website wirklich?",
     painCta: "Kostenlose Analyse",
     packagesLabel: "04 - Pakete",
-    packagesHeading: "Fairer Preis. Volle Leistung.",
+    packagesHeading: "Websites, Software und laufender Betrieb.",
     packagesText:
       "Wähle ein Paket als Ausgangspunkt. Den genauen Umfang, Zeitplan und die nächsten Schritte klären wir transparent in der kostenlosen Erstberatung.",
     offerPathsLabel: "Der passende Einstieg",
     offerPaths: [
       {
         key: "Build",
-        title: "Etwas Neues bauen.",
-        text: "Für Unternehmen, die eine fokussierte Landingpage oder einen vollständigen digitalen Startpunkt benötigen.",
-        cta: "Website starten",
+        title: "Websites & Landingpages",
+        text: "Für Unternehmen, die ihr Angebot klar zeigen, Vertrauen aufbauen und leichter Anfragen erhalten möchten.",
+        cta: "Website besprechen",
         href: "/consultation?package=landing_page",
       },
       {
-        key: "Improve",
-        title: "Bestehendes besser machen.",
-        text: "Für Websites, deren Positionierung, mobile Wirkung, SEO oder Geschwindigkeit nicht mehr ausreichen.",
-        cta: "Website verbessern",
-        href: "/website-rettung",
+        key: "Systems",
+        title: "Betriebliche Software",
+        text: "Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch unnötig viel Handarbeit verursachen.",
+        cta: "Software besprechen",
+        href: "/consultation?package=request_offer",
       },
       {
         key: "Care",
-        title: "Den Betrieb absichern.",
-        text: "Für Hosting, Monitoring, Updates und eine feste technische Verantwortung nach dem Launch.",
+        title: "Hosting & Betreuung",
+        text: "Für Erreichbarkeit, Updates und eine feste technische Verantwortung nach dem Launch.",
         cta: "Betreuung ansehen",
         href: "/website-wache",
       },
@@ -323,23 +337,27 @@ const copy = {
     services: [
       {
         n: "01",
-        title: "Landingpages",
-        text: "Klarer Aufbau, starke erste Sekunde, eindeutiger CTA und saubere mobile Umsetzung.",
+        title: "Websites & Landingpages",
+        text: "Ihr Angebot wird schneller verstanden und führt klar zur nächsten Anfrage.",
+        detail: "Enthält: Struktur, Gestaltung, mobile Umsetzung und klare Kontaktwege.",
       },
       {
         n: "02",
-        title: "SEO & Snippets",
-        text: "Titles, Descriptions, Suchintention, interne Verlinkung und Seitenstruktur aus einem Guss.",
+        title: "Betriebliche Software",
+        text: "Weniger Listen, Rückfragen und Handarbeit bei den Abläufen, die Ihren Betrieb jeden Tag tragen.",
+        detail: "Individuelle Anwendungen für Rechnungen, Daten und interne Prozesse.",
       },
       {
         n: "03",
-        title: "Hosting & Wartung",
-        text: "Deployment, Updates, Backups, Performance und technische Betreuung bleiben geklärt.",
+        title: "Sichtbarkeit in Google",
+        text: "Die richtigen Menschen sollen Sie finden und sofort verstehen, was Sie anbieten.",
+        detail: "Dahinter: Suchintention, Seitentitel, Beschreibungen und interne Verlinkung.",
       },
       {
         n: "04",
-        title: "Speed-Optimierung",
-        text: "Core Web Vitals, Asset-Größe, Ladepfade und technische Reibung werden gezielt reduziert.",
+        title: "Laufender Betrieb",
+        text: "Nach dem Launch bleibt klar, wer sich um Erreichbarkeit, Änderungen und Sicherheit kümmert.",
+        detail: "Hosting, Updates, Backups und Performance aus einer Hand.",
       },
     ],
     pain: [
@@ -356,7 +374,7 @@ const copy = {
       },
       {
         title: "Struktur & Messaging",
-        text: "Dann definieren wir Conversion-Logik, Seitenarchitektur und Copy-Richtung.",
+        text: "Dann legen wir Seitenaufbau, Prioritäten und die richtigen Worte fest.",
       },
       {
         title: "Build & Launch",
@@ -382,20 +400,26 @@ const copy = {
       },
       {
         q: "Kombiniert ihr SEO mit Hosting und Technik?",
-        a: "Ja. Technische Schwächen, Performance und unklare Seitenstruktur wirken direkt auf Rankings, Klickrate und Conversion.",
+        a: "Ja. Technische Schwächen, Performance und unklare Seitenstruktur wirken direkt darauf, ob Menschen Sie finden, verstehen und kontaktieren.",
       },
     ],
   },
   en: {
-    eyebrow: "01 - Creative Digital Studio",
+    eyebrow: "Websites & software · Hückeswagen, Germany",
     subline:
-      "We combine conversion strategy, clean code, and ongoing technical care. No page builder. No bloated agency process.",
-    proof: ["Landing pages", "Hosting", "SEO", "Speed", "Maintenance", "Checkout"],
-    heroPhrases: [
-      "Landing pages that sell.",
-      "SEO that gets found.",
-      "Hosting that just works.",
-      "Speed users can feel.",
+      "For local and owner-led businesses: make your offer easier to trust online and remove manual work from day-to-day operations.",
+    proof: ["Websites", "Landing pages", "Business software", "SEO", "Hosting", "Bergisches Land"],
+    heroHeading: "Websites and software for businesses that want to move forward.",
+    heroLocation: "Hückeswagen · Bergisches Land · Germany-wide",
+    heroOffers: [
+      {
+        title: "Websites & landing pages",
+        text: "For more trust at the first contact and a clearer path to an enquiry.",
+      },
+      {
+        title: "Business software",
+        text: "For invoices, data, and workflows that fit the way your business actually works.",
+      },
     ],
     workLabel: "02 - Selected work",
     workHeading: "Not claimed. Live.",
@@ -446,7 +470,7 @@ const copy = {
         problem:
           "A WordPress theme with a plugin stack; atmosphere, opening hours, and visitor guidance were not clearly prioritized.",
         delivery:
-          "A static relaunch without a CMS runtime; menu access, atmosphere, and visitor information are clearly guided.",
+          "A relaunch without a separate editing system; menu access, atmosphere, and visitor information are clearly guided.",
         result:
           "Five core requests from the client feedback round are implemented in the relaunch; the static website is live.",
         evidenceSource: "Archive + live · 07/26",
@@ -470,37 +494,37 @@ const copy = {
       phoneLabel: "Direct contact",
       emailLabel: "Email",
     },
-    servicesLabel: "03 - Services",
-    servicesHeading: "A website is not decoration.",
+    servicesLabel: "03 - What we build",
+    servicesHeading: "Websites for customers. Software for the business.",
     servicesText:
-      "PageFoundry builds sites that position clearly, load fast, and keep the technical base clean enough for marketing to work.",
+      "Two clear offers, one accountable partner: a website that builds trust outside and software that removes work inside.",
     painLabel: "The problem",
     painHeading: "What does a weak website really cost?",
     painCta: "Free analysis",
     packagesLabel: "04 - Packages",
-    packagesHeading: "Fair price. Full delivery.",
+    packagesHeading: "Websites, software, and ongoing care.",
     packagesText:
       "Choose a package as a starting point. We clarify the exact scope, timeline, and next steps transparently in the free consultation.",
     offerPathsLabel: "Choose your starting point",
     offerPaths: [
       {
         key: "Build",
-        title: "Build something new.",
-        text: "For businesses that need a focused landing page or a complete digital starting point.",
-        cta: "Start a website",
+        title: "Websites & landing pages",
+        text: "For businesses that want to explain their offer clearly, build trust, and earn more enquiries.",
+        cta: "Discuss a website",
         href: "/consultation?package=landing_page",
       },
       {
-        key: "Improve",
-        title: "Make the current site work harder.",
-        text: "For websites whose positioning, mobile experience, SEO, or speed no longer does enough.",
-        cta: "Improve a website",
+        key: "Systems",
+        title: "Business software",
+        text: "For invoices, data, and repeatable workflows that still take too much manual effort.",
+        cta: "Discuss software",
         href: "/consultation?package=request_offer",
       },
       {
         key: "Care",
-        title: "Keep it running.",
-        text: "For hosting, monitoring, updates, and clear technical ownership after launch.",
+        title: "Hosting & ongoing care",
+        text: "For uptime, updates, and clear technical ownership after launch.",
         cta: "Explore ongoing care",
         href: "/consultation?package=maintenance",
       },
@@ -531,23 +555,27 @@ const copy = {
     services: [
       {
         n: "01",
-        title: "Landing pages",
-        text: "Clear structure, strong first impression, direct CTA, and polished mobile execution.",
+        title: "Websites & landing pages",
+        text: "Your offer is easier to understand and leads clearly to the next enquiry.",
+        detail: "Includes structure, design, mobile delivery, and clear contact paths.",
       },
       {
         n: "02",
-        title: "SEO & snippets",
-        text: "Titles, descriptions, search intent, internal links, and page structure aligned.",
+        title: "Business software",
+        text: "Less manual work, fewer lists, and fewer follow-up questions in the workflows that matter every day.",
+        detail: "Tailored applications for invoices, data, and internal processes.",
       },
       {
         n: "03",
-        title: "Hosting & care",
-        text: "Deployment, updates, backups, performance, and technical ownership stay covered.",
+        title: "Be found on Google",
+        text: "The right people should find you and understand what you offer straight away.",
+        detail: "Behind that: search intent, titles, descriptions, and internal linking.",
       },
       {
         n: "04",
-        title: "Speed optimization",
-        text: "Core Web Vitals, asset weight, loading paths, and technical friction are reduced.",
+        title: "Ongoing care",
+        text: "After launch, it stays clear who looks after uptime, changes, and security.",
+        detail: "Hosting, updates, backups, and performance in one place.",
       },
     ],
     pain: [
@@ -564,7 +592,7 @@ const copy = {
       },
       {
         title: "Structure & messaging",
-        text: "Then we define conversion logic, page architecture, and copy direction.",
+        text: "Then we define the page structure, priorities, and the right words.",
       },
       {
         title: "Build & launch",
@@ -590,7 +618,7 @@ const copy = {
       },
       {
         q: "Do you combine SEO with hosting and technology?",
-        a: "Yes. Technical issues, performance, and unclear structure directly affect rankings, click-through rate, and conversion.",
+        a: "Yes. Technical issues, performance, and unclear structure directly affect whether people find, understand, and contact you.",
       },
     ],
   },
@@ -600,48 +628,48 @@ export default async function LandingPage() {
   const { lang, t } = await getServerI18n();
   const isAuthed = !!(await getUserFromCookie());
   const c = copy[lang];
+  const consultationHref = `/consultation?lang=${lang}`;
+  const localizeConsultation = (href: string) =>
+    href.startsWith("/consultation")
+      ? `${href}${href.includes("?") ? "&" : "?"}lang=${lang}`
+      : href;
 
   return (
     <div className="relative z-10 text-pfText">
       <JsonLd data={getOrganizationSchema(lang)} />
 
-      <section className="relative min-h-[92vh] overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
+      <section className="relative min-h-[82vh] overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfAccentDim md:h-[42rem] md:w-[42rem]" />
 
-        <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div className="fade-in">
-            <span className="label-mono mb-8 block">{c.eyebrow}</span>
+            <div className="mb-8 flex items-center gap-4">
+              <span className="font-display text-2xl tracking-widest text-pfText md:text-3xl">PAGEFOUNDRY</span>
+              <span className="h-px w-10 bg-pfAccent" />
+              <span className="label-mono">{c.eyebrow}</span>
+            </div>
             <h1
-              className="font-display leading-[0.86] tracking-wide text-pfText"
-              style={{ fontSize: "clamp(5rem, 15vw, 12rem)" }}
+              className="max-w-5xl font-display leading-[0.9] text-pfText"
+              style={{ fontSize: "clamp(3.8rem, 8vw, 8rem)" }}
             >
-              PAGE
-              <br />
-              FOUNDRY
+              {c.heroHeading}
             </h1>
             <div className="my-8 h-px w-28 bg-gradient-to-r from-pfAccent to-transparent" />
-            <h2
-              className="max-w-3xl font-display leading-none text-pfText"
-              style={{ fontSize: "clamp(2rem, 5vw, 4.6rem)" }}
-            >
-              <HeroRotatingTitle phrases={c.heroPhrases} />
-            </h2>
           </div>
 
           <div className="fade-in-delay-2 max-w-xl lg:pb-4">
-            <p className="mb-8 text-base leading-8 text-pfSubtle md:text-lg">{c.subline}</p>
-            <div className="mb-10 flex flex-wrap gap-2">
-              {c.proof.map((item) => (
-                <span
-                  key={item}
-                  className="border border-pfBorder bg-pfCard px-3 py-2 font-mono text-[0.62rem] uppercase tracking-widest text-pfMuted"
-                >
-                  {item}
-                </span>
+            <p className="mb-8 max-w-lg text-base leading-8 text-pfSubtle md:text-lg">{c.subline}</p>
+            <div className="mb-8 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder sm:grid-cols-2">
+              {c.heroOffers.map((offer) => (
+                <div key={offer.title} className="bg-pfCard p-5">
+                  <h2 className="font-display text-2xl leading-none text-pfText">{offer.title}</h2>
+                  <p className="mt-3 text-sm leading-6 text-pfSubtle">{offer.text}</p>
+                </div>
               ))}
             </div>
+            <p className="mb-8 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfMuted">{c.heroLocation}</p>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Link href="/consultation" className="btn-accent">
+              <Link href={consultationHref} className="btn-accent">
                 {t("hero.ctaFree")} →
               </Link>
               <Link href="#packages" className="btn-outline">
@@ -695,6 +723,7 @@ export default async function LandingPage() {
                 <span className="font-mono text-[0.62rem] tracking-widest text-pfAccent">{service.n}</span>
                 <h3 className="mt-8 font-display text-3xl leading-none text-pfText md:mt-12 md:text-4xl">{service.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-pfSubtle md:mt-4 md:leading-7">{service.text}</p>
+                <p className="mt-3 border-t border-pfBorder pt-3 text-xs leading-5 text-pfMuted">{service.detail}</p>
               </article>
             ))}
           </div>
@@ -716,7 +745,7 @@ export default async function LandingPage() {
             {c.offerPaths.map((path) => (
               <Link
                 key={path.key}
-                href={path.href}
+                href={localizeConsultation(path.href)}
                 className="group flex flex-col bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-72 md:p-10"
               >
                 <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-pfAccent">{path.key}</span>
@@ -846,7 +875,7 @@ export default async function LandingPage() {
           </h2>
           <p className="mx-auto mt-8 max-w-xl text-base leading-8 text-pfSubtle">{c.nextText}</p>
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link href="/consultation" className="btn-accent">
+            <Link href={consultationHref} className="btn-accent">
               {c.consultationCta} →
             </Link>
             <Link href="#packages" className="btn-outline">

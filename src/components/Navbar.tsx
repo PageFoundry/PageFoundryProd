@@ -9,7 +9,9 @@ export default async function Navbar() {
   const isAuthed = !!user;
   const isAdmin = user?.role === "ADMIN";
 
-  const { t } = await getServerI18n();
+  const { t, lang } = await getServerI18n();
+  const homeHref = lang === "en" ? "/en" : "/";
+  const consultationHref = `/consultation?lang=${lang}`;
 
   const labels = {
     packages:     t("navbar.packages"),
@@ -30,7 +32,7 @@ export default async function Navbar() {
 
         {/* Logo */}
         <Link
-          href="/"
+          href={homeHref}
           className="font-display text-2xl tracking-widest text-pfText hover:text-pfAccent transition-colors leading-none"
           style={{ fontFamily: "var(--font-display), Impact, sans-serif" }}
         >
@@ -40,7 +42,7 @@ export default async function Navbar() {
         {/* Desktop nav */}
         <div className="hidden sm:flex items-center gap-7">
           <Link
-            href="/#packages"
+            href={`${homeHref}#packages`}
             className="font-mono text-[0.65rem] tracking-widest uppercase text-pfSubtle hover:text-pfAccent transition-colors"
             style={{ fontFamily: "var(--font-mono)" }}
           >
@@ -48,7 +50,7 @@ export default async function Navbar() {
           </Link>
 
           <Link
-            href="/consultation"
+            href={consultationHref}
             className="font-mono text-[0.65rem] tracking-widest uppercase text-pfSubtle hover:text-pfAccent transition-colors"
             style={{ fontFamily: "var(--font-mono)" }}
           >
@@ -119,7 +121,7 @@ export default async function Navbar() {
                 {t("navbar.login")}
               </Link>
 
-              <Link href="/consultation" className="btn-accent text-[0.62rem] px-4 py-2">
+              <Link href={consultationHref} className="btn-accent text-[0.62rem] px-4 py-2">
                 {t("navbar.getStarted")}
               </Link>
             </>
@@ -129,7 +131,7 @@ export default async function Navbar() {
         </div>
 
         {/* Mobile */}
-        <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} labels={labels} />
+        <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} labels={labels} homeHref={homeHref} consultationHref={consultationHref} />
       </div>
     </nav>
   );

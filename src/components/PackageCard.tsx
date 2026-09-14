@@ -8,13 +8,13 @@ interface Props {
 }
 
 export default async function PackageCard({ id, isAuthed }: Props) {
-  const { t } = await getServerI18n();
+  const { t, lang } = await getServerI18n();
 
   const title = t(`products.${id}.title`);
   const desc  = t(`products.${id}.desc`);
   const from  = t(`products.${id}.from`);
 
-  const href  = id === "free_consultation" ? "/consultation" : `/checkout/${id}`;
+  const href  = id === "free_consultation" ? `/consultation?lang=${lang}` : `/checkout/${id}`;
   const label = id === "free_consultation"
     ? t("products.cta.book")
     : t("products.cta.getStarted");
@@ -61,7 +61,7 @@ export default async function PackageCard({ id, isAuthed }: Props) {
         <Link
           // Neukunden landen in der Beratung mit vorausgewaehltem Paket —
           // nie auf /login. Eingeloggte Bestandskunden gehen direkt in den Checkout.
-          href={isAuthed ? href : `/consultation?package=${id}`}
+          href={isAuthed ? href : `/consultation?package=${id}&lang=${lang}`}
           className="btn-outline mt-auto self-start text-[0.68rem] px-4 py-2"
           prefetch={false}
         >

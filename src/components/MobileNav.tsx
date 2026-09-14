@@ -8,9 +8,9 @@ type Labels = {
   login: string; getStarted: string; logout: string; language: string;
   menu: string; closeMenu: string;
 };
-type Props = { isAuthed: boolean; isAdmin: boolean; labels: Labels; };
+type Props = { isAuthed: boolean; isAdmin: boolean; labels: Labels; homeHref: string; consultationHref: string; };
 
-export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
+export default function MobileNav({ isAuthed, isAdmin, labels, homeHref, consultationHref }: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -82,8 +82,8 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
         </div>
 
         <nav className="relative flex flex-1 flex-col gap-3 px-5 py-6">
-          <Link href="/#packages" onClick={close} className={navLinkClass}>{labels.packages}</Link>
-          <Link href="/consultation" onClick={close} className={navLinkClass}>{labels.consultation}</Link>
+          <Link href={`${homeHref}#packages`} onClick={close} className={navLinkClass}>{labels.packages}</Link>
+          <Link href={consultationHref} onClick={close} className={navLinkClass}>{labels.consultation}</Link>
 
           {isAuthed ? (
             <>
@@ -111,7 +111,7 @@ export default function MobileNav({ isAuthed, isAdmin, labels }: Props) {
           ) : (
             <>
               <Link href="/login" onClick={close} className={navLinkClass}>{labels.login}</Link>
-              <Link href="/consultation" onClick={close} className="btn-accent mt-2 w-full">
+              <Link href={consultationHref} onClick={close} className="btn-accent mt-2 w-full">
                 {labels.getStarted}
               </Link>
             </>

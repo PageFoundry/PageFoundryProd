@@ -104,11 +104,12 @@ export default function ConsultationPage() {
   const attribution = useAttribution();
 
   const allowedDates = useMemo(() => computeAllowedDates(locale), [locale]);
-  const [date, setDate] = useState<string>(() => allowedDates[0]?.value ?? "");
+  const [date, setDate] = useState<string>("");
 
   const [slots, setSlots] = useState<ApiSlot[]>([]);
   const [slotId, setSlotId] = useState<string | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [availability, setAvailability] = useState<Record<string, ApiSlot[]>>({});
+  const [availabilityLoading, setAvailabilityLoading] = useState(true);
   const [slotsError, setSlotsError] = useState<string | null>(null);
 
   const [name, setName] = useState("");
@@ -144,39 +145,69 @@ export default function ConsultationPage() {
     }
   }, []);
 
-  async function loadSlots(d: string) {
-    if (!d) return;
-    setSlots([]);
-    setSlotId(null);
-    setSlotsError(null);
-    setSlotsLoading(true);
-    try {
-      const res = await fetch(`/api/consultation/slots?date=${d}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to load slots");
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAvailability() {
+      if (allowedDates.length === 0) {
+        setAvailability({});
+        setDate("");
+        setSlots([]);
+        setSlotId(null);
+        setAvailabilityLoading(false);
+        return;
+      }
+
+      setAvailabilityLoading(true);
       const timeFormat = new Intl.DateTimeFormat(locale, {
         hour: "2-digit",
         minute: "2-digit",
         timeZone: TIMEZONE,
       });
-      const list = ((data.slots ?? []) as ApiSlot[]).map((slot) => ({
-        ...slot,
-        label: `${timeFormat.format(new Date(slot.start))}–${timeFormat.format(new Date(slot.end))} (${TIMEZONE})`,
-      }));
-      setSlots(list);
-      if (list.length > 0) setSlotId(list[0].id);
-      if (list.length === 0) setSlotsError(t("consultation.noSlots"));
-    } catch {
-      setSlotsError(t("consultation.noSlots"));
-    } finally {
-      setSlotsLoading(false);
-    }
-  }
+      const entries = await Promise.all(
+        allowedDates.map(async (day) => {
+          try {
+            const res = await fetch(`/api/consultation/slots?date=${day.value}`);
+            const data = await res.json();
+            if (!res.ok) return [day.value, [] as ApiSlot[]] as const;
+            const list = ((data.slots ?? []) as ApiSlot[]).map((slot) => ({
+              ...slot,
+              label: `${timeFormat.format(new Date(slot.start))}–${timeFormat.format(new Date(slot.end))} (${TIMEZONE})`,
+            }));
+            return [day.value, list] as const;
+          } catch {
+            return [day.value, [] as ApiSlot[]] as const;
+          }
+        })
+      );
 
-  useEffect(() => {
-    if (date) loadSlots(date);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]);
+      if (cancelled) return;
+
+      const nextAvailability = Object.fromEntries(entries);
+      const firstAvailable = allowedDates.find((day) => nextAvailability[day.value]?.length > 0);
+      const nextDate = firstAvailable?.value ?? allowedDates[0].value;
+      const nextSlots = nextAvailability[nextDate] ?? [];
+      setAvailability(nextAvailability);
+      setDate(nextDate);
+      setSlots(nextSlots);
+      setSlotId(nextSlots[0]?.id ?? null);
+      setSlotsError(nextSlots.length > 0 ? null : t("consultation.noSlots"));
+      setAvailabilityLoading(false);
+    }
+
+    void loadAvailability();
+    return () => {
+      cancelled = true;
+    };
+  }, [allowedDates, locale, t]);
+
+  function selectDate(value: string) {
+    const nextSlots = availability[value] ?? [];
+    setDate(value);
+    setSlots(nextSlots);
+    setSlotId(nextSlots[0]?.id ?? null);
+    setSlotsError(nextSlots.length > 0 ? null : t("consultation.noSlots"));
+  }
 
   function validate(): FieldErrors {
     const errors: FieldErrors = {};
@@ -437,32 +468,44 @@ export default function ConsultationPage() {
                 {allowedDates.length === 0 ? (
                   <p className="text-pfMuted font-mono text-xs">{t("consultation.noDates")}</p>
                 ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {allowedDates.map((d) => {
-                      const selected = d.value === date;
-                      return (
-                        <button
-                          key={d.value}
-                          type="button"
-                          aria-pressed={selected}
-                          onClick={() => setDate(d.value)}
-                          className={`px-3 py-2 border text-xs font-mono rounded-sm transition-colors ${
-                            selected
-                              ? "border-pfBorderAccent bg-pfAccentDim text-pfAccent"
-                              : "border-pfBorder bg-pfSurface text-pfSubtle hover:border-pfBorderMid hover:text-pfText"
-                          }`}
-                        >
-                          {d.label}
-                        </button>
-                      );
-                    })}
+                  <div>
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {allowedDates.map((d) => {
+                        const selected = d.value === date;
+                        const daySlots = availability[d.value];
+                        const knownEmpty = !availabilityLoading && daySlots?.length === 0;
+                        return (
+                          <button
+                            key={d.value}
+                            type="button"
+                            aria-pressed={selected}
+                            aria-label={knownEmpty ? `${d.label}: ${t("consultation.noSlotsShort")}` : d.label}
+                            disabled={availabilityLoading || knownEmpty}
+                            onClick={() => selectDate(d.value)}
+                            className={`flex flex-col items-start border px-3 py-2 text-xs font-mono rounded-sm transition-colors ${
+                              knownEmpty
+                                ? "cursor-not-allowed border-pfBorder bg-pfBg text-pfMuted opacity-60"
+                                : selected
+                                  ? "border-pfBorderAccent bg-pfAccentDim text-pfAccent"
+                                  : "border-pfBorder bg-pfSurface text-pfSubtle hover:border-pfBorderMid hover:text-pfText"
+                            }`}
+                          >
+                            <span>{d.label}</span>
+                            {knownEmpty && <span className="mt-1 text-[0.55rem] uppercase tracking-wider">— {t("consultation.noSlotsShort")}</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {availabilityLoading && (
+                      <p className="text-pfMuted font-mono text-xs" role="status">{t("consultation.loadingSlots")}</p>
+                    )}
                   </div>
                 )}
               </fieldset>
 
               {/* Time slot */}
               <div className="flex flex-col gap-1">
-                {slotsLoading ? (
+                {availabilityLoading ? (
                   <p className="text-pfMuted font-mono text-xs tracking-widest" role="status">
                     {t("consultation.loadingSlots")}
                   </p>
@@ -566,7 +609,7 @@ export default function ConsultationPage() {
 
               <button
                 type="submit"
-                disabled={submitting || slotsLoading}
+                disabled={submitting || availabilityLoading}
                 className="btn-accent justify-center disabled:opacity-40 disabled:cursor-wait"
               >
                 {submitting ? t("consultation.submitting") : `${t("consultation.book")} →`}

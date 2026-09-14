@@ -94,6 +94,7 @@
     "submitting": "Wird gesendet…",
     "loadingSlots": "Verfügbare Zeiten werden geladen…",
     "noSlots": "Keine freien Zeiten für diesen Tag.",
+    "noSlotsShort": "keine freien Zeiten",
     "noDates": "Keine verfügbaren Termine in den nächsten 14 Tagen.",
     "ok": "Anfrage erhalten. Wir haben dir die Zoom-Details gemailt.",
     "failed": "Übermittlung fehlgeschlagen. Bitte erneut versuchen.",

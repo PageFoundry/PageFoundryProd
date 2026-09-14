@@ -94,6 +94,7 @@
     "submitting": "Submitting…",
     "loadingSlots": "Loading available slots…",
     "noSlots": "No slots available for this day.",
+    "noSlotsShort": "no free times",
     "noDates": "No available dates in the next 14 days.",
     "ok": "Request received. We emailed you the Zoom details.",
     "failed": "Submission failed. Please try again.",

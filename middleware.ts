@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isLang, type Lang } from "@/i18n/config";
 
 const AUTH_PREFIXES = ["/checkout", "/dashboard", "/settings", "/admin"];
 
@@ -55,10 +56,30 @@ export function middleware(req: NextRequest) {
   }
 
   const requestHeaders = new Headers(req.headers);
-  if (GERMAN_ONLY_PATHS.has(pathname)) {
-    requestHeaders.set(FORCED_LANG_HEADER, "de");
+  let forcedLang: Lang | undefined;
+  if (GERMAN_ONLY_PATHS.has(pathname) || pathname === "/") {
+    forcedLang = "de";
+  } else if (pathname === "/en") {
+    forcedLang = "en";
   } else {
-    requestHeaders.delete(FORCED_LANG_HEADER);
+    const requestedLang = req.nextUrl.searchParams.get("lang");
+    if (isLang(requestedLang)) forcedLang = requestedLang;
   }
-  return NextResponse.next({ request: { headers: requestHeaders } });
+
+  if (forcedLang) requestHeaders.set(FORCED_LANG_HEADER, forcedLang);
+  else requestHeaders.delete(FORCED_LANG_HEADER);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  if (forcedLang && (pathname === "/" || pathname === "/en" || req.nextUrl.searchParams.has("lang"))) {
+    response.cookies.set({
+      name: "lang",
+      value: forcedLang,
+      httpOnly: true,
+      secure: req.nextUrl.protocol === "https:",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+  return response;
 }
