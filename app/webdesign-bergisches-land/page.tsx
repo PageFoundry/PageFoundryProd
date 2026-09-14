@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Webdesign Bergisches Land";
 const DESCRIPTION =
-  "Webdesign aus Hückeswagen für das Bergische Land: Landingpages und Websites für Remscheid, Wermelskirchen, Wipperfürth und Umgebung — transparente Festpreise ab 590 €. Mit persönlicher Betreuung.";
+  "Webdesign im Bergischen Land für Websites und Landingpages: klare Angebote, mobile Umsetzung und transparente Festpreise ab 590 €. Kostenlose Erstberatung anfragen.";
 const URL = "https://pagefoundry.de/webdesign-bergisches-land";
 
 const TAX_NOTE =
