@@ -59,7 +59,7 @@ const data: ServiceLandingData = {
       "Lokale Auffindbarkeit: verständliche Standortangaben und konsistente Kontaktdaten",
       "Verständliche Berichte: was wurde gemacht, was hat es bewegt",
     ],
-    note: "Den konkreten Analyse- und Umsetzungsumfang legen wir im Angebot fest. Bestimmte Rankings, Klickzahlen oder Umsatzsteigerungen können wir nicht garantieren. Der Fortschritt wird anhand verfügbarer Suchdaten und nachvollziehbarer Anfragen bewertet.",
+    note: "Je nach Auftrag erhalten Sie eine priorisierte Maßnahmenliste aus der Analyse, eine Dokumentation der tatsächlich geänderten Punkte aus der Umsetzung und eine Auswertung verfügbarer Suchdaten aus der Kontrolle. Laufende Pflege und der erweiterte Monatsbericht gehören nur zu Care+SEO; der konkrete Umfang wird im Angebot festgelegt. Rankings, Klickzahlen oder Umsatzsteigerungen können wir nicht garantieren.",
   },
   pricing: {
     label: "Preise",
