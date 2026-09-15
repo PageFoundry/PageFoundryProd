@@ -40,6 +40,13 @@ export type LeadInput = {
   callId?: string;
   summary?: string;
   noAppointmentReason?: string;
+  callType?: string;
+  leadQuality?: string;
+  serviceInterest?: string;
+  urgency?: string;
+  budgetMentioned?: boolean;
+  followUpRequired?: boolean;
+  callerSentiment?: string;
 };
 
 export type SlotAlternative = {

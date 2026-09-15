@@ -2,9 +2,10 @@
 
 ## RetellAI Call Agent
 
-Die Retell-Integration stellt drei serverseitige Endpunkte bereit:
+Die Retell-Integration stellt vier serverseitige Endpunkte bereit:
 
 - `POST /api/retell/webhook`
+- `POST /api/retell/tools/check-availability`
 - `POST /api/retell/tools/book-appointment`
 - `POST /api/retell/tools/save-lead`
 
@@ -18,7 +19,7 @@ APP_BASE_URL=https://pagefoundry.de
 DEFAULT_TIMEZONE=Europe/Berlin
 ```
 
-`RETELL_WEBHOOK_SECRET` wird für die HMAC-Prüfung von `x-retell-signature` genutzt. Wenn es leer ist, fällt die App auf `RETELL_API_KEY` zurück, passend zur Retell-Doku. Lokal ohne Secret wird die Signaturprüfung übersprungen.
+`RETELL_WEBHOOK_SECRET` wird für die HMAC-Prüfung von `x-retell-signature` genutzt. Wenn es leer ist, fällt die App auf `RETELL_API_KEY` zurück, passend zur Retell-Doku. Ohne eines dieser Secrets werden Requests abgelehnt.
 
 ### Retell Setup
 
@@ -33,6 +34,7 @@ https://pagefoundry.de/api/retell/webhook
 Tool URLs:
 
 ```text
+https://pagefoundry.de/api/retell/tools/check-availability
 https://pagefoundry.de/api/retell/tools/book-appointment
 https://pagefoundry.de/api/retell/tools/save-lead
 ```
@@ -43,7 +45,7 @@ Der fertige Agent-Prompt liegt unter `docs/retell-agent-system-prompt.md`.
 
 ### Kalender
 
-Das interne Calendar Tool nutzt `InternalCalendarProvider` und speichert Termine in `calendar_events`. Leads werden in `call_leads` gespeichert. Die Provider-Abstraktion liegt unter `src/lib/retell/calendar.ts`, damit später Cal.com, Google Calendar oder ein internes Kalender-Backend ausgetauscht werden können.
+Das interne Calendar Tool nutzt `InternalCalendarProvider` und speichert Termine in `calendar_events`. Jeder eingehende Call wird über `call_ended` bzw. `call_analyzed` idempotent in `call_leads` erfasst; `save_lead` ist ausschließlich für relevante Kontakte mit weiterem Handlungsbedarf vorgesehen. Die Provider-Abstraktion liegt unter `src/lib/retell/calendar.ts`, damit später Cal.com, Google Calendar oder ein internes Kalender-Backend ausgetauscht werden können.
 
 Terminregeln:
 

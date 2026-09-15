@@ -55,6 +55,15 @@ export function formatGermanDateTime(date: Date, timezone = DEFAULT_TIMEZONE) {
   }).format(date);
 }
 
-export function formatIsoInTimezone(date: Date) {
-  return date.toISOString();
+export function formatIsoInTimezone(date: Date, timezone = DEFAULT_TIMEZONE) {
+  const parts = getLocalParts(date, timezone);
+  const localAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, date.getUTCSeconds());
+  const offsetMinutes = Math.round((localAsUtc - date.getTime()) / 60_000);
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const absoluteOffset = Math.abs(offsetMinutes);
+  const offsetHours = Math.floor(absoluteOffset / 60);
+  const offsetRemainder = absoluteOffset % 60;
+  const pad = (value: number) => String(value).padStart(2, "0");
+
+  return `${parts.year}-${pad(parts.month)}-${pad(parts.day)}T${pad(parts.hour)}:${pad(parts.minute)}:${pad(date.getUTCSeconds())}${sign}${pad(offsetHours)}:${pad(offsetRemainder)}`;
 }

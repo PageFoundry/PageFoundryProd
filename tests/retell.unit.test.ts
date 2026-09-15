@@ -4,9 +4,10 @@ import crypto from "node:crypto";
 import { prisma } from "../src/lib/prisma";
 import { calendarProvider } from "../src/lib/retell/calendar";
 import { buildDiscordLeadPayload } from "../src/lib/retell/discord";
-import { upsertCallLead } from "../src/lib/retell/leads";
+import { extractLeadInputFromRetellCall, shouldNotifyCallLead, upsertCallLead } from "../src/lib/retell/leads";
 import { handleRetellWebhookEvent } from "../src/lib/retell/webhook";
 import { verifyRetellSignature } from "../src/lib/retell/signature";
+import { parseRetellToolBody } from "../src/lib/retell/validation";
 
 const PREFIX = `test-retell-${Date.now()}`;
 
@@ -124,6 +125,13 @@ describe("Retell leads and notifications", () => {
           project_type: "seo",
           appointment_requested: false,
           no_appointment_reason: "Möchte erst intern sprechen",
+          call_type: "new_interest",
+          lead_quality: "high",
+          service_interest: "seo",
+          urgency: "normal",
+          budget_mentioned: false,
+          follow_up_required: true,
+          caller_sentiment: "positive",
         },
       },
     };
@@ -135,6 +143,69 @@ describe("Retell leads and notifications", () => {
     assert.equal(first.leadId, second.leadId);
     assert.equal(lead.projectType, "seo");
     assert.equal(lead.summary, "SEO-Anfrage ohne Termin.");
+    assert.equal(lead.callType, "new_interest");
+    assert.equal(lead.leadQuality, "high");
+    assert.equal(lead.budgetMentioned, false);
+    assert.equal(lead.followUpRequired, true);
+    assert.equal(lead.callerSentiment, "positive");
+  });
+
+  test("keeps booking state when the analyzed webhook has no booking fields", async () => {
+    const callId = `${PREFIX}-booked-webhook`;
+    const booked = await calendarProvider.createBooking(
+      booking(callId, "2030-05-09T14:00:00+02:00", "2030-05-09T14:30:00+02:00"),
+    );
+    assert.equal(booked.success, true);
+
+    await handleRetellWebhookEvent("call_analyzed", {
+      call_id: callId,
+      from_number: "+491721234567",
+      call_status: "ended",
+      call_analysis: { call_summary: "Termin wurde erfolgreich gebucht." },
+    });
+
+    const lead = await prisma.callLead.findUniqueOrThrow({ where: { retellCallId: callId } });
+    assert.equal(lead.appointmentBooked, true);
+    assert.ok(lead.appointmentDateTime);
+  });
+
+  test("uses the caller number from the Retell function call context", () => {
+    const parsed = parseRetellToolBody({
+      name: "save_lead",
+      args: { reason: "Rückrufwunsch" },
+      call: {
+        call_id: `${PREFIX}-context`,
+        from_number: "+491761234567",
+        transcript: "Ich brauche einen Rückruf.",
+      },
+    }) as Record<string, unknown>;
+
+    assert.equal(parsed.phone, "+491761234567");
+    assert.equal(parsed.callId, `${PREFIX}-context`);
+    assert.equal(parsed.transcript, "Ich brauche einen Rückruf.");
+  });
+
+  test("reads Retell's current dynamic variable field", () => {
+    const lead = extractLeadInputFromRetellCall("call_analyzed", {
+      call_id: `${PREFIX}-dynamic`,
+      from_number: "+491761234567",
+      retell_llm_dynamic_variables: {
+        customer_name: "Dynamic Kunde",
+        company_name: "Dynamic GmbH",
+        project_type: "redesign",
+      },
+    });
+
+    assert.equal(lead.name, "Dynamic Kunde");
+    assert.equal(lead.company, "Dynamic GmbH");
+    assert.equal(lead.projectType, "redesign");
+    assert.equal(lead.phone, "+491761234567");
+  });
+
+  test("does not notify for explicitly non-relevant calls", () => {
+    assert.equal(shouldNotifyCallLead({ callType: "wrong_number", followUpRequired: null }), false);
+    assert.equal(shouldNotifyCallLead({ callType: "new_interest", followUpRequired: false }), false);
+    assert.equal(shouldNotifyCallLead({ callType: "new_interest", followUpRequired: true }), true);
   });
 
   test("validates Retell signatures", () => {
@@ -145,5 +216,6 @@ describe("Retell leads and notifications", () => {
 
     assert.equal(verifyRetellSignature(rawBody, `v=${timestamp},d=${digest}`, secret), true);
     assert.equal(verifyRetellSignature(rawBody, `v=${timestamp},d=deadbeef`, secret), false);
+    assert.equal(verifyRetellSignature(rawBody, `v=${timestamp},d=${digest}`, ""), false);
   });
 });

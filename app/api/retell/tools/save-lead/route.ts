@@ -29,8 +29,6 @@ export async function POST(req: NextRequest) {
 
   const lead = await upsertCallLead({
     ...parsed.data,
-    appointmentRequested: false,
-    appointmentBooked: false,
     callStatus: "lead_saved",
   });
 
@@ -44,6 +42,13 @@ export async function POST(req: NextRequest) {
       reason: lead.reason,
       summary: lead.summary,
       callId: lead.retellCallId,
+      callType: lead.callType,
+      leadQuality: lead.leadQuality,
+      serviceInterest: lead.serviceInterest,
+      urgency: lead.urgency,
+      budgetMentioned: lead.budgetMentioned,
+      followUpRequired: lead.followUpRequired,
+      callerSentiment: lead.callerSentiment,
       updatedAt: lead.updatedAt.toISOString(),
     },
   });

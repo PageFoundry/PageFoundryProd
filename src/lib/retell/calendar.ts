@@ -116,8 +116,8 @@ export async function findSlotAlternatives(
       (await isSlotAvailable(cursor, end))
     ) {
       alternatives.push({
-        startDateTime: formatIsoInTimezone(cursor),
-        endDateTime: formatIsoInTimezone(end),
+        startDateTime: formatIsoInTimezone(cursor, timezone),
+        endDateTime: formatIsoInTimezone(end, timezone),
       });
     }
 

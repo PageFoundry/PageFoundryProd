@@ -8,7 +8,7 @@ export function getRetellSigningSecret() {
 
 export function verifyRetellSignature(rawBody: string, signature: string | null, secret = getRetellSigningSecret()) {
   if (!secret) {
-    return true;
+    return false;
   }
 
   if (!signature) {

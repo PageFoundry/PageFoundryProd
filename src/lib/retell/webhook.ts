@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { sendDiscordLeadNotification } from "./discord";
-import { extractLeadInputFromRetellCall, upsertCallLead } from "./leads";
+import { extractLeadInputFromRetellCall, shouldNotifyCallLead, upsertCallLead } from "./leads";
 import { notifyCrmEvent } from "@/lib/crmBridge";
 
-const FINAL_EVENTS = new Set(["call_ended", "call_analyzed"]);
+const ANALYZED_EVENT = "call_analyzed";
 
 export async function handleRetellWebhookEvent(event: string, call: Record<string, unknown>) {
   const leadInput = extractLeadInputFromRetellCall(event, call);
@@ -18,11 +18,18 @@ export async function handleRetellWebhookEvent(event: string, call: Record<strin
       reason: lead.reason,
       summary: lead.summary,
       callId: lead.retellCallId,
+      callType: lead.callType,
+      leadQuality: lead.leadQuality,
+      serviceInterest: lead.serviceInterest,
+      urgency: lead.urgency,
+      budgetMentioned: lead.budgetMentioned,
+      followUpRequired: lead.followUpRequired,
+      callerSentiment: lead.callerSentiment,
       updatedAt: lead.updatedAt.toISOString(),
     },
   });
 
-  if (!FINAL_EVENTS.has(event)) {
+  if (event !== ANALYZED_EVENT) {
     return { leadId: lead.id, notified: false };
   }
 
@@ -33,6 +40,15 @@ export async function handleRetellWebhookEvent(event: string, call: Record<strin
 
   if (currentLead?.discordNotifiedAt) {
     return { leadId: lead.id, notified: false };
+  }
+
+  const analyzedLead = await prisma.callLead.findUnique({
+    where: { id: lead.id },
+    select: { callType: true, followUpRequired: true },
+  });
+
+  if (!analyzedLead || !shouldNotifyCallLead(analyzedLead)) {
+    return { leadId: lead.id, notified: false, skipped: true };
   }
 
   try {

@@ -417,6 +417,13 @@ model CallLead {
   callStatus           String             @default("new")
   summary              String?
   noAppointmentReason  String?
+  callType             String?
+  leadQuality          String?
+  serviceInterest      String?
+  urgency              String?
+  budgetMentioned      Boolean?
+  followUpRequired     Boolean?
+  callerSentiment      String?
   discordNotifiedAt    DateTime?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
