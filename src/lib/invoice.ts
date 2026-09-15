@@ -393,3 +393,157 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
 }
+
+type OptionDocumentPdfInput = {
+  number: string;
+  issueDate: Date;
+  notes: string | null;
+  cmsTotalCents: number;
+  maintenanceTotalCents: number;
+  client: {
+    name: string;
+    companyName: string | null;
+    billingName: string | null;
+    billingAddressLine1: string | null;
+    billingAddressLine2: string | null;
+    postalCode: string | null;
+    city: string | null;
+    country: string;
+  };
+  items: Array<{
+    optionType: "BASE" | "CMS" | "MAINTENANCE";
+    description: string;
+    quantity: number;
+    unitPriceCents: number;
+    lineGrossCents: number;
+  }>;
+};
+
+export async function generateOptionDocumentPDF(document: OptionDocumentPdfInput): Promise<Buffer> {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595.28, 841.89]);
+  const { width, height } = page.getSize();
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const margin = 50;
+  const accent = rgb(0.79, 0.66, 0.3);
+  const dark = rgb(0.08, 0.08, 0.08);
+  const muted = rgb(0.36, 0.36, 0.36);
+  const light = rgb(0.95, 0.95, 0.93);
+
+  function text(value: string, x: number, y: number, size = 10, isBold = false, color = dark) {
+    const normalized = normalizePdfText(value);
+    page.drawText(normalized, { x, y, size, font: isBold ? bold : regular, color });
+  }
+
+  function right(value: string, x: number, y: number, size = 10, isBold = false) {
+    const font = isBold ? bold : regular;
+    const normalized = normalizePdfText(value);
+    page.drawText(normalized, { x: x - font.widthOfTextAtSize(normalized, size), y, size, font, color: dark });
+  }
+
+  function lines(value: string, maxChars = 58) {
+    const words = normalizePdfText(value).split(/\s+/).filter(Boolean);
+    const output: string[] = [];
+    let line = "";
+    for (const word of words) {
+      const next = line ? `${line} ${word}` : word;
+      if (next.length > maxChars && line) {
+        output.push(line);
+        line = word;
+      } else {
+        line = next;
+      }
+    }
+    if (line) output.push(line);
+    return output;
+  }
+
+  let logo: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
+  try {
+    logo = await pdfDoc.embedPng(await fs.readFile(path.join(process.cwd(), "public", "PAGEfoundry.png")));
+  } catch {
+    logo = null;
+  }
+
+  page.drawRectangle({ x: 0, y: height - 92, width, height: 92, color: rgb(0, 0, 0) });
+  page.drawRectangle({ x: 0, y: height - 93, width, height: 1, color: accent });
+  if (logo) {
+    const logoH = 60;
+    const logoW = (logo.width / logo.height) * logoH;
+    page.drawImage(logo, { x: margin, y: height - 46 - logoH / 2, width: logoW, height: logoH });
+    text("Webdesign, Automatisierung und digitale Services", margin + logoW + 14, height - 50, 9, false, rgb(0.82, 0.82, 0.78));
+  } else {
+    text("Pagefoundry", margin, height - 48, 22, true, rgb(1, 1, 1));
+    text("Webdesign, Automatisierung und digitale Services", margin, height - 66, 9, false, rgb(0.82, 0.82, 0.78));
+  }
+  text("AUSWAHL OPTIONEN", width - 202, height - 44, 16, true, accent);
+  text(document.number, width - 202, height - 62, 10, false, rgb(1, 1, 1));
+
+  const client = document.client;
+  const recipient = [
+    client.billingName ?? client.companyName ?? client.name,
+    client.billingAddressLine1,
+    client.billingAddressLine2,
+    [client.postalCode, client.city].filter(Boolean).join(" "),
+    client.country && client.country !== "DE" ? client.country : null,
+  ].filter(Boolean) as string[];
+  text("Pagefoundry · Kastanienweg 20a · 42499 Hueckeswagen", margin, height - 125, 7, false, muted);
+  recipient.forEach((line, index) => text(line, margin, height - 154 - index * 14, 10, index === 0));
+
+  const metaX = width - 220;
+  page.drawRectangle({ x: metaX, y: height - 198, width: 170, height: 70, color: light });
+  text("Erstellt am", metaX + 14, height - 152, 8, false, muted);
+  right(pdfDate(document.issueDate), metaX + 156, height - 152, 9, true);
+  text("Status", metaX + 14, height - 176, 8, false, muted);
+  right("Bitte auswählen", metaX + 156, height - 176, 9, true);
+
+  let y = height - 240;
+  text("Gemeinsame Leistungen", margin, y, 10, true);
+  text("Diese Positionen sind in beiden Varianten enthalten.", margin, y - 15, 8, false, muted);
+  y -= 37;
+  page.drawLine({ start: { x: margin, y }, end: { x: width - margin, y }, thickness: 1, color: accent });
+  y -= 19;
+  const baseItems = document.items.filter((item) => item.optionType === "BASE");
+  if (baseItems.length === 0) {
+    text("Keine gemeinsamen Positionen", margin, y, 9, false, muted);
+    y -= 30;
+  } else {
+    for (const item of baseItems) {
+      const itemLines = lines(item.description, 48);
+      text(itemLines[0] ?? item.description, margin, y, 10, true);
+      if (item.quantity > 1) text(`${item.quantity} x ${pdfMoney(item.unitPriceCents)}`, margin, y - 13, 8, false, muted);
+      itemLines.slice(1, 2).forEach((line, index) => text(line, margin, y - 14 - index * 11, 8, false, muted));
+      right(pdfMoney(item.lineGrossCents), width - margin, y, 9, true);
+      y -= Math.max(32, 22 + itemLines.slice(1, 2).length * 11);
+    }
+  }
+
+  const optionCards = [
+    { type: "CMS" as const, title: "VARIANTE A · CMS", subtitle: "Einmaliger CMS-Aufpreis", total: document.cmsTotalCents },
+    { type: "MAINTENANCE" as const, title: "VARIANTE B · WARTUNG", subtitle: "Monitoring, Backups und ein News-Beitrag pro Monat", total: document.maintenanceTotalCents },
+  ];
+
+  for (const option of optionCards) {
+    const cardHeight = 88;
+    y -= 8;
+    page.drawRectangle({ x: margin, y: y - cardHeight, width: width - margin * 2, height: cardHeight, color: light });
+    page.drawRectangle({ x: margin, y: y - cardHeight, width: 4, height: cardHeight, color: accent });
+    text(option.title, margin + 16, y - 20, 9, true, accent);
+    text(option.subtitle, margin + 16, y - 36, 8, false, muted);
+    const items = document.items.filter((item) => item.optionType === option.type);
+    items.slice(0, 2).forEach((item, index) => text(item.description, margin + 16, y - 53 - index * 11, 9, index === 0));
+    text("Gesamtbetrag", width - 190, y - 38, 8, false, muted);
+    right(pdfMoney(option.total), width - margin - 14, y - 56, 13, true);
+    y -= cardHeight + 10;
+  }
+
+  const notesY = Math.max(y - 8, 114);
+  text("Bitte wählen Sie eine der beiden Varianten. Dieses Dokument ist keine Rechnung.", margin, notesY, 8, false, muted);
+  if (document.notes) {
+    lines(document.notes, 92).slice(0, 2).forEach((line, index) => text(line, margin, notesY - 15 - index * 11, 8, false, muted));
+  }
+  text("Pagefoundry · Fabian Franke · Kastanienweg 20a · 42499 Hueckeswagen · pagefoundry.de", margin, 68, 7, false, muted);
+
+  return Buffer.from(await pdfDoc.save());
+}

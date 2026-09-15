@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/email";
-import { generateServiceInvoicePDF } from "@/lib/invoice";
+import { generateOptionDocumentPDF, generateServiceInvoicePDF } from "@/lib/invoice";
 
 const invoiceInclude = {
   client: true,
@@ -10,6 +10,13 @@ const invoiceInclude = {
 };
 
 export type HqInvoice = Prisma.InvoiceGetPayload<{ include: typeof invoiceInclude }>;
+
+const optionDocumentInclude = {
+  client: true,
+  items: { orderBy: [{ optionType: "asc" as const }, { createdAt: "asc" as const }] },
+};
+
+export type HqOptionDocument = Prisma.OptionDocumentGetPayload<{ include: typeof optionDocumentInclude }>;
 
 export function parseCents(value: unknown): number {
   if (typeof value === "number" && Number.isFinite(value)) return Math.round(value * 100);
@@ -51,9 +58,21 @@ async function nextInvoiceNumber(tx: Prisma.TransactionClient, issueDate: Date) 
   return `${prefix}${String((Number.isFinite(latestSeq) ? latestSeq : 0) + 1).padStart(3, "0")}`;
 }
 
+async function nextOptionDocumentNumber(tx: Prisma.TransactionClient, issueDate: Date) {
+  const year = issueDate.getFullYear();
+  const prefix = `PF-OPTION-${year}-`;
+  const latest = await tx.optionDocument.findFirst({
+    where: { number: { startsWith: prefix } },
+    orderBy: { number: "desc" },
+    select: { number: true },
+  });
+  const latestSeq = latest?.number ? Number(latest.number.slice(prefix.length)) : 0;
+  return `${prefix}${String((Number.isFinite(latestSeq) ? latestSeq : 0) + 1).padStart(3, "0")}`;
+}
+
 export async function getPagefoundryHqSnapshot() {
   const now = new Date();
-  const [clients, services, activeClientServices, invoices] = await Promise.all([
+  const [clients, services, activeClientServices, invoices, optionDocuments] = await Promise.all([
     prisma.businessClient.findMany({
       orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
       include: {
@@ -72,6 +91,11 @@ export async function getPagefoundryHqSnapshot() {
     }),
     prisma.invoice.findMany({
       include: invoiceInclude,
+      orderBy: { issueDate: "desc" },
+      take: 100,
+    }),
+    prisma.optionDocument.findMany({
+      include: { client: true },
       orderBy: { issueDate: "desc" },
       take: 100,
     }),
@@ -96,6 +120,7 @@ export async function getPagefoundryHqSnapshot() {
     services,
     activeClientServices,
     invoices,
+    optionDocuments,
     summary: {
       clientCount: clients.length,
       activeClientCount: clients.filter((client) => client.status === "ACTIVE").length,
@@ -248,6 +273,67 @@ export async function createInvoice(input: Record<string, unknown>) {
   });
 }
 
+export async function createOptionDocument(input: Record<string, unknown>) {
+  const clientId = cleanString(input.clientId);
+  const rawItems = Array.isArray(input.items) ? input.items : [];
+  if (!clientId) throw new Error("option_document_client_required");
+  if (rawItems.length === 0) throw new Error("option_document_items_required");
+
+  const issueDate = cleanString(input.issueDate) ? new Date(String(input.issueDate)) : new Date();
+  if (Number.isNaN(issueDate.getTime())) throw new Error("option_document_date_invalid");
+
+  const items = rawItems.map((raw) => {
+    const item = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+    const optionType = item.optionType;
+    const description = cleanString(item.description);
+    const quantity = Math.max(1, Math.round(Number(item.quantity ?? 1)));
+    const unitPriceCents = parseCents(item.unitPrice);
+    const taxRateBps = Math.round(Number(item.taxRate ?? 0) * 100);
+    if (!["BASE", "CMS", "MAINTENANCE"].includes(String(optionType))) {
+      throw new Error("option_document_item_type_invalid");
+    }
+    if (!description) throw new Error("option_document_item_description_required");
+    if (unitPriceCents < 0) throw new Error("option_document_item_price_invalid");
+    if (taxRateBps < 0 || taxRateBps > 10000) throw new Error("option_document_item_tax_invalid");
+    return {
+      optionType: optionType as "BASE" | "CMS" | "MAINTENANCE",
+      description,
+      quantity,
+      unitPriceCents,
+      taxRateBps,
+      ...calculateLine(quantity, unitPriceCents, taxRateBps),
+    };
+  });
+
+  const baseTotalCents = items
+    .filter((item) => item.optionType === "BASE")
+    .reduce((sum, item) => sum + item.lineGrossCents, 0);
+  const cmsItems = items.filter((item) => item.optionType === "CMS");
+  const maintenanceItems = items.filter((item) => item.optionType === "MAINTENANCE");
+  if (cmsItems.length === 0) throw new Error("option_document_cms_required");
+  if (maintenanceItems.length === 0) throw new Error("option_document_maintenance_required");
+
+  const cmsTotalCents = baseTotalCents + cmsItems.reduce((sum, item) => sum + item.lineGrossCents, 0);
+  const maintenanceTotalCents = baseTotalCents + maintenanceItems.reduce((sum, item) => sum + item.lineGrossCents, 0);
+
+  return prisma.$transaction(async (tx) => {
+    await tx.businessClient.findUniqueOrThrow({ where: { id: clientId } });
+    const number = await nextOptionDocumentNumber(tx, issueDate);
+    return tx.optionDocument.create({
+      data: {
+        number,
+        clientId,
+        issueDate,
+        notes: cleanString(input.notes),
+        cmsTotalCents,
+        maintenanceTotalCents,
+        items: { create: items },
+      },
+      include: optionDocumentInclude,
+    });
+  });
+}
+
 export async function updateInvoiceStatus(invoiceId: string, status: string) {
   if (!["DRAFT", "SENT", "PAID", "OVERDUE", "CANCELLED"].includes(status)) {
     throw new Error("invoice_status_invalid");
@@ -289,6 +375,17 @@ export async function getInvoiceForPdf(invoiceId: string) {
     where: { id: invoiceId },
     include: invoiceInclude,
   });
+}
+
+export async function getOptionDocumentForPdf(optionDocumentId: string) {
+  return prisma.optionDocument.findUniqueOrThrow({
+    where: { id: optionDocumentId },
+    include: optionDocumentInclude,
+  });
+}
+
+export async function generateOptionDocumentPdf(optionDocumentId: string) {
+  return generateOptionDocumentPDF(await getOptionDocumentForPdf(optionDocumentId));
 }
 
 export async function sendInvoiceEmail(invoiceId: string) {

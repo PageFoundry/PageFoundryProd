@@ -71,6 +71,12 @@ enum PaymentMethod {
   OTHER
 }
 
+enum OptionDocumentItemType {
+  BASE
+  CMS
+  MAINTENANCE
+}
+
 model User {
   id             String   @id @default(cuid())
   email          String   @unique
@@ -141,6 +147,7 @@ model BusinessClient {
   contacts ClientContact[]
   services ClientService[]
   invoices Invoice[]
+  optionDocuments OptionDocument[]
 
   @@index([status])
   @@index([name])
@@ -264,6 +271,42 @@ model Payment {
 
   @@index([invoiceId])
   @@index([paidAt])
+}
+
+model OptionDocument {
+  id                    String   @id @default(cuid())
+  number                String   @unique
+  clientId              String
+  client                BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  issueDate             DateTime @default(now())
+  notes                 String?
+  cmsTotalCents         Int      @default(0)
+  maintenanceTotalCents Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  items OptionDocumentItem[]
+
+  @@index([clientId])
+  @@index([issueDate])
+}
+
+model OptionDocumentItem {
+  id             String                 @id @default(cuid())
+  documentId     String
+  document       OptionDocument         @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  optionType     OptionDocumentItemType
+  description    String
+  quantity       Int                    @default(1)
+  unitPriceCents Int
+  taxRateBps     Int                    @default(0)
+  lineNetCents   Int
+  lineTaxCents   Int
+  lineGrossCents Int
+  createdAt      DateTime               @default(now())
+
+  @@index([documentId])
+  @@index([optionType])
 }
 
 model Order {

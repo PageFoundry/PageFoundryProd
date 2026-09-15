@@ -87,12 +87,27 @@ type Invoice = {
   }>;
 };
 
+type OptionDocument = {
+  id: string;
+  number: string;
+  issueDate: string;
+  cmsTotalCents: number;
+  maintenanceTotalCents: number;
+  client: {
+    name: string;
+    companyName: string | null;
+    billingEmail: string | null;
+    email: string | null;
+  };
+};
+
 type Snapshot = {
   generatedAt: string;
   clients: Client[];
   services: Service[];
   activeClientServices: ClientService[];
   invoices: Invoice[];
+  optionDocuments: OptionDocument[];
   summary: {
     clientCount: number;
     activeClientCount: number;
@@ -104,7 +119,7 @@ type Snapshot = {
   };
 };
 
-type DrawerKind = "client" | "service" | "invoice" | "contract" | null;
+type DrawerKind = "client" | "service" | "invoice" | "contract" | "option" | null;
 
 const money = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 const date = new Intl.DateTimeFormat("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -169,6 +184,9 @@ function emptyLine(): LineItem {
   return { key: Math.random().toString(36).slice(2), serviceId: "", description: "", quantity: "1", unitPrice: "0,00", taxRate: "0" };
 }
 
+const defaultCmsOption = { description: "CMS-Aufpreis (einmalig)", unitPrice: "100,00", taxRate: "0" };
+const defaultMaintenanceOption = { description: "Wartung (Monitoring, Backups & 1 News-Beitrag/Monat)", unitPrice: "39,00", taxRate: "0" };
+
 export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -177,6 +195,10 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
   const [drawer, setDrawer] = useState<DrawerKind>(null);
   const [invoiceClientId, setInvoiceClientId] = useState("");
   const [lineItems, setLineItems] = useState<LineItem[]>([emptyLine()]);
+  const [optionClientId, setOptionClientId] = useState("");
+  const [optionBaseItems, setOptionBaseItems] = useState<LineItem[]>([emptyLine()]);
+  const [cmsOption, setCmsOption] = useState(defaultCmsOption);
+  const [maintenanceOption, setMaintenanceOption] = useState(defaultMaintenanceOption);
 
   const [invoiceSearch, setInvoiceSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | InvoiceStatus>("ALL");
@@ -283,6 +305,39 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
     }
   }
 
+  async function submitOptionDocument(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const baseItems = optionBaseItems
+      .filter((item) => item.description.trim() || item.serviceId)
+      .map((item) => ({
+        optionType: "BASE",
+        description: item.description.trim() || snapshot.services.find((service) => service.id === item.serviceId)?.name || "",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate,
+      }));
+    try {
+      await postJson("/api/admin/hq/option-documents", {
+        clientId: form.get("clientId"),
+        issueDate: form.get("issueDate"),
+        notes: form.get("notes"),
+        items: [
+          ...baseItems,
+          { optionType: "CMS", quantity: "1", ...cmsOption },
+          { optionType: "MAINTENANCE", quantity: "1", ...maintenanceOption },
+        ],
+      });
+      setDrawer(null);
+      setOptionClientId("");
+      setOptionBaseItems([emptyLine()]);
+      setCmsOption(defaultCmsOption);
+      setMaintenanceOption(defaultMaintenanceOption);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  }
+
   async function changeStatus(id: string, status: InvoiceStatus) {
     setMenuInvoice(null);
     setConfirmCancel(null);
@@ -307,6 +362,14 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
     setDrawer("invoice");
   }
 
+  function openOptionDocumentFor(clientId: string) {
+    setOptionClientId(clientId);
+    setOptionBaseItems([emptyLine()]);
+    setCmsOption(defaultCmsOption);
+    setMaintenanceOption(defaultMaintenanceOption);
+    setDrawer("option");
+  }
+
   function updateLine(key: string, patch: Partial<LineItem>) {
     setLineItems((prev) => prev.map((item) => (item.key === key ? { ...item, ...patch } : item)));
   }
@@ -314,6 +377,20 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
   function applyServiceToLine(key: string, serviceId: string) {
     const service = snapshot.services.find((s) => s.id === serviceId);
     updateLine(key, {
+      serviceId,
+      description: service?.name ?? "",
+      unitPrice: service ? eurFromCents(service.unitPriceCents) : "0,00",
+      taxRate: service ? String(service.taxRateBps / 100) : "0",
+    });
+  }
+
+  function updateOptionBaseLine(key: string, patch: Partial<LineItem>) {
+    setOptionBaseItems((prev) => prev.map((item) => (item.key === key ? { ...item, ...patch } : item)));
+  }
+
+  function applyServiceToOptionBaseLine(key: string, serviceId: string) {
+    const service = snapshot.services.find((service) => service.id === serviceId);
+    updateOptionBaseLine(key, {
       serviceId,
       description: service?.name ?? "",
       unitPrice: service ? eurFromCents(service.unitPriceCents) : "0,00",
@@ -335,6 +412,18 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
       { net: 0, tax: 0, gross: 0 },
     );
   }, [lineItems]);
+
+  const optionTotals = useMemo(() => {
+    const base = optionBaseItems.reduce((sum, item) => {
+      const net = parseEuroToCents(item.unitPrice) * Math.max(0, Number(item.quantity) || 0);
+      return sum + net + Math.round((net * (Number(item.taxRate) || 0)) / 100);
+    }, 0);
+    const totalFor = (item: { unitPrice: string; taxRate: string }) => {
+      const net = parseEuroToCents(item.unitPrice);
+      return base + net + Math.round((net * (Number(item.taxRate) || 0)) / 100);
+    };
+    return { base, cms: totalFor(cmsOption), maintenance: totalFor(maintenanceOption) };
+  }, [optionBaseItems, cmsOption, maintenanceOption]);
 
   const filteredInvoices = useMemo(() => {
     const term = invoiceSearch.trim().toLowerCase();
@@ -411,6 +500,7 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
         >
           <Plus size={15} /> Rechnung erstellen
         </button>
+        <ActionButton icon={<FileText size={15} />} label="Auswahl erstellen" onClick={() => openOptionDocumentFor("")} />
       </div>
 
       <div className="grid gap-4 fade-in md:grid-cols-2 xl:grid-cols-4">
@@ -548,6 +638,46 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
               {snapshot.invoices.length === 0 ? "Noch keine Rechnungen." : "Keine Rechnung passt zum Filter."}
             </p>
           )}
+        </div>
+      </section>
+
+      <section className="pf-card p-5 fade-in-delay-2">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span className="label-mono flex items-center gap-2"><FileText size={14} /> Auswahl Optionen</span>
+            <p className="mt-2 text-xs text-pfMuted">Gemeinsame Leistungen mit CMS- oder Wartungs-Variante. Keine Rechnung.</p>
+          </div>
+          <ActionButton icon={<Plus size={14} />} label="Auswahl erstellen" onClick={() => openOptionDocumentFor("")} />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="pf-table">
+            <thead>
+              <tr>
+                <th>Nr.</th>
+                <th>Kunde</th>
+                <th>Datum</th>
+                <th>Mit CMS</th>
+                <th>Mit Wartung</th>
+                <th className="text-right">Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {snapshot.optionDocuments.map((document) => (
+                <tr key={document.id}>
+                  <td className="font-mono text-xs text-pfText">{document.number}</td>
+                  <td>
+                    <div className="text-sm text-pfText">{document.client.companyName || document.client.name}</div>
+                    <div className="font-mono text-[0.65rem] text-pfMuted">{document.client.billingEmail || document.client.email || "-"}</div>
+                  </td>
+                  <td className="font-mono text-xs text-pfSubtle">{date.format(new Date(document.issueDate))}</td>
+                  <td className="font-mono text-sm font-bold text-pfAccent">{formatCents(document.cmsTotalCents)}</td>
+                  <td className="font-mono text-sm font-bold text-pfAccent">{formatCents(document.maintenanceTotalCents)}</td>
+                  <td><div className="flex justify-end"><IconAction href={`/api/admin/hq/option-documents/${document.id}/pdf`} title="PDF"><Download size={14} /></IconAction></div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {snapshot.optionDocuments.length === 0 && <p className="mt-6 text-center text-sm text-pfMuted">Noch keine Auswahl Optionen.</p>}
         </div>
       </section>
 
@@ -785,6 +915,74 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
           </div>
         </form>
       </Drawer>
+
+      <Drawer open={drawer === "option"} title="Auswahl Optionen" icon={<FileText size={16} />} wide onClose={() => setDrawer(null)}>
+        <form onSubmit={submitOptionDocument} className="flex h-full flex-col">
+          <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+            <SelectField name="clientId" label="Kunde" required value={optionClientId} onChange={(event) => setOptionClientId(event.target.value)}>
+              <option value="">Auswaehlen</option>
+              {snapshot.clients.map((client) => (
+                <option key={client.id} value={client.id}>{client.companyName || client.name}</option>
+              ))}
+            </SelectField>
+
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <div>
+                  <span className={labelText}>Gemeinsame Positionen</span>
+                  <p className="mt-1 text-xs text-pfMuted">Diese Leistungen zählen in beide Varianten.</p>
+                </div>
+                <button type="button" onClick={() => setOptionBaseItems((prev) => [...prev, emptyLine()])} className="inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-wider text-pfAccent transition hover:text-pfAccentWarm">
+                  <Plus size={13} /> Position
+                </button>
+              </div>
+              <div className="space-y-3">
+                {optionBaseItems.map((item, index) => (
+                  <div key={item.key} className="rounded-sm border border-pfBorder bg-black/20 p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="font-mono text-[0.6rem] uppercase tracking-widest text-pfMuted">Position {index + 1}</span>
+                      {optionBaseItems.length > 1 && (
+                        <button type="button" onClick={() => setOptionBaseItems((prev) => prev.filter((line) => line.key !== item.key))} className="text-pfMuted transition hover:text-red-300" title="Entfernen"><Trash2 size={14} /></button>
+                      )}
+                    </div>
+                    <select value={item.serviceId} onChange={(event) => applyServiceToOptionBaseLine(item.key, event.target.value)} className="pf-input mb-2">
+                      <option value="">Freie Position</option>
+                      {snapshot.services.map((service) => <option key={service.id} value={service.id}>{service.name}</option>)}
+                    </select>
+                    <input value={item.description} onChange={(event) => updateOptionBaseLine(item.key, { description: event.target.value })} placeholder="Beschreibung" className="pf-input mb-2" />
+                    <div className="grid grid-cols-[0.55fr_1fr_0.7fr] gap-3">
+                      <LabeledInput label="Menge" value={item.quantity} onChange={(value) => updateOptionBaseLine(item.key, { quantity: value })} />
+                      <LabeledInput label="Netto EUR" value={item.unitPrice} onChange={(value) => updateOptionBaseLine(item.key, { unitPrice: value })} />
+                      <LabeledInput label="USt %" value={item.taxRate} onChange={(value) => updateOptionBaseLine(item.key, { taxRate: value })} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <OptionVariant title="Variante A · CMS" subtitle="Einmaliger Aufpreis" value={cmsOption} onChange={setCmsOption} />
+            <OptionVariant title="Variante B · Wartung" subtitle="Monitoring, Backups & ein News-Beitrag pro Monat" value={maintenanceOption} onChange={setMaintenanceOption} />
+
+            <Field name="issueDate" label="Datum" type="date" defaultValue={todayInput()} required />
+            <div>
+              <span className={labelText}>Notiz</span>
+              <textarea name="notes" rows={2} className="pf-input mt-1.5" />
+            </div>
+          </div>
+
+          <div className="border-t border-pfBorder px-6 py-4">
+            <div className="mb-3 space-y-1.5 font-mono text-xs">
+              <div className="flex justify-between text-pfMuted"><span>Gemeinsame Leistungen</span><span>{formatCents(optionTotals.base)}</span></div>
+              <div className="flex justify-between text-base font-bold text-pfAccent"><span>Mit CMS</span><span>{formatCents(optionTotals.cms)}</span></div>
+              <div className="flex justify-between text-base font-bold text-pfAccent"><span>Mit Wartung</span><span>{formatCents(optionTotals.maintenance)}</span></div>
+            </div>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setDrawer(null)} className="btn-outline flex-1">Abbrechen</button>
+              <button className="btn-accent flex-[1.5] gap-2" disabled={isPending}><Plus size={15} /> Auswahl erstellen</button>
+            </div>
+          </div>
+        </form>
+      </Drawer>
     </div>
   );
 }
@@ -886,6 +1084,30 @@ function LabeledInput({ label, value, onChange }: { label: string; value: string
       <span className={labelText}>{label}</span>
       <input value={value} onChange={(event) => onChange(event.target.value)} required className="pf-input mt-1.5" />
     </label>
+  );
+}
+
+function OptionVariant({
+  title,
+  subtitle,
+  value,
+  onChange,
+}: {
+  title: string;
+  subtitle: string;
+  value: { description: string; unitPrice: string; taxRate: string };
+  onChange: (value: { description: string; unitPrice: string; taxRate: string }) => void;
+}) {
+  return (
+    <div className="rounded-sm border border-pfBorderAccent bg-pfAccentDim p-4">
+      <span className="label-mono text-pfAccent">{title}</span>
+      <p className="mt-1 text-xs text-pfMuted">{subtitle}</p>
+      <input value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} className="pf-input mt-3" required />
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <LabeledInput label="Netto EUR" value={value.unitPrice} onChange={(unitPrice) => onChange({ ...value, unitPrice })} />
+        <LabeledInput label="USt %" value={value.taxRate} onChange={(taxRate) => onChange({ ...value, taxRate })} />
+      </div>
+    </div>
   );
 }
 
