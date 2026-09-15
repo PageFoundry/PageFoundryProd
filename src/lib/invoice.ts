@@ -492,11 +492,9 @@ export async function generateOptionDocumentPDF(document: OptionDocumentPdfInput
   recipient.forEach((line, index) => text(line, margin, height - 154 - index * 14, 10, index === 0));
 
   const metaX = width - 220;
-  page.drawRectangle({ x: metaX, y: height - 198, width: 170, height: 70, color: light });
+  page.drawRectangle({ x: metaX, y: height - 176, width: 170, height: 48, color: light });
   text("Erstellt am", metaX + 14, height - 152, 8, false, muted);
   right(pdfDate(document.issueDate), metaX + 156, height - 152, 9, true);
-  text("Status", metaX + 14, height - 176, 8, false, muted);
-  right("Bitte auswählen", metaX + 156, height - 176, 9, true);
 
   let y = height - 240;
   text("Gemeinsame Leistungen", margin, y, 10, true);
@@ -525,7 +523,7 @@ export async function generateOptionDocumentPDF(document: OptionDocumentPdfInput
   ];
 
   for (const option of optionCards) {
-    const cardHeight = 88;
+    const cardHeight = 100;
     y -= 8;
     page.drawRectangle({ x: margin, y: y - cardHeight, width: width - margin * 2, height: cardHeight, color: light });
     page.drawRectangle({ x: margin, y: y - cardHeight, width: 4, height: cardHeight, color: accent });
@@ -533,8 +531,9 @@ export async function generateOptionDocumentPDF(document: OptionDocumentPdfInput
     text(option.subtitle, margin + 16, y - 36, 8, false, muted);
     const items = document.items.filter((item) => item.optionType === option.type);
     items.slice(0, 2).forEach((item, index) => text(item.description, margin + 16, y - 53 - index * 11, 9, index === 0));
-    text("Gesamtbetrag", width - 190, y - 38, 8, false, muted);
-    right(pdfMoney(option.total), width - margin - 14, y - 56, 13, true);
+    items.slice(0, 2).forEach((item, index) => right(pdfMoney(item.lineGrossCents), width - margin - 14, y - 53 - index * 11, 9, true));
+    text("Gesamtbetrag", width - 190, y - 78, 8, false, muted);
+    right(pdfMoney(option.total), width - margin - 14, y - 78, 13, true);
     y -= cardHeight + 10;
   }
 
