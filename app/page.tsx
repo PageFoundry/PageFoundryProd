@@ -223,6 +223,10 @@ const copy = {
         domain: "rechnung.carbon-care.de",
         url: "https://carbon-care.de",
         visitLabel: "Kundenwebsite öffnen",
+        internalLink: {
+          href: "/webdesign-bergisches-land",
+          label: "Webdesign im Bergischen Land",
+        },
         image: "/work/carbon-care.jpg",
         imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
         scope: "Landingpage · Rechnungssoftware",
@@ -245,6 +249,10 @@ const copy = {
         date: "Mai / Juni 2026",
         domain: "theloftbrunch.de",
         url: "https://theloftbrunch.de",
+        internalLink: {
+          href: "/website-rettung",
+          label: "Bestehende Website überarbeiten",
+        },
         image: "/work/the-loft.jpg",
         imageAlt: "Startseite von The Loft Brunch and Lunch in Wuppertal",
         scope: "Website-Relaunch · Gastronomie",
@@ -441,6 +449,10 @@ const copy = {
         domain: "rechnung.carbon-care.de",
         url: "https://carbon-care.de",
         visitLabel: "Visit customer website",
+        internalLink: {
+          href: "/webdesign-bergisches-land",
+          label: "Web design in the Bergisches Land (German)",
+        },
         image: "/work/carbon-care.jpg",
         imageAlt: "Tailored invoicing software for Carbon Care: invoice overview with status and payment state (demo view with sample data)",
         scope: "Landing page · Invoicing software",
@@ -463,6 +475,10 @@ const copy = {
         date: "May / June 2026",
         domain: "theloftbrunch.de",
         url: "https://theloftbrunch.de",
+        internalLink: {
+          href: "/website-rettung",
+          label: "Improve an existing website (German)",
+        },
         image: "/work/the-loft.jpg",
         imageAlt: "The Loft Brunch and Lunch homepage in Wuppertal",
         scope: "Website relaunch · Hospitality",

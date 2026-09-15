@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export type CaseStudy = {
   client: string;
@@ -6,6 +7,10 @@ export type CaseStudy = {
   domain: string;
   url: string;
   visitLabel?: string;
+  internalLink?: {
+    href: string;
+    label: string;
+  };
   image: string;
   imageAlt: string;
   scope: string;
@@ -128,14 +133,16 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
               </blockquote>
             )}
 
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-outline mt-6 self-start md:mt-8"
-            >
-              {item.visitLabel ?? labels.visit} ↗
-            </a>
+            <div className="mt-6 flex flex-col items-start gap-3 md:mt-8">
+              <a href={item.url} target="_blank" rel="noreferrer" className="btn-outline">
+                {item.visitLabel ?? labels.visit} ↗
+              </a>
+              {item.internalLink && (
+                <Link href={item.internalLink.href} className="btn-outline">
+                  {item.internalLink.label}
+                </Link>
+              )}
+            </div>
           </div>
         </article>
       ))}
