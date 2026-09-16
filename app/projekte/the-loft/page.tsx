@@ -22,7 +22,8 @@ const data: ProjectCaseStudyData = {
   domain: "theloftbrunch.de",
   url: "https://theloftbrunch.de",
   visitLabel: "Kundenwebsite öffnen",
-  image: "/work/the-loft.jpg",
+  image: "/work/the-loft-desktop.jpg",
+  imageAspectRatio: "1440 / 1000",
   imageAlt: "Startseite von The Loft Brunch and Lunch in Wuppertal",
   situation: {
     label: "Ausgangslage",

@@ -10,7 +10,13 @@ export interface ServiceLandingData {
   problem: { label: string; heading: string; points: string[] };
   steps: { label: string; heading: string; items: { title: string; text: string }[] };
   included: { label: string; heading: string; items: string[]; note?: string };
-  pricing: { label: string; heading: string; tiers: PricingTier[]; footnote?: string };
+  pricing: {
+    label: string;
+    heading: string;
+    tiers: PricingTier[];
+    footnote?: string;
+    image?: { src: string; alt: string; caption: string };
+  };
   faq: { label: string; heading: string; items: { q: string; a: ReactNode }[] };
   cta: { heading: string; text: string };
   /** Overrides the default "/consultation" target, e.g. to preselect a package. */
@@ -126,6 +132,7 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
         heading={data.pricing.heading}
         tiers={data.pricing.tiers}
         footnote={data.pricing.footnote}
+        image={data.pricing.image}
       />
 
       {/* FAQ */}

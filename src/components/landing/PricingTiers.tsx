@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export interface PricingTier {
   name: string;
   price: string;
@@ -11,10 +13,12 @@ interface Props {
   heading: string;
   tiers: PricingTier[];
   footnote?: string;
+  image?: { src: string; alt: string; caption: string };
 }
 
-export default function PricingTiers({ label, heading, tiers, footnote }: Props) {
-  const cols = tiers.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2";
+export default function PricingTiers({ label, heading, tiers, footnote, image }: Props) {
+  const count = tiers.length + (image ? 1 : 0);
+  const cols = count >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : count === 2 ? "sm:grid-cols-2" : "grid-cols-1";
 
   return (
     <section id="preise" className="bg-pfSurface px-6 py-24 md:px-10">
@@ -24,7 +28,7 @@ export default function PricingTiers({ label, heading, tiers, footnote }: Props)
           <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">{heading}</h2>
         </div>
 
-        <div className={`grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 ${cols}`}>
+        <div className={`grid gap-px overflow-hidden rounded-3xl bg-pfBorder ${cols}`}>
           {tiers.map((tier) => (
             <div
               key={tier.name}
@@ -33,7 +37,7 @@ export default function PricingTiers({ label, heading, tiers, footnote }: Props)
               }`}
             >
               <span className="font-display text-3xl leading-none text-pfText">{tier.name}</span>
-              <div className="flex items-baseline gap-2">
+              <div className="flex flex-wrap items-baseline gap-2">
                 <span className="font-mono text-2xl font-bold text-pfAccent">{tier.price}</span>
                 {tier.priceNote && (
                   <span className="font-mono text-[0.7rem] uppercase tracking-widest text-pfMuted">
@@ -51,6 +55,22 @@ export default function PricingTiers({ label, heading, tiers, footnote }: Props)
               </ul>
             </div>
           ))}
+          {image && (
+            <figure className="flex min-w-0 flex-col bg-pfCard">
+              <div className="relative min-h-72 flex-1 overflow-hidden">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(min-width: 1280px) 640px, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover object-top"
+                />
+              </div>
+              <figcaption className="border-t border-pfBorder px-6 py-4 font-mono text-[0.62rem] leading-6 text-pfMuted">
+                {image.caption}
+              </figcaption>
+            </figure>
+          )}
         </div>
 
         {footnote && (

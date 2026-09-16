@@ -81,6 +81,11 @@ const data: ServiceLandingData = {
       },
     ],
     footnote: `${TAX_NOTE} Den konkreten Preis legen wir erst nach dem Erstgespräch fest, wenn der Funktionsumfang klar ist.`,
+    image: {
+      src: "/work/carbon-care.jpg",
+      alt: "Carbon-Care-Rechnungssoftware mit Rechnungsübersicht, Status und Zahlungsstand – Demoansicht mit Beispieldaten",
+      caption: "Aus der Praxis: Carbon-Care-Rechnungssoftware · Demoansicht mit Beispieldaten",
+    },
   },
   faq: {
     label: "FAQ",
