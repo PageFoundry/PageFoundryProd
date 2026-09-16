@@ -269,6 +269,23 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
     return output;
   }
 
+  function linesByWidth(value: string, font: typeof bold, size: number, maxWidth: number) {
+    const words = normalizePdfText(value).split(/\s+/).filter(Boolean);
+    const output: string[] = [];
+    let line = "";
+    for (const word of words) {
+      const next = line ? `${line} ${word}` : word;
+      if (line && font.widthOfTextAtSize(next, size) > maxWidth) {
+        output.push(line);
+        line = word;
+      } else {
+        line = next;
+      }
+    }
+    if (line) output.push(line);
+    return output;
+  }
+
   let logo: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
   try {
     const logoBytes = await fs.readFile(path.join(process.cwd(), "public", "PAGEfoundry.png"));
@@ -345,10 +362,11 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   y -= 28;
 
   for (const item of invoice.items) {
-    const itemLines = lines(item.description, 42);
+    const itemTextWidth = noVat ? colGross - margin - 70 : colNet - margin - 20;
+    const itemLines = linesByWidth(item.description, bold, 10, itemTextWidth);
     text(itemLines[0] ?? item.description, margin, y, 10, true);
     if (item.quantity > 1) text(`${item.quantity} x ${pdfMoney(item.unitPriceCents)}`, margin, y - 13, 8, false, muted);
-    itemLines.slice(1, 3).forEach((line, index) => text(line, margin, y - 14 - index * 11, 8, false, muted));
+    itemLines.slice(1).forEach((line, index) => text(line, margin, y - 14 - index * 11, 8, false, muted));
     if (noVat) {
       right(pdfMoney(item.lineGrossCents), colGross, y, 9, true);
     } else {
@@ -356,7 +374,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
       right(`${(item.taxRateBps / 100).toLocaleString("de-DE")} %`, colTax, y, 9);
       right(pdfMoney(item.lineGrossCents), colGross, y, 9, true);
     }
-    y -= Math.max(38, 22 + itemLines.slice(1, 3).length * 11);
+    y -= Math.max(38, 22 + itemLines.slice(1).length * 11);
   }
 
   page.drawLine({ start: { x: width - 260, y: y + 8 }, end: { x: width - margin, y: y + 8 }, thickness: 0.5, color: muted });
