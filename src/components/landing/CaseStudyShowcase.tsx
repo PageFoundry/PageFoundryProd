@@ -11,6 +11,10 @@ export type CaseStudy = {
     href: string;
     label: string;
   };
+  caseStudyLink?: {
+    href: string;
+    label: string;
+  };
   image: string;
   imageAlt: string;
   scope: string;
@@ -140,6 +144,11 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
               {item.internalLink && (
                 <Link href={item.internalLink.href} className="btn-outline">
                   {item.internalLink.label}
+                </Link>
+              )}
+              {item.caseStudyLink && (
+                <Link href={item.caseStudyLink.href} className="btn-outline">
+                  {item.caseStudyLink.label}
                 </Link>
               )}
             </div>

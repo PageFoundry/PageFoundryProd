@@ -90,6 +90,7 @@ const PACKAGE_TO_TYPE: Partial<Record<ProductKey, ConsultationType>> = {
   seo_basic: "SEO_AUDIT",
   seo_advanced: "SEO_AUDIT",
   speed_opt: "SPEED_AUDIT",
+  request_offer: "SYSTEMS_AUTOMATION",
 };
 
 type FieldErrors = {

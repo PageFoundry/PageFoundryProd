@@ -2,18 +2,20 @@ import { MetadataRoute } from "next";
 
 const BASE = "https://pagefoundry.de";
 const LAST_UPDATED = new Date("2026-09-14T00:00:00.000Z");
+// Nur fuer Seiten, die im SEO-Update vom 2026-09-16 tatsaechlich geaendert bzw. neu angelegt wurden.
+const UPDATED_2026_09_16 = new Date("2026-09-16T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: BASE,
-      lastModified: LAST_UPDATED,
+      lastModified: UPDATED_2026_09_16,
       changeFrequency: "monthly",
       priority: 1.0,
     },
     {
       url: `${BASE}/en`,
-      lastModified: LAST_UPDATED,
+      lastModified: UPDATED_2026_09_16,
       changeFrequency: "monthly",
       priority: 0.9,
     },
@@ -30,20 +32,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE}/individuelle-software`,
+      lastModified: UPDATED_2026_09_16,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE}/website-wache`,
-      lastModified: LAST_UPDATED,
+      lastModified: UPDATED_2026_09_16,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/website-rettung`,
-      lastModified: LAST_UPDATED,
+      lastModified: UPDATED_2026_09_16,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/webdesign-bergisches-land`,
-      lastModified: LAST_UPDATED,
+      lastModified: UPDATED_2026_09_16,
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -52,6 +60,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: LAST_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${BASE}/projekte/carbon-care`,
+      lastModified: UPDATED_2026_09_16,
+      changeFrequency: "yearly",
+      priority: 0.6,
+    },
+    {
+      url: `${BASE}/projekte/the-loft`,
+      lastModified: UPDATED_2026_09_16,
+      changeFrequency: "yearly",
+      priority: 0.6,
     },
     {
       url: `${BASE}/agb`,

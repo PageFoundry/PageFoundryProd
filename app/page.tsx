@@ -10,20 +10,20 @@ import FounderTrust from "@/components/landing/FounderTrust";
 
 const homeMetadata = {
   de: {
-    title: "PageFoundry | Landingpages, Hosting & SEO für Unternehmen",
+    title: "Webdesign & individuelle Software aus Hückeswagen | PageFoundry",
     description:
-      "PageFoundry entwickelt Landingpages und übernimmt Hosting, SEO, Speed-Optimierung und technische Betreuung – persönlich und transparent.",
+      "PageFoundry aus Hückeswagen baut Websites, Landingpages und individuelle Software für Unternehmen im Bergischen Land – inklusive Hosting, SEO und laufender Betreuung.",
     openGraphDescription:
-      "Landingpages, Hosting, SEO und technische Betreuung aus einer Hand – mit echten Projekten und transparenten Preisen.",
+      "Websites, Landingpages und individuelle Software aus Hückeswagen – mit echten Projekten, transparenten Preisen und einem festen Ansprechpartner.",
     locale: "de_DE",
     alternateLocale: "en_US",
   },
   en: {
-    title: "PageFoundry | Landing Pages, Hosting & SEO for Businesses",
+    title: "Web Design & Custom Software from Hückeswagen | PageFoundry",
     description:
-      "PageFoundry builds landing pages and handles hosting, SEO, speed optimization, and ongoing technical care – personally and transparently.",
+      "PageFoundry, based in Hückeswagen, Germany, builds websites, landing pages, and custom business software – including hosting, SEO, and ongoing technical care.",
     openGraphDescription:
-      "Landing pages, hosting, SEO, and technical care from one accountable partner – backed by real client work and transparent prices.",
+      "Websites, landing pages, and custom software from Hückeswagen, Germany – backed by real client work, transparent prices, and one accountable partner.",
     locale: "en_US",
     alternateLocale: "de_DE",
   },
@@ -76,8 +76,8 @@ function getOrganizationSchema(lang: "de" | "en") {
     name: "PageFoundry",
     url: "https://pagefoundry.de",
     description: isDe
-      ? "Webstudio für Landingpages, Hosting, SEO und laufende technische Betreuung."
-      : "Web studio for landing pages, hosting, SEO, and ongoing technical care.",
+      ? "Webstudio aus Hückeswagen für Websites, Landingpages, individuelle Software, Hosting, SEO und laufende technische Betreuung."
+      : "Web studio based in Hückeswagen, Germany, building websites, landing pages, custom software, hosting, SEO, and ongoing technical care.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Kastanienweg 20a",
@@ -118,6 +118,16 @@ function getOrganizationSchema(lang: "de" | "en") {
             "@type": "PriceSpecification",
             price: "590",
             priceCurrency: "EUR",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Individuelle Software",
+            description: isDe
+              ? "Individuelle Anwendungen für Rechnungen, Daten und interne Abläufe, zugeschnitten auf den jeweiligen Betrieb."
+              : "Custom applications for invoices, data, and internal workflows, tailored to the individual business.",
           },
         },
         {
@@ -227,6 +237,10 @@ const copy = {
           href: "/webdesign-bergisches-land",
           label: "Webdesign im Bergischen Land",
         },
+        caseStudyLink: {
+          href: "/projekte/carbon-care",
+          label: "Projektseite ansehen",
+        },
         image: "/work/carbon-care.jpg",
         imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
         scope: "Landingpage · Rechnungssoftware",
@@ -252,6 +266,10 @@ const copy = {
         internalLink: {
           href: "/website-rettung",
           label: "Bestehende Website überarbeiten",
+        },
+        caseStudyLink: {
+          href: "/projekte/the-loft",
+          label: "Projektseite ansehen",
         },
         image: "/work/the-loft.jpg",
         imageAlt: "Startseite von The Loft Brunch and Lunch in Wuppertal",
@@ -309,7 +327,7 @@ const copy = {
         title: "Betriebliche Software",
         text: "Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch unnötig viel Handarbeit verursachen.",
         cta: "Software besprechen",
-        href: "/consultation?package=request_offer",
+        href: "/individuelle-software",
       },
       {
         key: "Care",
@@ -322,6 +340,7 @@ const copy = {
     allServicesHeading: "Alle Leistungen und Preise",
     allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
     detailLinks: [
+      { label: "Individuelle Software", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
       { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },

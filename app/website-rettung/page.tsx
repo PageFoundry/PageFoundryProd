@@ -2,9 +2,9 @@ import ServiceLanding, { type ServiceLandingData } from "@/components/landing/Se
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
-const TITLE = "Website-Rettung";
+const TITLE = "Website-Rettung – bestehende Website überarbeiten & Relaunch";
 const DESCRIPTION =
-  "Website-Rettung von PageFoundry: Aus einer veralteten oder schwachen Seite machen wir eine, die verständlich positioniert, schnell lädt und zum Kontakt bewegt — mit Vorschau vorab. Ab 890 €.";
+  "Website-Rettung von PageFoundry: Wir überarbeiten Ihre bestehende Website oder setzen einen Website-Relaunch um — verständlich positioniert, schnell und mit Vorschau vorab. Ab 890 €.";
 const URL = "https://pagefoundry.de/website-rettung";
 
 const TAX_NOTE =

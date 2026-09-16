@@ -129,8 +129,20 @@ const data: ServiceLandingData = {
   references: {
     heading: "Zwei umgesetzte Kundenprojekte.",
     items: [
-      { name: "Carbon Care · Fahrzeugaufbereitung", text: "Landingpage und individuelle Rechnungssoftware als digitale Basis für den Betrieb. Zwei umgesetzte Systeme mit unterschiedlichen Aufgaben.", href: "https://carbon-care.de", label: "Carbon Care ansehen" },
-      { name: "The Loft · Gastronomie in Wuppertal", text: "Statischer Website-Relaunch mit klarer Besucherführung und Zugang zur Speisekarte. Die Website kommt ohne WordPress-Plugin-Stack aus.", href: "https://theloftbrunch.de", label: "The Loft ansehen" },
+      {
+        name: "Carbon Care · Fahrzeugaufbereitung",
+        text: "Landingpage und individuelle Rechnungssoftware als digitale Basis für den Betrieb. Zwei umgesetzte Systeme mit unterschiedlichen Aufgaben.",
+        href: "https://carbon-care.de",
+        label: "Carbon Care ansehen",
+        internalLink: { href: "/projekte/carbon-care", label: "Projektseite ansehen" },
+      },
+      {
+        name: "The Loft · Gastronomie in Wuppertal",
+        text: "Statischer Website-Relaunch mit klarer Besucherführung und Zugang zur Speisekarte. Die Website kommt ohne WordPress-Plugin-Stack aus.",
+        href: "https://theloftbrunch.de",
+        label: "The Loft ansehen",
+        internalLink: { href: "/projekte/the-loft", label: "Projektseite ansehen" },
+      },
     ],
   },
   related: {

@@ -15,6 +15,9 @@ const GERMAN_ONLY_PATHS = new Set([
   "/website-rettung",
   "/webdesign-bergisches-land",
   "/seo-hueckeswagen",
+  "/individuelle-software",
+  "/projekte/carbon-care",
+  "/projekte/the-loft",
 ]);
 
 export const FORCED_LANG_HEADER = "x-pf-forced-lang";

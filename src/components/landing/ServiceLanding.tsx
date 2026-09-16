@@ -13,7 +13,18 @@ export interface ServiceLandingData {
   pricing: { label: string; heading: string; tiers: PricingTier[]; footnote?: string };
   faq: { label: string; heading: string; items: { q: string; a: ReactNode }[] };
   cta: { heading: string; text: string };
-  references?: { heading: string; items: { name: string; text: string; href: string; label: string }[] };
+  /** Overrides the default "/consultation" target, e.g. to preselect a package. */
+  consultationHref?: string;
+  references?: {
+    heading: string;
+    items: {
+      name: string;
+      text: string;
+      href: string;
+      label: string;
+      internalLink?: { href: string; label: string };
+    }[];
+  };
   related?: { label: string; items: { label: string; href: string }[] };
 }
 
@@ -30,7 +41,7 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
           <div className="my-8 h-px w-28 bg-gradient-to-r from-pfAccent to-transparent" />
           <p className="max-w-2xl text-base leading-8 text-pfSubtle md:text-lg">{data.heroSubline}</p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <Link href="/consultation" className="btn-accent">
+            <Link href={data.consultationHref ?? "/consultation"} className="btn-accent">
               Kostenlose Beratung buchen →
             </Link>
             <a href="tel:+4921928743999" className="btn-outline">
@@ -146,7 +157,14 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
                 <article key={item.href} className="pf-card p-7 md:p-9">
                   <h3 className="font-display text-3xl text-pfText">{item.name}</h3>
                   <p className="mt-4 text-sm leading-7 text-pfSubtle">{item.text}</p>
-                  <a href={item.href} className="mt-6 inline-flex text-sm text-pfAccent underline underline-offset-4">{item.label} ↗</a>
+                  <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+                    <a href={item.href} className="inline-flex text-sm text-pfAccent underline underline-offset-4">{item.label} ↗</a>
+                    {item.internalLink && (
+                      <Link href={item.internalLink.href} className="inline-flex text-sm text-pfAccent underline underline-offset-4">
+                        {item.internalLink.label}
+                      </Link>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>
@@ -169,7 +187,7 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
         </section>
       )}
 
-      <ServiceCTA heading={data.cta.heading} text={data.cta.text} />
+      <ServiceCTA heading={data.cta.heading} text={data.cta.text} consultationHref={data.consultationHref} />
     </div>
   );
 }
