@@ -23,7 +23,7 @@ export default async function PackageCard({ id, isAuthed }: Props) {
 
   return (
     <div
-      className={`pf-card flex flex-col gap-4 p-6 relative overflow-hidden ${
+      className={`pf-card h-full rounded-none flex flex-col gap-4 p-6 relative overflow-hidden ${
         isFeatured ? "border-pfBorderAccent bg-pfAccentDim" : ""
       }`}
     >

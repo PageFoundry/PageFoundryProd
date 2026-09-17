@@ -684,8 +684,8 @@ export default async function LandingPage() {
               <span className="label-mono">{c.eyebrow}</span>
             </div>
             <h1
-              className="max-w-5xl font-display leading-[0.9] text-pfText"
-              style={{ fontSize: "clamp(3.8rem, 8vw, 8rem)" }}
+              className="max-w-5xl font-display leading-[0.9] text-balance text-pfText"
+              style={{ fontSize: "clamp(3.4rem, 7.2vw, 7.2rem)" }}
             >
               {c.heroHeading}
             </h1>
@@ -757,7 +757,7 @@ export default async function LandingPage() {
               <article key={service.n} className="bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-64 md:p-8">
                 <span className="font-mono text-[0.62rem] tracking-widest text-pfAccent">{service.n}</span>
                 <h3 className="mt-8 font-display text-3xl leading-none text-pfText md:mt-12 md:text-4xl">{service.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-pfSubtle md:mt-4 md:leading-7">{service.text}</p>
+                <p className="mt-3 text-sm leading-6 text-pfSubtle md:mt-4 md:min-h-14 md:leading-7">{service.text}</p>
                 <p className="mt-3 border-t border-pfBorder pt-3 text-xs leading-5 text-pfMuted">{service.detail}</p>
               </article>
             ))}
