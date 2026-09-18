@@ -41,8 +41,6 @@ export default async function ImpressumPage() {
             E-Mail: admin@pagefoundry.de
             <br />
             Telefon: +49 2192 8743999
-            <br />
-            Mobil: +49 1516 7076918
           </p>
           <br />
           <p>
@@ -67,8 +65,6 @@ export default async function ImpressumPage() {
             E-mail: admin@pagefoundry.de
             <br />
             Phone: +49 2192 8743999
-            <br />
-            Mobile: +49 1516 7076918
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">Dispute resolution</h2>
