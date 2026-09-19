@@ -71,7 +71,7 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
                   {item.domain}
                 </span>
               </div>
-              <div className="relative aspect-[4/3] overflow-hidden bg-pfSurface">
+              <div className="relative aspect-[5/4] overflow-hidden bg-pfSurface">
                 <Image
                   src={item.image}
                   alt={item.imageAlt}

@@ -215,8 +215,6 @@ const copy = {
     ],
     workLabel: "02 - Ausgewählte Arbeiten",
     workHeading: "Nicht behauptet. Live.",
-    workText:
-      "Zwei Unternehmen, zwei unterschiedliche Aufgaben und ein gemeinsamer Anspruch: Die Website muss im echten Betrieb funktionieren. Alle Zahlen stammen aus dokumentierten Projekt- oder Plattformständen.",
     caseLabels: {
       caseFile: "Projektakte",
       before: "Vorher",
@@ -450,8 +448,6 @@ const copy = {
     ],
     workLabel: "02 - Selected work",
     workHeading: "Not claimed. Live.",
-    workText:
-      "Two businesses, two different challenges, and one shared standard: the website has to work in the real world. Every figure comes from documented project or platform records.",
     caseLabels: {
       caseFile: "Case file",
       before: "Before",
@@ -736,12 +732,9 @@ export default async function LandingPage() {
 
       <section className="border-b border-pfBorder bg-pfSurface/40 px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-            <div>
-              <span className="label-mono mb-5 block">{c.workLabel}</span>
-              <h2 className="font-display text-5xl leading-none text-pfText md:text-8xl">{c.workHeading}</h2>
-            </div>
-            <p className="max-w-2xl text-base leading-8 text-pfSubtle lg:justify-self-end md:text-lg">{c.workText}</p>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="label-mono mb-5 block">{c.workLabel}</span>
+            <h2 className="font-display text-5xl leading-none text-pfText md:text-8xl">{c.workHeading}</h2>
           </div>
 
           <CaseStudyShowcase cases={c.cases} labels={c.caseLabels} />
