@@ -676,7 +676,7 @@ export default async function LandingPage() {
       <section className="relative min-h-[82vh] overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfAccentDim md:h-[42rem] md:w-[42rem]" />
 
-        <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div className="fade-in">
             <div className="mb-8 flex items-center gap-4">
               <span className="font-display text-2xl tracking-widest text-pfText md:text-3xl">PAGEFOUNDRY</span>
@@ -685,14 +685,22 @@ export default async function LandingPage() {
             </div>
             <h1
               className="max-w-5xl font-display leading-[0.9] text-balance text-pfText"
-              style={{ fontSize: "clamp(3.4rem, 7.2vw, 7.2rem)" }}
+              style={{ fontSize: "clamp(3.4rem, 6.5vw, 6.5rem)" }}
             >
-              {c.heroHeading}
+              {lang === "de" ? (
+                <>
+                  Websites und Software für Unternehmen,
+                  <br />
+                  die vorankommen.
+                </>
+              ) : (
+                c.heroHeading
+              )}
             </h1>
             <div className="my-8 h-px w-28 bg-gradient-to-r from-pfAccent to-transparent" />
           </div>
 
-          <div className="fade-in-delay-2 max-w-xl lg:pb-4">
+          <div className="fade-in-delay-2 max-w-xl lg:pt-12">
             <p className="mb-8 max-w-lg text-base leading-8 text-pfSubtle md:text-lg">{c.subline}</p>
             <div className="mb-8 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder sm:grid-cols-2">
               {c.heroOffers.map((offer) => (
@@ -744,7 +752,7 @@ export default async function LandingPage() {
 
       <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-8 max-w-2xl md:mb-12">
+          <div className="mx-auto mb-8 max-w-3xl text-center md:mb-12">
             <span className="label-mono mb-5 block">{c.servicesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.servicesHeading}
@@ -767,7 +775,7 @@ export default async function LandingPage() {
 
       <section id="packages" className="bg-pfSurface px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-10 max-w-2xl md:mb-12">
+          <div className="mx-auto mb-10 max-w-3xl text-center md:mb-12">
             <span className="label-mono mb-5 block">{c.packagesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.packagesHeading}
@@ -793,9 +801,9 @@ export default async function LandingPage() {
             ))}
           </div>
 
-          <div className="mb-8 border-t border-pfBorder pt-10">
+          <div className="mb-8 border-t border-pfBorder pt-10 text-center">
             <h3 className="font-display text-4xl leading-none text-pfText md:text-5xl">{c.allServicesHeading}</h3>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-pfSubtle">{c.allServicesText}</p>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-pfSubtle">{c.allServicesText}</p>
           </div>
 
           <details className="group overflow-hidden rounded-xl border border-pfBorder bg-pfCard lg:hidden">
@@ -852,7 +860,7 @@ export default async function LandingPage() {
 
       <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
-          <div className="mb-8 md:mb-12">
+          <div className="mx-auto mb-8 max-w-3xl text-center md:mb-12">
             <span className="label-mono mb-5 block">{c.processLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.processHeading}

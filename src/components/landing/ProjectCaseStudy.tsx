@@ -39,9 +39,9 @@ export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData 
         <div className="mx-auto max-w-screen-xl">
           <div className="overflow-hidden border border-pfBorder bg-pfCard shadow-card">
             <div className="flex h-11 items-center gap-2 border-b border-pfBorder bg-black px-4" aria-hidden="true">
-              <span className="h-2 w-2 rounded-full bg-pfAccent" />
-              <span className="h-2 w-2 rounded-full bg-white/20" />
-              <span className="h-2 w-2 rounded-full bg-white/10" />
+              <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
+              <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
+              <span className="h-2 w-2 rounded-full bg-[#28c840]" />
               <span className="ml-3 truncate font-mono text-[0.58rem] uppercase tracking-[0.18em] text-pfMuted">
                 {data.domain}
               </span>
