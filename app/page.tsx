@@ -689,7 +689,7 @@ export default async function LandingPage() {
             >
               {lang === "de" ? (
                 <>
-                  Websites und Software für Unternehmen,
+                  Websites und Software für Unternehmen,{" "}
                   <br />
                   die vorankommen.
                 </>
