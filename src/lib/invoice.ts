@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import QRCode from "qrcode";
+import { PDFDocument, degrees, rgb, StandardFonts } from "pdf-lib";
 
 interface InvoiceInput {
   orderId: string;
@@ -168,6 +169,7 @@ export async function generateInvoicePDF({
 }
 
 type ServiceInvoicePdfInput = {
+  status?: "DRAFT" | "SENT" | "PAID" | "OVERDUE" | "CANCELLED";
   number: string;
   issueDate: Date;
   dueDate: Date;
@@ -177,6 +179,15 @@ type ServiceInvoicePdfInput = {
   notes: string | null;
   servicePeriodStart: Date | null;
   servicePeriodEnd: Date | null;
+  websitePlanStage?: "DEPOSIT" | "FINAL" | "MONTHLY" | null;
+  websitePlanMonth?: number | null;
+  websitePlan?: {
+    id: string;
+    initialMonths: number;
+    initialMonthlyCents: number;
+    laterMonthlyCents: number;
+    goLiveDate: Date | null;
+  } | null;
   client: {
     name: string;
     companyName: string | null;
@@ -214,7 +225,7 @@ function normalizePdfText(text: string) {
   return text.replace(/€/g, "EUR").replace(/[–—]/g, "-");
 }
 
-export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput): Promise<Buffer> {
+export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput, options: { forSending?: boolean } = {}): Promise<Buffer> {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595.28, 841.89]);
   const { width, height } = page.getSize();
@@ -227,8 +238,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   const light = rgb(0.95, 0.95, 0.93);
   const issuerName = "Fabian Franke";
   const issuerIban = "DE26 3705 0299 0000 4213 13";
-  // leer bis Gewerbe angemeldet ist; danach Finanzamt-Steuernummer eintragen
-  const issuerTaxNumber = "";
+  const issuerTaxNumber = process.env.PAGEFOUNDRY_TAX_NUMBER?.trim() ?? "";
 
   function text(value: string, x: number, y: number, size = 10, isBold = false, color = dark) {
     page.drawText(normalizePdfText(value), {
@@ -325,6 +335,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
   if (client.vatId) text(`USt-Id: ${client.vatId}`, margin, y - recipient.length * 14 - 4, 9, false, muted);
 
   const servicePeriodText = (() => {
+    if (invoice.websitePlanStage === "DEPOSIT") return "Ab Beauftragung bis Go-live (Datum folgt)";
     const s = invoice.servicePeriodStart;
     const e = invoice.servicePeriodEnd;
     if (s && e) return s.getTime() === e.getTime() ? pdfDate(s) : `${pdfDate(s)} - ${pdfDate(e)}`;
@@ -332,7 +343,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
     if (e) return pdfDate(e);
     return pdfDate(invoice.issueDate);
   })();
-  const servicePeriodLabel = invoice.servicePeriodStart || invoice.servicePeriodEnd ? "Leistungszeitraum" : "Leistungsdatum";
+  const servicePeriodLabel = invoice.websitePlanStage === "DEPOSIT" ? "Geplanter Leistungszeitraum" : invoice.servicePeriodStart || invoice.servicePeriodEnd ? "Leistungszeitraum" : "Leistungsdatum";
   text(servicePeriodLabel, margin, height - 232, 8, false, muted);
   text(servicePeriodText, margin, height - 246, 10);
 
@@ -393,7 +404,9 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
 
   const footerY = 78;
   let fy = footerY + 52;
-  text("Zahlbar per Ueberweisung. Bitte die Rechnungsnummer als Verwendungszweck angeben.", margin, fy, 9, false, muted);
+  text(invoice.websitePlanStage === "MONTHLY" && invoice.websitePlan
+    ? `Dauerauftrag: Verwendungszweck PF-WEB-${invoice.websitePlan.id.slice(-10).toUpperCase()} (Seite 2).`
+    : "Zahlbar per Ueberweisung. Bitte die Rechnungsnummer als Verwendungszweck angeben.", margin, fy, 9, false, muted);
   fy -= 13;
   text(`Bankverbindung: ${issuerName} · IBAN ${issuerIban}`, margin, fy, 9, false, muted);
   if (issuerTaxNumber) {
@@ -407,9 +420,46 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput)
       .forEach((line, index) => text(line, margin, fy - index * 11, 8, false, muted));
   }
   text(`Pagefoundry · ${issuerName} · Kastanienweg 20a · 42499 Hueckeswagen · pagefoundry.de`, margin, footerY - 10, 7, false, muted);
+  if (!options.forSending && (invoice.status === "DRAFT" || !issuerTaxNumber || !client.billingAddressLine1 || !client.postalCode || !client.city)) {
+    page.drawText("ENTWURF - NICHT VERSENDEN", { x: 105, y: 365, size: 28, font: bold, color: muted, rotate: degrees(35), opacity: 0.18 });
+  }
+
+  if (invoice.websitePlanStage === "MONTHLY" && invoice.websitePlan?.goLiveDate) {
+    const plan = invoice.websitePlan;
+    const reference = `PF-WEB-${plan.id.slice(-10).toUpperCase()}`;
+    const payload = ["BCD", "002", "1", "SCT", "", issuerName, issuerIban.replace(/\s/g, ""), `EUR${(invoice.totalCents / 100).toFixed(2)}`, "", "", reference, ""].join("\n");
+    const qrDataUrl = await QRCode.toDataURL(payload, { errorCorrectionLevel: "M", margin: 2, width: 420 });
+    const qrImage = await pdfDoc.embedPng(Buffer.from(qrDataUrl.split(",")[1], "base64"));
+    const sheet = pdfDoc.addPage([595.28, 841.89]);
+    sheet.drawRectangle({ x: 0, y: height - 92, width, height: 92, color: rgb(0, 0, 0) });
+    sheet.drawText("DAUERAUFTRAG", { x: margin, y: height - 52, size: 21, font: bold, color: accent });
+    const sheetText = (value: string, x: number, y: number, size = 11, isBold = false) => sheet.drawText(normalizePdfText(value), { x, y, size, font: isBold ? bold : regular, color: dark });
+    sheetText(`Zur Monatsrechnung ${invoice.number}`, margin, height - 140, 15, true);
+    sheetText(`Empfaenger: ${issuerName}`, margin, height - 181);
+    sheetText(`IBAN: ${issuerIban}`, margin, height - 202);
+    sheetText(`Betrag: ${pdfMoney(invoice.totalCents)} monatlich`, margin, height - 223);
+    sheetText(`Verwendungszweck: ${reference}`, margin, height - 244);
+    sheet.drawImage(qrImage, { x: margin, y: height - 490, width: 190, height: 190 });
+    sheetText("QR-Code mit Banking-App scannen.", margin + 215, height - 332, 10, true);
+    sheetText("Wiederholung monatlich selbst einstellen.", margin + 215, height - 351, 9);
+    sheetText("Der Code legt keinen Dauerauftrag an.", margin + 215, height - 369, 9);
+    const nextPhase = monthStartForPdf(plan.goLiveDate!, plan.initialMonths);
+    sheetText(`Monate 1-${plan.initialMonths}: ${pdfMoney(plan.initialMonthlyCents)} monatlich.`, margin, height - 545, 10, true);
+    sheetText(`Ab ${pdfDate(nextPhase)} (Monat ${plan.initialMonths + 1}): ${pdfMoney(plan.laterMonthlyCents)} monatlich.`, margin, height - 565, 10, true);
+    sheetText("Dauerauftrag rechtzeitig auf den neuen Betrag aendern.", margin, height - 586, 9);
+    sheetText("Beginn und Zahlungstag: ab Go-live laut Vereinbarung.", margin, height - 607, 9);
+    sheetText("Pagefoundry · Fabian Franke · Kastanienweg 20a · 42499 Hueckeswagen", margin, 68, 7);
+  }
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
+}
+
+function monthStartForPdf(start: Date, offset: number) {
+  const year = start.getUTCFullYear();
+  const month = start.getUTCMonth() + offset;
+  const day = Math.min(start.getUTCDate(), new Date(Date.UTC(year, month + 1, 0)).getUTCDate());
+  return new Date(Date.UTC(year, month, day));
 }
 
 type OptionDocumentPdfInput = {

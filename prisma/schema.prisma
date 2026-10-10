@@ -77,6 +77,12 @@ enum OptionDocumentItemType {
   MAINTENANCE
 }
 
+enum WebsitePlanInvoiceStage {
+  DEPOSIT
+  FINAL
+  MONTHLY
+}
+
 model User {
   id             String   @id @default(cuid())
   email          String   @unique
@@ -148,6 +154,7 @@ model BusinessClient {
   services ClientService[]
   invoices Invoice[]
   optionDocuments OptionDocument[]
+  websitePlans WebsitePlan[]
 
   @@index([status])
   @@index([name])
@@ -226,6 +233,10 @@ model Invoice {
   taxCents           Int            @default(0)
   totalCents         Int            @default(0)
   notes              String?
+  websitePlanId      String?
+  websitePlan        WebsitePlan?   @relation(fields: [websitePlanId], references: [id], onDelete: Restrict)
+  websitePlanStage   WebsitePlanInvoiceStage?
+  websitePlanMonth   Int?
   sentAt             DateTime?
   paidAt             DateTime?
   createdAt          DateTime       @default(now())
@@ -238,6 +249,36 @@ model Invoice {
   @@index([status])
   @@index([issueDate])
   @@index([dueDate])
+  @@index([websitePlanId])
+  @@unique([websitePlanId, websitePlanStage, websitePlanMonth])
+}
+
+model WebsitePlan {
+  id                   String         @id @default(cuid())
+  clientId             String
+  client               BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  title                String
+  setupPriceCents      Int
+  depositCents         Int
+  initialMonthlyCents  Int
+  initialMonths        Int
+  laterMonthlyCents    Int
+  goLiveDate           DateTime?
+  billedMonths         Int            @default(0)
+  cancelledAt          DateTime?
+  clientServiceId      String?
+  hostingProvider      String?
+  hostingRegion        String?
+  backupInterval       String?
+  backupRetention      String?
+  subprocessors        String?
+  supportEmail         String         @default("admin@pagefoundry.de")
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  invoices             Invoice[]
+
+  @@index([clientId])
+  @@index([goLiveDate])
 }
 
 model InvoiceItem {

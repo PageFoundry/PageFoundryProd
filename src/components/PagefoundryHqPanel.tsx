@@ -32,8 +32,11 @@ type Client = {
   billingName: string | null;
   billingEmail: string | null;
   billingAddressLine1: string | null;
+  billingAddressLine2: string | null;
   postalCode: string | null;
   city: string | null;
+  vatId: string | null;
+  notes: string | null;
   services: ClientService[];
   invoices: Array<{ id: string; number: string; status: InvoiceStatus; totalCents: number; issueDate: string }>;
 };
@@ -108,6 +111,8 @@ type Snapshot = {
   activeClientServices: ClientService[];
   invoices: Invoice[];
   optionDocuments: OptionDocument[];
+  websitePlans: WebsitePlan[];
+  invoiceIssuerReady: boolean;
   summary: {
     clientCount: number;
     activeClientCount: number;
@@ -119,7 +124,28 @@ type Snapshot = {
   };
 };
 
-type DrawerKind = "client" | "service" | "invoice" | "contract" | "option" | null;
+type WebsitePlan = {
+  id: string;
+  title: string;
+  clientId: string;
+  client: Client;
+  setupPriceCents: number;
+  depositCents: number;
+  initialMonthlyCents: number;
+  initialMonths: number;
+  laterMonthlyCents: number;
+  goLiveDate: string | null;
+  billedMonths: number;
+  hostingProvider: string | null;
+  hostingRegion: string | null;
+  backupInterval: string | null;
+  backupRetention: string | null;
+  subprocessors: string | null;
+  supportEmail: string;
+  invoices: Array<{ id: string; number: string; status: InvoiceStatus; websitePlanStage: "DEPOSIT" | "FINAL" | "MONTHLY"; websitePlanMonth: number | null }>;
+};
+
+type DrawerKind = "client" | "client-edit" | "service" | "invoice" | "contract" | "option" | "website-plan" | "website-plan-details" | null;
 
 const money = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 const date = new Intl.DateTimeFormat("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -206,6 +232,9 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
   const [expandedClient, setExpandedClient] = useState<string | null>(null);
   const [menuInvoice, setMenuInvoice] = useState<string | null>(null);
   const [confirmCancel, setConfirmCancel] = useState<string | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [goLiveDates, setGoLiveDates] = useState<Record<string, string>>({});
 
   const [contractServiceId, setContractServiceId] = useState(
     snapshot.services.find((service) => service.billingMode === "RECURRING")?.id ?? snapshot.services[0]?.id ?? "",
@@ -249,6 +278,15 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
     } catch (err: any) {
       setError(err.message);
     }
+  }
+
+  async function submitClientEdit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selectedClientId) return;
+    try {
+      await postJson(`/api/admin/hq/clients/${selectedClientId}`, Object.fromEntries(new FormData(event.currentTarget)), "PATCH");
+      setDrawer(null);
+    } catch (err: any) { setError(err.message); }
   }
 
   async function submitService(event: FormEvent<HTMLFormElement>) {
@@ -336,6 +374,29 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
     } catch (err: any) {
       setError(err.message);
     }
+  }
+
+  async function submitWebsitePlan(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      await postJson("/api/admin/hq/website-plans", Object.fromEntries(new FormData(event.currentTarget)));
+      setDrawer(null);
+    } catch (err: any) { setError(err.message); }
+  }
+
+  async function submitPlanDetails(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selectedPlanId) return;
+    try {
+      await postJson(`/api/admin/hq/website-plans/${selectedPlanId}`, { action: "update-details", ...Object.fromEntries(new FormData(event.currentTarget)) }, "PATCH");
+      setDrawer(null);
+    } catch (err: any) { setError(err.message); }
+  }
+
+  async function planAction(id: string, action: string) {
+    try {
+      await postJson(`/api/admin/hq/website-plans/${id}`, { action, goLiveDate: goLiveDates[id] }, "PATCH");
+    } catch (err: any) { setError(err.message); }
   }
 
   async function changeStatus(id: string, status: InvoiceStatus) {
@@ -501,7 +562,14 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
           <Plus size={15} /> Rechnung erstellen
         </button>
         <ActionButton icon={<FileText size={15} />} label="Auswahl erstellen" onClick={() => openOptionDocumentFor("")} />
+        <ActionButton icon={<Banknote size={15} />} label="Website-Paket" onClick={() => setDrawer("website-plan")} />
       </div>
+
+      {!snapshot.invoiceIssuerReady && (
+        <div className="rounded-sm border border-amber-500/40 bg-amber-500/[0.08] p-4 text-sm text-amber-200">
+          Für den Rechnungsversand fehlt die steuerliche Kennung des Ausstellers. PAGEFOUNDRY_TAX_NUMBER in der Server-Konfiguration hinterlegen.
+        </div>
+      )}
 
       <div className="grid gap-4 fade-in md:grid-cols-2 xl:grid-cols-4">
         <Metric icon={<Building2 size={18} />} label="Kunden" value={snapshot.summary.clientCount.toString()} sub={`${snapshot.summary.activeClientCount} aktiv`} />
@@ -521,6 +589,63 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
           <ChevronDown size={15} className="ml-auto -rotate-90" />
         </button>
       )}
+
+      <section className="pf-card p-5">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span className="label-mono flex items-center gap-2"><Banknote size={14} /> Website-Pakete</span>
+            <p className="mt-2 text-xs text-pfMuted">50 % Anzahlung, Schlussrechnung bei Go-live, Monatsrechnungen mit Preiswechsel und Zahlungs-QR.</p>
+          </div>
+          <ActionButton icon={<Plus size={14} />} label="Paket anlegen" onClick={() => setDrawer("website-plan")} />
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {snapshot.websitePlans.map((plan) => {
+            const deposit = plan.invoices.find((invoice) => invoice.websitePlanStage === "DEPOSIT");
+            const final = plan.invoices.find((invoice) => invoice.websitePlanStage === "FINAL");
+            const monthly = [...plan.invoices].reverse().find((invoice) => invoice.websitePlanStage === "MONTHLY");
+            const complete = Boolean(plan.hostingProvider && plan.hostingRegion && plan.backupInterval && plan.backupRetention && plan.subprocessors);
+            return (
+              <div key={plan.id} className="rounded-sm border border-pfBorder bg-black/20 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div><h3 className="font-semibold text-pfText">{plan.title}</h3><p className="mt-1 text-xs text-pfMuted">{plan.client.companyName || plan.client.name}</p></div>
+                  <span className={`status-badge ${plan.goLiveDate ? statusClass("PAID") : statusClass("DRAFT")}`}>
+                    {plan.goLiveDate ? "Live" : "Vor Go-live"}
+                  </span>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+                  <MiniStat label="Einmalig" value={formatCents(plan.setupPriceCents)} />
+                  <MiniStat label={`Monat 1–${plan.initialMonths}`} value={formatCents(plan.initialMonthlyCents)} />
+                  <MiniStat label={`Ab Monat ${plan.initialMonths + 1}`} value={formatCents(plan.laterMonthlyCents)} />
+                </div>
+                <p className="mt-3 text-xs text-pfSubtle">Anzahlung: {deposit ? <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${deposit.id}/pdf`} target="_blank" rel="noreferrer">{deposit.number} · {STATUS_LABELS[deposit.status]}</a> : "fehlt"}</p>
+                {final && <p className="mt-1 text-xs text-pfSubtle">Schlusszahlung: <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${final.id}/pdf`} target="_blank" rel="noreferrer">{final.number}</a></p>}
+                {monthly && <p className="mt-1 text-xs text-pfSubtle">Monat {monthly.websitePlanMonth}: <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${monthly.id}/pdf`} target="_blank" rel="noreferrer">{monthly.number} · QR auf Seite 2</a></p>}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/sla`} target="_blank" rel="noreferrer">SLA-PDF</a>
+                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/avv`} target="_blank" rel="noreferrer">AVV-PDF</a>
+                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/payment`} target="_blank" rel="noreferrer">Dauerauftrag</a>
+                  <button className="btn-outline text-xs" type="button" onClick={() => { setSelectedPlanId(plan.id); setDrawer("website-plan-details"); }}>Betriebsdaten</button>
+                </div>
+                {!complete && <p className="mt-3 text-xs text-amber-200">SLA/AVV sind Entwürfe: Hosting, Backups oder Unterauftragsverarbeiter ergänzen.</p>}
+                {!plan.goLiveDate && (
+                  <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-pfBorder pt-4">
+                    <label className="block"><span className={labelText}>Go-live-Datum</span><input className="pf-input mt-1.5" type="date" value={goLiveDates[plan.id] || ""} onChange={(event) => setGoLiveDates((current) => ({ ...current, [plan.id]: event.target.value }))} /></label>
+                    <button type="button" className="btn-accent text-xs" disabled={deposit?.status !== "PAID" || !goLiveDates[plan.id]} onClick={() => planAction(plan.id, "activate")}>Go-live abrechnen</button>
+                    <span className="text-xs text-pfMuted">Anzahlung muss bezahlt sein.</span>
+                  </div>
+                )}
+                {plan.goLiveDate && (
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-pfBorder pt-4">
+                    <span className="text-xs text-pfMuted">{plan.billedMonths} Monatsrechnungen erstellt</span>
+                    <button type="button" className="btn-outline text-xs" onClick={() => planAction(plan.id, "bill-next")}>Nächsten Monat abrechnen</button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          {snapshot.websitePlans.length === 0 && <p className="text-sm text-pfMuted">Noch keine Website-Pakete.</p>}
+        </div>
+      </section>
 
       <section className="pf-card p-5 fade-in-delay-1">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -757,6 +882,7 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
                     <button type="button" onClick={() => openInvoiceFor(client.id)} className="btn-outline w-full gap-2">
                       <Plus size={14} /> Rechnung fuer diesen Kunden
                     </button>
+                    <button type="button" onClick={() => { setSelectedClientId(client.id); setDrawer("client-edit"); }} className="btn-outline mt-2 w-full gap-2">Kundendaten bearbeiten</button>
                   </div>
                 )}
               </div>
@@ -782,6 +908,30 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
           </div>
           <DrawerFooter isPending={isPending} submitLabel="Kunde anlegen" onCancel={() => setDrawer(null)} />
         </form>
+      </Drawer>
+
+      <Drawer open={drawer === "client-edit"} title="Kundendaten bearbeiten" icon={<Building2 size={16} />} onClose={() => setDrawer(null)}>
+        {selectedClientId && (() => {
+          const client = snapshot.clients.find((item) => item.id === selectedClientId);
+          if (!client) return null;
+          return <form key={client.id} onSubmit={submitClientEdit} className="flex h-full flex-col">
+            <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+              <Field name="name" label="Name / Inhaber" defaultValue={client.name} required />
+              <Field name="companyName" label="Firma" defaultValue={client.companyName || ""} />
+              <Field name="email" label="E-Mail" type="email" defaultValue={client.email || ""} />
+              <Field name="billingEmail" label="Rechnungs-E-Mail" type="email" defaultValue={client.billingEmail || ""} />
+              <Field name="billingName" label="Rechnungsempfänger" defaultValue={client.billingName || ""} />
+              <Field name="billingAddressLine1" label="Straße / Hausnummer" defaultValue={client.billingAddressLine1 || ""} />
+              <Field name="billingAddressLine2" label="Adresszusatz" defaultValue={client.billingAddressLine2 || ""} />
+              <div className="grid grid-cols-2 gap-3"><Field name="postalCode" label="PLZ" defaultValue={client.postalCode || ""} /><Field name="city" label="Ort" defaultValue={client.city || ""} /></div>
+              <Field name="phone" label="Telefon" defaultValue={client.phone || ""} />
+              <Field name="website" label="Website" defaultValue={client.website || ""} />
+              <Field name="vatId" label="USt-ID des Kunden (optional)" defaultValue={client.vatId || ""} />
+              <label className="block"><span className={labelText}>Interne Notiz</span><textarea name="notes" defaultValue={client.notes || ""} rows={3} className="pf-input mt-1.5" /></label>
+            </div>
+            <DrawerFooter isPending={isPending} submitLabel="Kundendaten speichern" onCancel={() => setDrawer(null)} />
+          </form>;
+        })()}
       </Drawer>
 
       <Drawer open={drawer === "service"} title="Neuer Service" icon={<Settings2 size={16} />} onClose={() => setDrawer(null)}>
@@ -982,6 +1132,51 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
             </div>
           </div>
         </form>
+      </Drawer>
+
+      <Drawer open={drawer === "website-plan"} title="Website-Paket" icon={<Banknote size={16} />} wide onClose={() => setDrawer(null)}>
+        <form onSubmit={submitWebsitePlan} className="flex h-full flex-col">
+          <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+            <SelectField name="clientId" label="Kunde" required defaultValue="">
+              <option value="">Auswählen</option>
+              {snapshot.clients.map((client) => <option key={client.id} value={client.id}>{client.companyName || client.name}</option>)}
+            </SelectField>
+            <Field name="title" label="Projekt / Website" defaultValue="Website-Erstellung und Betreuung" required />
+            <div className="grid grid-cols-2 gap-3">
+              <Field name="setupPrice" label="Einmalig EUR" defaultValue="790,00" required />
+              <Field name="initialMonthly" label="Monat 1–24 EUR" defaultValue="99,00" required />
+              <Field name="initialMonths" label="Erste Preisphase (Monate)" type="number" defaultValue="24" required />
+              <Field name="laterMonthly" label="Danach EUR / Monat" defaultValue="49,00" required />
+            </div>
+            <p className="text-xs text-pfMuted">Die Hälfte des Einmalpreises wird jetzt als Rechnungsentwurf angelegt. Schlussrechnung und erste Monatsrechnung entstehen erst beim Go-live.</p>
+            <Field name="supportEmail" label="Support-E-Mail" type="email" defaultValue="admin@pagefoundry.de" required />
+            <Field name="hostingProvider" label="Hosting-Anbieter" />
+            <Field name="hostingRegion" label="Hosting-Region" />
+            <Field name="backupInterval" label="Sicherungsintervall" />
+            <Field name="backupRetention" label="Aufbewahrungsdauer Backups" />
+            <label className="block"><span className={labelText}>Unterauftragsverarbeiter (je Zeile Name, Leistung, Ort)</span><textarea name="subprocessors" rows={3} className="pf-input mt-1.5" /></label>
+          </div>
+          <DrawerFooter isPending={isPending} submitLabel="Paket und Anzahlung anlegen" onCancel={() => setDrawer(null)} />
+        </form>
+      </Drawer>
+
+      <Drawer open={drawer === "website-plan-details"} title="Betriebsdaten" icon={<Settings2 size={16} />} wide onClose={() => setDrawer(null)}>
+        {selectedPlanId && (() => {
+          const plan = snapshot.websitePlans.find((item) => item.id === selectedPlanId);
+          if (!plan) return null;
+          return <form key={plan.id} onSubmit={submitPlanDetails} className="flex h-full flex-col">
+            <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+              <p className="text-sm text-pfSubtle">{plan.title} · {plan.client.companyName || plan.client.name}</p>
+              <Field name="supportEmail" label="Support-E-Mail" type="email" defaultValue={plan.supportEmail} required />
+              <Field name="hostingProvider" label="Hosting-Anbieter" defaultValue={plan.hostingProvider || ""} />
+              <Field name="hostingRegion" label="Hosting-Region" defaultValue={plan.hostingRegion || ""} />
+              <Field name="backupInterval" label="Sicherungsintervall" defaultValue={plan.backupInterval || ""} />
+              <Field name="backupRetention" label="Aufbewahrungsdauer Backups" defaultValue={plan.backupRetention || ""} />
+              <label className="block"><span className={labelText}>Unterauftragsverarbeiter (je Zeile Name, Leistung, Ort)</span><textarea name="subprocessors" rows={5} defaultValue={plan.subprocessors || ""} className="pf-input mt-1.5" /></label>
+            </div>
+            <DrawerFooter isPending={isPending} submitLabel="Betriebsdaten speichern" onCancel={() => setDrawer(null)} />
+          </form>;
+        })()}
       </Drawer>
     </div>
   );

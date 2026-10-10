@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, invoice });
   } catch (err: any) {
     if (err?.message === "FORBIDDEN") return NextResponse.json({ message: "forbidden" }, { status: 403 });
-    if (err?.message === "invoice_recipient_missing") {
+    if (typeof err?.message === "string" && err.message.startsWith("invoice_")) {
       return NextResponse.json({ message: err.message }, { status: 400 });
     }
     if (err?.code === "P2025") return NextResponse.json({ message: "not found" }, { status: 404 });

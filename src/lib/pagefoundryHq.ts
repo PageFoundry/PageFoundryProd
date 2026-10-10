@@ -5,6 +5,7 @@ import { generateOptionDocumentPDF, generateServiceInvoicePDF } from "@/lib/invo
 
 const invoiceInclude = {
   client: true,
+  websitePlan: true,
   items: { include: { service: true }, orderBy: { createdAt: "asc" as const } },
   payments: { orderBy: { paidAt: "desc" as const } },
 };
@@ -46,7 +47,7 @@ function calculateLine(quantity: number, unitPriceCents: number, taxRateBps: num
   };
 }
 
-async function nextInvoiceNumber(tx: Prisma.TransactionClient, issueDate: Date) {
+export async function nextInvoiceNumber(tx: Prisma.TransactionClient, issueDate: Date) {
   const year = issueDate.getFullYear();
   const prefix = `PF-${year}-`;
   const latest = await tx.invoice.findFirst({
@@ -72,7 +73,7 @@ async function nextOptionDocumentNumber(tx: Prisma.TransactionClient, issueDate:
 
 export async function getPagefoundryHqSnapshot() {
   const now = new Date();
-  const [clients, services, activeClientServices, invoices, optionDocuments] = await Promise.all([
+  const [clients, services, activeClientServices, invoices, optionDocuments, websitePlans] = await Promise.all([
     prisma.businessClient.findMany({
       orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
       include: {
@@ -99,6 +100,11 @@ export async function getPagefoundryHqSnapshot() {
       orderBy: { issueDate: "desc" },
       take: 100,
     }),
+    prisma.websitePlan.findMany({
+      include: { client: true, invoices: { orderBy: { issueDate: "asc" } } },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    }),
   ]);
 
   const openInvoices = invoices.filter((invoice) => invoice.status === "SENT" || invoice.status === "OVERDUE");
@@ -121,6 +127,8 @@ export async function getPagefoundryHqSnapshot() {
     activeClientServices,
     invoices,
     optionDocuments,
+    websitePlans,
+    invoiceIssuerReady: Boolean(process.env.PAGEFOUNDRY_TAX_NUMBER?.trim()),
     summary: {
       clientCount: clients.length,
       activeClientCount: clients.filter((client) => client.status === "ACTIVE").length,
@@ -156,6 +164,15 @@ export async function createBusinessClient(input: Record<string, unknown>) {
       notes: cleanString(input.notes),
     },
   });
+}
+
+export async function updateBusinessClient(id: string, input: Record<string, unknown>) {
+  const name = cleanString(input.name);
+  if (!name) throw new Error("client_name_required");
+  const fields = ["companyName", "email", "phone", "website", "billingName", "billingEmail", "billingAddressLine1", "billingAddressLine2", "postalCode", "city", "vatId", "notes"] as const;
+  const data: Record<string, string | null> = { name };
+  for (const field of fields) data[field] = cleanString(input[field]) ?? null;
+  return prisma.businessClient.update({ where: { id }, data });
 }
 
 export async function createServiceOffering(input: Record<string, unknown>) {
@@ -390,10 +407,21 @@ export async function generateOptionDocumentPdf(optionDocumentId: string) {
 
 export async function sendInvoiceEmail(invoiceId: string) {
   const invoice = await getInvoiceForPdf(invoiceId);
+  if (!process.env.PAGEFOUNDRY_TAX_NUMBER?.trim()) throw new Error("invoice_issuer_tax_number_missing");
+  if (!invoice.client.billingAddressLine1 || !invoice.client.postalCode || !invoice.client.city) {
+    throw new Error("invoice_client_address_missing");
+  }
+  if (invoice.websitePlanId && (!invoice.client.billingName || !(invoice.client.billingEmail || invoice.client.email))) {
+    throw new Error("invoice_client_billing_identity_missing");
+  }
+  if (invoice.websitePlanStage === "FINAL") {
+    const deposit = await prisma.invoice.findFirst({ where: { websitePlanId: invoice.websitePlanId, websitePlanStage: "DEPOSIT" } });
+    if (deposit?.status !== "PAID") throw new Error("invoice_deposit_unpaid");
+  }
   const recipient = invoice.client.billingEmail ?? invoice.client.email;
   if (!recipient) throw new Error("invoice_recipient_missing");
 
-  const pdf = await generateServiceInvoicePDF(invoice);
+  const pdf = await generateServiceInvoicePDF(invoice, { forSending: true });
   await sendMail({
     to: recipient,
     subject: `Rechnung ${invoice.number} von Pagefoundry`,
