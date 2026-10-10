@@ -411,7 +411,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput,
   text(`Bankverbindung: ${issuerName} · IBAN ${issuerIban}`, margin, fy, 9, false, muted);
   if (issuerTaxNumber) {
     fy -= 13;
-    text(`Steuernummer: ${issuerTaxNumber}`, margin, fy, 9, false, muted);
+    text(`Steuerliche Kennung: ${issuerTaxNumber}`, margin, fy, 9, false, muted);
   }
   if (invoice.notes) {
     fy -= 16;
