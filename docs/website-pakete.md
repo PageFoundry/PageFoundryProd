@@ -6,8 +6,8 @@
 2. „Website-Paket“ anlegen. Das System erzeugt eine Anzahlungsrechnung als **nicht versendbaren Entwurf** über 50 % des Einmalpreises. Ohne tatsächliches Vertragsschlussdatum bleibt die Fälligkeit offen. Bei Servicewerk sind es 395,00 € von 790,00 €.
 3. Nach tatsächlichem Abschluss das Datum erfassen. Die Fälligkeit der Anzahlung ist exakt sieben Kalendertage danach. Nach Zahlungseingang die Rechnung als bezahlt markieren.
 4. Die dokumentierte Abnahme erzeugt die separate Schlussrechnung über die restlichen 395,00 €. Der tatsächliche Go-live aktiviert den monatlichen Service und erzeugt Monatsrechnung 1 über 99,00 €. Eine ausdrücklich vorläufig freigegebene Produktivschaltung kann der Abnahme vorausgehen; die Schlussrechnung bleibt dann bis zur Abnahme aus.
-5. „Nächsten Monat abrechnen“ erstellt nach Beginn des jeweiligen Vertragsmonats genau einen weiteren Entwurf. Bei Servicewerk gelten 99,00 € für die ersten 24 Monate. Die vorgesehenen 49,00 € ab Monat 25 sind noch nicht freigegeben; das System sperrt die Abrechnung dieser Preisphase bis zur Bestätigung.
-6. Der alte HQ-Generator für SLA, AVV und Dauerauftragsblatt ist für Servicewerk gesperrt. Seine PDFs enthalten überholte Annahmen. Aktuelle Arbeitsfassungen liegen ausschließlich unter `/home/ubuntu/pagefoundry-documents/servicewerk/vertragsentwuerfe-2026-10-10/` und sind nicht zur Unterschrift freigegeben. Eine Monatsrechnung mit EPC-SEPA-QR-Code entsteht erst nach Go-live; der Code füllt nur eine einzelne Überweisung vor und legt selbst keinen Dauerauftrag an.
+5. „Nächsten Monat abrechnen“ erstellt nach Beginn des jeweiligen Vertragsmonats genau einen weiteren Entwurf. Bei Servicewerk gelten 99,00 € für die ersten 24 Monate und die am 10.10.2026 von Fabian bestätigten 49,00 € ab Monat 25. Der Folgepreis ist im Servicewerk-Paket freigegeben.
+6. Der alte HQ-Generator für SLA, AVV und Dauerauftragsblatt ist für Servicewerk gesperrt. Seine PDFs enthalten überholte Annahmen. Das aktuelle Kundenpaket liegt unter `/home/ubuntu/pagefoundry-documents/servicewerk/versandpaket-2026-10-10/`; die separate AVV bleibt unter `/home/ubuntu/pagefoundry-documents/servicewerk/vertragsentwuerfe-2026-10-10/` als Arbeitsfassung, bis IONOS-, Mail-, Shop- und Backuptechnik eingerichtet und dokumentiert sind. Eine Monatsrechnung mit EPC-SEPA-QR-Code entsteht erst nach Go-live; der Code füllt nur eine einzelne Überweisung vor und legt selbst keinen Dauerauftrag an.
 
 ## Versandvoraussetzungen
 
@@ -18,10 +18,10 @@ Pagefoundry rechnet nach der vom Auftraggeber bestätigten Kleinunternehmerregel
 ## Grenzen und Prüfung
 
 - Die monatliche Rechnungsstellung ist bewusst ein manueller HQ-Schritt. Es gibt keinen unbeaufsichtigten Versand und keinen automatischen Bankeinzug.
-- Das alte HQ-SLA und die alte HQ-AVV dürfen für Servicewerk nicht verwendet werden. Der neue SLA-Entwurf enthält 72 Kalenderstunden als Umsetzungsfrist für kleine Text-/Bildänderungen und eine noch freizugebende Fair-Use-Grenze von fünf Änderungen/60 Minuten pro Vertragsmonat. Reaktionszeiten und Verfügbarkeit sind nicht garantiert.
-- Der neue AVV-Entwurf berücksichtigt mögliche Shopdaten; Rollen, tatsächlich eingesetzte Dienste, Unterauftragsverarbeiter und TOMs müssen vor Unterschrift vervollständigt werden. Die Shop-Leistungsbeschreibung ist eine gesonderte, noch freizugebende Anlage zum Werkvertrag. Die Demo enthält keinen funktionierenden Checkout.
+- Das alte HQ-SLA und die alte HQ-AVV dürfen für Servicewerk nicht verwendet werden. Das SLA im Kundenpaket enthält 72 Kalenderstunden als Umsetzungsfrist für kleine Text-/Bildänderungen und die am 10.10.2026 von Fabian bestätigte Fair-Use-Grenze von fünf Änderungen/60 Minuten pro Vertragsmonat. Reaktionszeiten und Verfügbarkeit sind nicht garantiert.
+- Der AVV-Entwurf berücksichtigt mögliche Shopdaten; Rollen, tatsächlich eingesetzte Dienste, Unterauftragsverarbeiter und TOMs müssen vor Unterschrift vervollständigt werden. Die Shop-Leistungsbeschreibung ist eine gesondert zu unterschreibende Anlage zum Werkvertrag. Die Demo enthält keinen funktionierenden Checkout.
 - Der QR-Code ist ein EPC-Code für eine SEPA-Überweisung; er kann keinen Dauerauftrag selbst anlegen.
-- Vor Kundenversand der SLA/AVV müssen Unterauftragsverarbeiter, TOMs und Hosting-Angaben zum tatsächlichen Betrieb passen. Eine juristische Schlussprüfung ist sinnvoll.
+- Die AVV wird erst nach Einrichtung der Technik und vor Verarbeitung echter Daten unterschrieben. Eine juristische Schlussprüfung der Vertragsfassungen ist sinnvoll.
 
 ## Rechtsgrundlagen (Stand 10.10.2026)
 
