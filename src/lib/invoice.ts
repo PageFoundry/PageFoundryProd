@@ -352,8 +352,13 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput,
   page.drawRectangle({ x: metaX, y: height - 214, width: 170, height: 86, color: light });
   text("Rechnungsdatum", metaX + 14, height - 152, 8, false, muted);
   right(pdfDate(invoice.issueDate), metaX + 156, height - 152, 9, true);
-  text("Faellig bis", metaX + 14, height - 174, 8, false, muted);
-  right(invoice.dueDate ? pdfDate(invoice.dueDate) : invoice.websitePlanStage === "DEPOSIT" ? "7 Tage ab Vertragsschluss" : "Noch offen", metaX + 156, height - 174, 9, true);
+  if (!invoice.dueDate && invoice.websitePlanStage === "DEPOSIT") {
+    text("Faellig binnen 7 Tagen nach", metaX + 14, height - 169, 8, false, muted);
+    text("Vertragsschluss", metaX + 14, height - 181, 9, true);
+  } else {
+    text("Faellig bis", metaX + 14, height - 174, 8, false, muted);
+    right(invoice.dueDate ? pdfDate(invoice.dueDate) : "Noch offen", metaX + 156, height - 174, 9, true);
+  }
   text("Gesamt", metaX + 14, height - 196, 8, false, muted);
   right(pdfMoney(invoice.totalCents), metaX + 156, height - 196, 10, true);
 
