@@ -68,7 +68,7 @@ type Invoice = {
   number: string;
   status: InvoiceStatus;
   issueDate: string;
-  dueDate: string;
+  dueDate: string | null;
   subtotalCents: number;
   taxCents: number;
   totalCents: number;
@@ -134,6 +134,10 @@ type WebsitePlan = {
   initialMonthlyCents: number;
   initialMonths: number;
   laterMonthlyCents: number;
+  laterPriceConfirmed: boolean;
+  contractSignedAt: string | null;
+  acceptedAt: string | null;
+  documentDraftsDisabled: boolean;
   goLiveDate: string | null;
   billedMonths: number;
   hostingProvider: string | null;
@@ -184,7 +188,7 @@ function statusClass(status: InvoiceStatus) {
 
 function isOverdue(invoice: Pick<Invoice, "status" | "dueDate">) {
   if (invoice.status === "OVERDUE") return true;
-  return invoice.status === "SENT" && new Date(invoice.dueDate).getTime() < Date.now();
+  return invoice.status === "SENT" && Boolean(invoice.dueDate && new Date(invoice.dueDate).getTime() < Date.now());
 }
 
 function todayInput() {
@@ -235,6 +239,8 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [goLiveDates, setGoLiveDates] = useState<Record<string, string>>({});
+  const [contractDates, setContractDates] = useState<Record<string, string>>({});
+  const [acceptanceDates, setAcceptanceDates] = useState<Record<string, string>>({});
 
   const [contractServiceId, setContractServiceId] = useState(
     snapshot.services.find((service) => service.billingMode === "RECURRING")?.id ?? snapshot.services[0]?.id ?? "",
@@ -394,8 +400,9 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
   }
 
   async function planAction(id: string, action: string) {
+    if (action === "confirm-later-price" && !window.confirm("Ist der Folgepreis im unterschriebenen Vertrag verbindlich freigegeben?")) return;
     try {
-      await postJson(`/api/admin/hq/website-plans/${id}`, { action, goLiveDate: goLiveDates[id] }, "PATCH");
+      await postJson(`/api/admin/hq/website-plans/${id}`, { action, goLiveDate: goLiveDates[id], contractSignedAt: contractDates[id], acceptedAt: acceptanceDates[id] }, "PATCH");
     } catch (err: any) { setError(err.message); }
   }
 
@@ -594,7 +601,7 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <span className="label-mono flex items-center gap-2"><Banknote size={14} /> Website-Pakete</span>
-            <p className="mt-2 text-xs text-pfMuted">50 % Anzahlung, Schlussrechnung bei Go-live, Monatsrechnungen mit Preiswechsel und Zahlungs-QR.</p>
+            <p className="mt-2 text-xs text-pfMuted">50 % Anzahlung nach Vertragsschluss, Schlussrechnung nach Abnahme, Monatsrechnungen ab tatsächlichem Go-live.</p>
           </div>
           <ActionButton icon={<Plus size={14} />} label="Paket anlegen" onClick={() => setDrawer("website-plan")} />
         </div>
@@ -615,23 +622,41 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
                 <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
                   <MiniStat label="Einmalig" value={formatCents(plan.setupPriceCents)} />
                   <MiniStat label={`Monat 1–${plan.initialMonths}`} value={formatCents(plan.initialMonthlyCents)} />
-                  <MiniStat label={`Ab Monat ${plan.initialMonths + 1}`} value={formatCents(plan.laterMonthlyCents)} />
+                  <MiniStat label={`Ab Monat ${plan.initialMonths + 1}${plan.laterPriceConfirmed ? "" : " · offen"}`} value={formatCents(plan.laterMonthlyCents)} />
                 </div>
                 <p className="mt-3 text-xs text-pfSubtle">Anzahlung: {deposit ? <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${deposit.id}/pdf`} target="_blank" rel="noreferrer">{deposit.number} · {STATUS_LABELS[deposit.status]}</a> : "fehlt"}</p>
                 {final && <p className="mt-1 text-xs text-pfSubtle">Schlusszahlung: <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${final.id}/pdf`} target="_blank" rel="noreferrer">{final.number}</a></p>}
                 {monthly && <p className="mt-1 text-xs text-pfSubtle">Monat {monthly.websitePlanMonth}: <a className="text-pfAccent underline" href={`/api/admin/hq/invoices/${monthly.id}/pdf`} target="_blank" rel="noreferrer">{monthly.number} · QR auf Seite 2</a></p>}
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/sla`} target="_blank" rel="noreferrer">SLA-PDF</a>
-                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/avv`} target="_blank" rel="noreferrer">AVV-PDF</a>
-                  <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/payment`} target="_blank" rel="noreferrer">Dauerauftrag</a>
+                  {!plan.documentDraftsDisabled && <>
+                    <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/sla`} target="_blank" rel="noreferrer">SLA-PDF</a>
+                    <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/avv`} target="_blank" rel="noreferrer">AVV-PDF</a>
+                    <a className="btn-outline text-xs" href={`/api/admin/hq/website-plans/${plan.id}/documents/payment`} target="_blank" rel="noreferrer">Dauerauftrag</a>
+                  </>}
                   <button className="btn-outline text-xs" type="button" onClick={() => { setSelectedPlanId(plan.id); setDrawer("website-plan-details"); }}>Betriebsdaten</button>
                 </div>
-                {!complete && <p className="mt-3 text-xs text-amber-200">SLA/AVV sind Entwürfe: Hosting, Backups oder Unterauftragsverarbeiter ergänzen.</p>}
+                {plan.documentDraftsDisabled
+                  ? <p className="mt-3 text-xs text-amber-200">Alte HQ-Vertrags-PDFs deaktiviert. Aktuelle Arbeitsfassungen liegen im geschützten Servicewerk-Dokumentenordner.</p>
+                  : !complete && <p className="mt-3 text-xs text-amber-200">SLA/AVV sind Entwürfe: Hosting, Backups oder Unterauftragsverarbeiter ergänzen.</p>}
+                {!plan.contractSignedAt && deposit?.status === "DRAFT" && (
+                  <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-pfBorder pt-4">
+                    <label className="block"><span className={labelText}>Tatsächlicher Vertragsschluss</span><input className="pf-input mt-1.5" type="date" value={contractDates[plan.id] || ""} onChange={(event) => setContractDates((current) => ({ ...current, [plan.id]: event.target.value }))} /></label>
+                    <button type="button" className="btn-outline text-xs" disabled={!contractDates[plan.id]} onClick={() => planAction(plan.id, "confirm-contract")}>Datum eintragen · Anzahlung +7 Tage</button>
+                  </div>
+                )}
+                {plan.contractSignedAt && <p className="mt-2 text-xs text-pfSubtle">Vertragsschluss: {date.format(new Date(plan.contractSignedAt))}</p>}
+                {!plan.acceptedAt && (
+                  <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-pfBorder pt-4">
+                    <label className="block"><span className={labelText}>Abnahme-Datum</span><input className="pf-input mt-1.5" type="date" value={acceptanceDates[plan.id] || ""} onChange={(event) => setAcceptanceDates((current) => ({ ...current, [plan.id]: event.target.value }))} /></label>
+                    <button type="button" className="btn-outline text-xs" disabled={!plan.contractSignedAt || !acceptanceDates[plan.id]} onClick={() => planAction(plan.id, "record-acceptance")}>Abnahme erfassen · Schlussrechnung</button>
+                  </div>
+                )}
+                {plan.acceptedAt && <p className="mt-2 text-xs text-pfSubtle">Abnahme: {date.format(new Date(plan.acceptedAt))}</p>}
                 {!plan.goLiveDate && (
                   <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-pfBorder pt-4">
                     <label className="block"><span className={labelText}>Go-live-Datum</span><input className="pf-input mt-1.5" type="date" value={goLiveDates[plan.id] || ""} onChange={(event) => setGoLiveDates((current) => ({ ...current, [plan.id]: event.target.value }))} /></label>
-                    <button type="button" className="btn-accent text-xs" disabled={deposit?.status !== "PAID" || !goLiveDates[plan.id]} onClick={() => planAction(plan.id, "activate")}>Go-live abrechnen</button>
-                    <span className="text-xs text-pfMuted">Anzahlung muss bezahlt sein.</span>
+                    <button type="button" className="btn-accent text-xs" disabled={deposit?.status !== "PAID" || !plan.contractSignedAt || !goLiveDates[plan.id]} onClick={() => planAction(plan.id, "activate")}>Go-live abrechnen</button>
+                    <span className="text-xs text-pfMuted">Vertragsschluss und bezahlte Anzahlung erforderlich.</span>
                   </div>
                 )}
                 {plan.goLiveDate && (
@@ -640,6 +665,7 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
                     <button type="button" className="btn-outline text-xs" onClick={() => planAction(plan.id, "bill-next")}>Nächsten Monat abrechnen</button>
                   </div>
                 )}
+                {!plan.laterPriceConfirmed && <div className="mt-3 flex flex-wrap items-center gap-3"><p className="text-xs text-amber-200">Folgepreis ab Monat {plan.initialMonths + 1} ist noch nicht freigegeben. Eine Abrechnung danach bleibt gesperrt.</p><button type="button" className="btn-outline text-xs" onClick={() => planAction(plan.id, "confirm-later-price")}>Folgepreis nach Vertragsfreigabe bestätigen</button></div>}
               </div>
             );
           })}
@@ -695,7 +721,7 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
                       <div className="text-sm text-pfText">{invoice.client.companyName || invoice.client.name}</div>
                       <div className="font-mono text-[0.65rem] text-pfMuted">{invoice.client.billingEmail || invoice.client.email || "-"}</div>
                     </td>
-                    <td className={`font-mono text-xs ${overdue ? "text-red-300" : "text-pfSubtle"}`}>{date.format(new Date(invoice.dueDate))}</td>
+                    <td className={`font-mono text-xs ${overdue ? "text-red-300" : "text-pfSubtle"}`}>{invoice.dueDate ? date.format(new Date(invoice.dueDate)) : "7 Tage ab Vertragsschluss"}</td>
                     <td className="font-mono text-sm font-bold text-pfAccent">{formatCents(invoice.totalCents)}</td>
                     <td><span className={`status-badge ${statusClass(invoice.status)}`}>{STATUS_LABELS[invoice.status]}</span></td>
                     <td>
@@ -1148,7 +1174,9 @@ export default function PagefoundryHqPanel({ snapshot }: { snapshot: Snapshot })
               <Field name="initialMonths" label="Erste Preisphase (Monate)" type="number" defaultValue="24" required />
               <Field name="laterMonthly" label="Danach EUR / Monat" defaultValue="49,00" required />
             </div>
-            <p className="text-xs text-pfMuted">Die Hälfte des Einmalpreises wird jetzt als Rechnungsentwurf angelegt. Schlussrechnung und erste Monatsrechnung entstehen erst beim Go-live.</p>
+            <p className="text-xs text-pfMuted">Die Hälfte des Einmalpreises wird als Rechnungsentwurf angelegt. Das Fälligkeitsdatum entsteht sieben Tage nach dem erfassten Vertragsschluss. Schlussrechnung folgt nach Abnahme, die erste Monatsrechnung beim tatsächlichen Go-live.</p>
+            <label className="flex items-start gap-2 text-sm text-pfSubtle"><input type="checkbox" name="laterPriceConfirmed" className="mt-1" />Der Folgepreis nach der ersten Preisphase ist verbindlich bestätigt.</label>
+            <Field name="contractSignedAt" label="Tatsächlicher Vertragsschluss (optional)" type="date" />
             <Field name="supportEmail" label="Support-E-Mail" type="email" defaultValue="admin@pagefoundry.de" required />
             <Field name="hostingProvider" label="Hosting-Anbieter" />
             <Field name="hostingRegion" label="Hosting-Region" />

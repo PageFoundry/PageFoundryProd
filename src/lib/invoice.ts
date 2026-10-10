@@ -172,7 +172,7 @@ type ServiceInvoicePdfInput = {
   status?: "DRAFT" | "SENT" | "PAID" | "OVERDUE" | "CANCELLED";
   number: string;
   issueDate: Date;
-  dueDate: Date;
+  dueDate: Date | null;
   subtotalCents: number;
   taxCents: number;
   totalCents: number;
@@ -186,6 +186,7 @@ type ServiceInvoicePdfInput = {
     initialMonths: number;
     initialMonthlyCents: number;
     laterMonthlyCents: number;
+    laterPriceConfirmed: boolean;
     goLiveDate: Date | null;
   } | null;
   client: {
@@ -335,7 +336,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput,
   if (client.vatId) text(`USt-Id: ${client.vatId}`, margin, y - recipient.length * 14 - 4, 9, false, muted);
 
   const servicePeriodText = (() => {
-    if (invoice.websitePlanStage === "DEPOSIT") return "Ab Beauftragung bis Go-live (Datum folgt)";
+    if (invoice.websitePlanStage === "DEPOSIT") return "Website-Erstellung ab Vertragsschluss";
     const s = invoice.servicePeriodStart;
     const e = invoice.servicePeriodEnd;
     if (s && e) return s.getTime() === e.getTime() ? pdfDate(s) : `${pdfDate(s)} - ${pdfDate(e)}`;
@@ -352,7 +353,7 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput,
   text("Rechnungsdatum", metaX + 14, height - 152, 8, false, muted);
   right(pdfDate(invoice.issueDate), metaX + 156, height - 152, 9, true);
   text("Faellig bis", metaX + 14, height - 174, 8, false, muted);
-  right(pdfDate(invoice.dueDate), metaX + 156, height - 174, 9, true);
+  right(invoice.dueDate ? pdfDate(invoice.dueDate) : invoice.websitePlanStage === "DEPOSIT" ? "7 Tage ab Vertragsschluss" : "Noch offen", metaX + 156, height - 174, 9, true);
   text("Gesamt", metaX + 14, height - 196, 8, false, muted);
   right(pdfMoney(invoice.totalCents), metaX + 156, height - 196, 10, true);
 
@@ -445,8 +446,12 @@ export async function generateServiceInvoicePDF(invoice: ServiceInvoicePdfInput,
     sheetText("Der Code legt keinen Dauerauftrag an.", margin + 215, height - 369, 9);
     const nextPhase = monthStartForPdf(plan.goLiveDate!, plan.initialMonths);
     sheetText(`Monate 1-${plan.initialMonths}: ${pdfMoney(plan.initialMonthlyCents)} monatlich.`, margin, height - 545, 10, true);
-    sheetText(`Ab ${pdfDate(nextPhase)} (Monat ${plan.initialMonths + 1}): ${pdfMoney(plan.laterMonthlyCents)} monatlich.`, margin, height - 565, 10, true);
-    sheetText("Dauerauftrag rechtzeitig auf den neuen Betrag aendern.", margin, height - 586, 9);
+    sheetText(plan.laterPriceConfirmed
+      ? `Ab ${pdfDate(nextPhase)} (Monat ${plan.initialMonths + 1}): ${pdfMoney(plan.laterMonthlyCents)} monatlich.`
+      : `Ab Monat ${plan.initialMonths + 1}: Folgepreis noch nicht freigegeben.`, margin, height - 565, 10, true);
+    sheetText(plan.laterPriceConfirmed
+      ? "Dauerauftrag rechtzeitig auf den neuen Betrag aendern."
+      : "Dauerauftrag erst nach Preisfreigabe anpassen.", margin, height - 586, 9);
     sheetText("Beginn und Zahlungstag: ab Go-live laut Vereinbarung.", margin, height - 607, 9);
     sheetText("Pagefoundry · Fabian Franke · Kastanienweg 20a · 42499 Hueckeswagen", margin, 68, 7);
   }

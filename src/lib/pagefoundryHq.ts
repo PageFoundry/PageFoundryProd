@@ -108,7 +108,7 @@ export async function getPagefoundryHqSnapshot() {
   ]);
 
   const openInvoices = invoices.filter((invoice) => invoice.status === "SENT" || invoice.status === "OVERDUE");
-  const overdueInvoices = openInvoices.filter((invoice) => invoice.dueDate < now);
+  const overdueInvoices = openInvoices.filter((invoice) => invoice.dueDate && invoice.dueDate < now);
   const paidThisMonth = invoices.filter((invoice) => {
     if (invoice.status !== "PAID" || !invoice.paidAt) return false;
     return invoice.paidAt.getUTCFullYear() === now.getUTCFullYear() && invoice.paidAt.getUTCMonth() === now.getUTCMonth();
@@ -361,6 +361,9 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
       where: { id: invoiceId },
       include: { payments: true },
     });
+    if (invoice.websitePlanStage === "DEPOSIT" && !invoice.dueDate && ["SENT", "PAID", "OVERDUE"].includes(status)) {
+      throw new Error("invoice_contract_date_missing");
+    }
     const paidCents = invoice.payments.reduce((sum, payment) => sum + payment.amountCents, 0);
     const data: Prisma.InvoiceUpdateInput = { status: status as any };
     if (status === "SENT" && !invoice.sentAt) data.sentAt = new Date();
@@ -414,9 +417,11 @@ export async function sendInvoiceEmail(invoiceId: string) {
   if (invoice.websitePlanId && (!invoice.client.billingName || !(invoice.client.billingEmail || invoice.client.email))) {
     throw new Error("invoice_client_billing_identity_missing");
   }
+  if (!invoice.dueDate || (invoice.websitePlanStage === "DEPOSIT" && !invoice.websitePlan?.contractSignedAt)) {
+    throw new Error("invoice_contract_date_missing");
+  }
   if (invoice.websitePlanStage === "FINAL") {
-    const deposit = await prisma.invoice.findFirst({ where: { websitePlanId: invoice.websitePlanId, websitePlanStage: "DEPOSIT" } });
-    if (deposit?.status !== "PAID") throw new Error("invoice_deposit_unpaid");
+    if (!invoice.websitePlan?.acceptedAt) throw new Error("invoice_acceptance_missing");
   }
   const recipient = invoice.client.billingEmail ?? invoice.client.email;
   if (!recipient) throw new Error("invoice_recipient_missing");

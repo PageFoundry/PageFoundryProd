@@ -9,6 +9,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const { id, kind } = await params;
     if (kind !== "sla" && kind !== "avv" && kind !== "payment") return NextResponse.json({ message: "invalid_document" }, { status: 400 });
     const plan = await prisma.websitePlan.findUniqueOrThrow({ where: { id }, include: { client: true } });
+    if (plan.documentDraftsDisabled) return NextResponse.json({ message: "website_plan_documents_superseded" }, { status: 409 });
     const pdf = kind === "sla" ? await generateSlaPdf(plan) : kind === "avv" ? await generateAvvPdf(plan) : await generatePaymentInstructionsPdf(plan);
     return new NextResponse(new Uint8Array(pdf), {
       headers: {

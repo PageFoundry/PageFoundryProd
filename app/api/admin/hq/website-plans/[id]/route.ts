@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { activateWebsitePlan, billNextWebsiteMonth } from "@/lib/websitePlans";
+import { activateWebsitePlan, billNextWebsiteMonth, confirmWebsitePlanContract, recordWebsitePlanAcceptance } from "@/lib/websitePlans";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -13,11 +13,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         where: { id },
         data: Object.fromEntries(["hostingProvider", "hostingRegion", "backupInterval", "backupRetention", "subprocessors", "supportEmail"].map((key) => [key, typeof body[key] === "string" && body[key].trim() ? body[key].trim() : key === "supportEmail" ? "admin@pagefoundry.de" : null])),
       })
-      : body.action === "activate"
-      ? await activateWebsitePlan(id, body.goLiveDate)
-      : body.action === "bill-next"
-        ? await billNextWebsiteMonth(id)
-        : null;
+      : body.action === "confirm-contract"
+        ? await confirmWebsitePlanContract(id, body.contractSignedAt)
+        : body.action === "confirm-later-price"
+          ? await prisma.websitePlan.update({ where: { id, laterPriceConfirmed: false }, data: { laterPriceConfirmed: true } })
+        : body.action === "record-acceptance"
+          ? await recordWebsitePlanAcceptance(id, body.acceptedAt)
+          : body.action === "activate"
+            ? await activateWebsitePlan(id, body.goLiveDate)
+            : body.action === "bill-next"
+              ? await billNextWebsiteMonth(id)
+              : null;
     if (!result) return NextResponse.json({ message: "website_plan_action_invalid" }, { status: 400 });
     return NextResponse.json({ ok: true, result });
   } catch (err: any) {

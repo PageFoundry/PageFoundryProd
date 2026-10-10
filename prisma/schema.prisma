@@ -225,7 +225,7 @@ model Invoice {
   client             BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
   status             InvoiceStatus  @default(DRAFT)
   issueDate          DateTime       @default(now())
-  dueDate            DateTime
+  dueDate            DateTime?
   servicePeriodStart DateTime?
   servicePeriodEnd   DateTime?
   currency           String         @default("EUR")
@@ -263,6 +263,10 @@ model WebsitePlan {
   initialMonthlyCents  Int
   initialMonths        Int
   laterMonthlyCents    Int
+  laterPriceConfirmed  Boolean        @default(true)
+  contractSignedAt     DateTime?
+  acceptedAt           DateTime?
+  documentDraftsDisabled Boolean      @default(false)
   goLiveDate           DateTime?
   billedMonths         Int            @default(0)
   cancelledAt          DateTime?

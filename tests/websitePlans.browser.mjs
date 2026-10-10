@@ -33,17 +33,35 @@ try {
   planId = plan.id;
   const deposit = await prisma.invoice.findFirstOrThrow({ where: { websitePlanId: planId, websitePlanStage: "DEPOSIT" } });
   assert.equal(deposit.totalCents, 39500);
+  assert.equal(deposit.dueDate, null);
+  assert.equal(plan.laterPriceConfirmed, false);
   for (const kind of ["sla", "avv", "payment"]) {
     const response = await context.request.get(`${base}/api/admin/hq/website-plans/${planId}/documents/${kind}`);
     assert.equal(response.status(), 200, `${kind}: ${await response.text()}`);
     assert.match(response.headers()["content-type"], /application\/pdf/);
     await writeFile(`/tmp/pagefoundry-${kind}-sample.pdf`, await response.body());
   }
+  await prisma.websitePlan.update({ where: { id: planId }, data: { documentDraftsDisabled: true } });
+  const oldSla = await context.request.get(`${base}/api/admin/hq/website-plans/${planId}/documents/sla`);
+  assert.equal(oldSla.status(), 409);
+  await page.reload({ waitUntil: "networkidle" });
+  assert.equal(await page.getByText("Alte HQ-Vertrags-PDFs deaktiviert.", { exact: false }).count(), 1);
+  const today = new Date().toISOString().slice(0, 10);
+  await page.getByLabel("Tatsächlicher Vertragsschluss").fill(today);
+  await page.getByRole("button", { name: "Datum eintragen · Anzahlung +7 Tage" }).click();
+  await page.getByText("Vertragsschluss:", { exact: false }).waitFor();
+  const datedDeposit = await prisma.invoice.findUniqueOrThrow({ where: { id: deposit.id } });
+  const expectedDue = new Date(`${today}T00:00:00.000Z`);
+  expectedDue.setUTCDate(expectedDue.getUTCDate() + 7);
+  assert.equal(datedDeposit.dueDate?.toISOString().slice(0, 10), expectedDue.toISOString().slice(0, 10));
   await prisma.invoice.update({ where: { id: deposit.id }, data: { status: "PAID", paidAt: new Date() } });
   await page.reload({ waitUntil: "networkidle" });
-  await page.getByLabel("Go-live-Datum").fill(new Date().toISOString().slice(0, 10));
-  await page.getByRole("button", { name: "Go-live abrechnen" }).click();
+  await page.getByLabel("Abnahme-Datum").fill(today);
+  await page.getByRole("button", { name: "Abnahme erfassen · Schlussrechnung" }).click();
   await page.getByText("Schlusszahlung:").waitFor();
+  await page.getByLabel("Go-live-Datum").fill(today);
+  await page.getByRole("button", { name: "Go-live abrechnen" }).click();
+  await page.getByText("Monat 1:", { exact: false }).waitFor();
   const monthly = await prisma.invoice.findFirstOrThrow({ where: { websitePlanId: planId, websitePlanStage: "MONTHLY" } });
   const monthlyResponse = await context.request.get(`${base}/api/admin/hq/invoices/${monthly.id}/pdf`);
   assert.equal(monthlyResponse.status(), 200);
