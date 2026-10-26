@@ -14,7 +14,7 @@ const data: ServiceLandingData = {
   references: regionalReferences,
   "eyebrow": "Webdesign · Wermelskirchen",
   "heroHeading": "Webdesign für Wermelskirchen, das Ihre Leistungen verständlich erklärt.",
-  "heroSubline": "Ein Handwerksauftrag beginnt mit anderen Fragen als eine technische Dienstleistung. Deshalb starte ich bei Ihrem Betrieb: Welche Arbeiten übernehmen Sie, welche Informationen brauchen Interessenten und wie soll eine Anfrage ankommen? Von Hückeswagen aus setzt Fabian Franke Ihre Website um und bleibt auch nach dem Start Ansprechpartner.",
+  "heroSubline": "Ein Handwerksauftrag beginnt mit anderen Fragen als eine technische Dienstleistung. Deshalb starte ich bei Ihrem Betrieb: Welche Arbeiten übernehmen Sie, welche Informationen brauchen Interessenten und wie soll eine Anfrage ankommen? Von Hückeswagen aus setze ich Ihre Website um und bleibe auch nach dem Start Ihr Ansprechpartner.",
   "problem": {
     "label": "Ihre Ausgangslage",
     "heading": "Gute Anfragen brauchen klare Grenzen.",

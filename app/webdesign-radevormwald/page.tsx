@@ -14,7 +14,7 @@ const data: ServiceLandingData = {
   references: regionalReferences,
   "eyebrow": "Webdesign · Radevormwald",
   "heroHeading": "Webdesign für Radevormwald: Bestehendes prüfen, sinnvoll weiterbauen.",
-  "heroSubline": "Eine ältere Website muss nicht automatisch komplett ersetzt werden. Für Handwerk, Handel und produzierende Betriebe in Radevormwald prüfe ich zuerst, ob Inhalte, Technik und Kontaktwege noch zu Ihrem heutigen Angebot passen. Fabian Franke von PageFoundry in Hückeswagen bespricht mit Ihnen, was bleiben kann und was einen Neustart braucht.",
+  "heroSubline": "Eine ältere Website muss nicht automatisch komplett ersetzt werden. Für Handwerk, Handel und produzierende Betriebe in Radevormwald prüfe ich zuerst, ob Inhalte, Technik und Kontaktwege noch zu Ihrem heutigen Angebot passen. Ich bin Fabian Franke von PageFoundry in Hückeswagen und bespreche mit Ihnen, was bleiben kann und was einen Neustart braucht.",
   "problem": {
     "label": "Ihre Ausgangslage",
     "heading": "Die Website soll zum heutigen Betrieb passen.",

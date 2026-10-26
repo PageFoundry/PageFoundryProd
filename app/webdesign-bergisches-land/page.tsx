@@ -46,7 +46,7 @@ const data: ServiceLandingData = {
       },
       {
         title: "Build & Launch",
-        text: "Ich setze die Seite um, prüfen die mobile Darstellung und den Kontaktweg und bereiten den gemeinsamen Start vor.",
+        text: "Ich setze die Seite um, prüfe die mobile Darstellung und den Kontaktweg und bereite den gemeinsamen Start vor.",
       },
     ],
   },

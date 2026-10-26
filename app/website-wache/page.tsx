@@ -22,7 +22,7 @@ const data: ServiceLandingData = {
   eyebrow: "Website-Wache",
   heroHeading: "Ihre Website im Blick — bevor der Kunde den Ausfall meldet.",
   heroSubline:
-    "Ich überwache Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melden Probleme früh und halten die Seite mit kleinen Updates sauber. Damit Ihre Online-Visitenkarte nicht still verfällt.",
+    "Ich überwache Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melde Probleme früh und halte die Seite mit kleinen Updates sauber. Damit Ihre Online-Visitenkarte nicht still verfällt.",
   problem: {
     label: "Das Problem",
     heading: "Die meisten Website-Probleme fallen zuerst dem Kunden auf.",
@@ -102,7 +102,7 @@ const data: ServiceLandingData = {
       },
       {
         q: "Was ist der Unterschied zwischen Website-Überwachung und Website-Wartung?",
-        a: "Die Überwachung prüft, ob Ihre Website erreichbar ist, das SSL-Zertifikat gültig bleibt und die Antwortzeiten auffällig werden. Wartung umfasst konkrete Arbeiten an der Website. Bei der Website-Wache enthält Website-Wache die Überwachung und einen monatlichen Kurzbericht. Website-Wache Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. So können Sie den Umfang passend zu Ihrer Website wählen.",
+        a: "Die Überwachung prüft, ob Ihre Website erreichbar ist, das SSL-Zertifikat gültig bleibt und die Antwortzeiten auffällig werden. Wartung umfasst konkrete Arbeiten an der Website. Die Website-Wache enthält die Überwachung und einen monatlichen Kurzbericht. Website-Wache Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. So können Sie den Umfang passend zu Ihrer Website wählen.",
       },
       {
         q: "Wird ein erkannter Fehler automatisch repariert?",

@@ -45,7 +45,7 @@ const data: ServiceLandingData = {
       },
       {
         title: "Build, Test & Übergabe",
-        text: "Ich entwickle die Anwendung, testen sie mit echten Daten aus Ihrem Betrieb und übergeben sie einsatzbereit, inklusive Einweisung.",
+        text: "Ich entwickle die Anwendung, teste sie mit echten Daten aus Ihrem Betrieb und übergebe sie einsatzbereit, inklusive Einweisung.",
       },
     ],
   },

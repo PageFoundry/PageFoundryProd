@@ -38,7 +38,7 @@ const data: ServiceLandingData = {
     items: [
       {
         title: "Audit & Vorschau",
-        text: "Ich analysiere Ihre aktuelle Seite und bauen eine konkrete Vorher/Nachher-Vorschau — Sie sehen das Ergebnis, bevor Sie sich festlegen.",
+        text: "Ich analysiere Ihre aktuelle Seite und baue eine konkrete Vorher/Nachher-Vorschau — Sie sehen das Ergebnis, bevor Sie sich festlegen.",
       },
       {
         title: "Umsetzung",
@@ -46,7 +46,7 @@ const data: ServiceLandingData = {
       },
       {
         title: "Live & gefunden",
-        text: "Ich bringe die Seite live, richten lokale Auffindbarkeit (LocalBusiness-SEO) ein und verlinken Impressum und Datenschutz korrekt.",
+        text: "Ich bringe die Seite live, richte lokale Auffindbarkeit (LocalBusiness-SEO) ein und verlinke Impressum und Datenschutz korrekt.",
       },
     ],
   },
@@ -74,7 +74,7 @@ const data: ServiceLandingData = {
       },
       {
         q: "Kann ich meine Inhalte und Bilder behalten?",
-        a: "Ja, vorhandene Inhalte und Bilder übernehme ich, wo sinnvoll, und ergänzen, was fehlt.",
+        a: "Ja, vorhandene Inhalte und Bilder übernehme ich, wo sinnvoll, und ergänze, was fehlt.",
       },
       {
         q: "Wie lange dauert das?",
@@ -88,7 +88,7 @@ const data: ServiceLandingData = {
   },
   cta: {
     heading: "Soll ich Ihre bestehende Website prüfen?",
-    text: "In der kostenlosen Erstberatung schaue ich auf Ihre aktuelle Website und zeigen die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
+    text: "In der kostenlosen Erstberatung schaue ich auf Ihre aktuelle Website und zeige die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
   },
   related: {
     label: "Passende Seiten",

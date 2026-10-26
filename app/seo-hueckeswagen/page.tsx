@@ -37,7 +37,7 @@ const data: ServiceLandingData = {
     items: [
       {
         title: "Bestandsaufnahme",
-        text: "Ich prüfe Technik, Inhalte und Sichtbarkeit Ihrer Seite und zeigen, wo die größten Hebel liegen — ehrlich, auch wenn es heißt: hier lohnt sich wenig.",
+        text: "Ich prüfe Technik, Inhalte und Sichtbarkeit Ihrer Seite und zeige, wo die größten Hebel liegen — ehrlich, auch wenn es heißt: hier lohnt sich wenig.",
       },
       {
         title: "Priorisierung",
@@ -75,7 +75,7 @@ const data: ServiceLandingData = {
     items: [
       {
         q: "Garantieren Sie ein bestimmtes Ranking?",
-        a: "Nein. Google entscheidet, welche Ergebnisse angezeigt werden. Ich verbessere die technischen und inhaltlichen Voraussetzungen und prüfen anschließend die Entwicklung der verfügbaren Messwerte.",
+        a: "Nein. Google entscheidet, welche Ergebnisse angezeigt werden. Ich verbessere die technischen und inhaltlichen Voraussetzungen und prüfe anschließend die Entwicklung der verfügbaren Messwerte.",
       },
       {
         q: "Was ist der erste Schritt?",

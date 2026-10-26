@@ -13,7 +13,7 @@ const homeMetadata = {
   de: {
     title: "Webdesign & individuelle Software aus Hückeswagen | PageFoundry",
     description:
-      "PageFoundry aus Hückeswagen baut Websites, Landingpages und individuelle Software für Unternehmen im Bergischen Land – inklusive Hosting, SEO und laufender Betreuung.",
+      "Ich baue Websites ab 790 € und individuelle Betriebssoftware ab 2.500 € aus Hückeswagen. Für Unternehmen auch betreut ab 190 € Einrichtung und 49 €/Monat.",
     openGraphDescription:
       "Websites, Landingpages und individuelle Software aus Hückeswagen – mit echten Projekten, transparenten Preisen und einem festen Ansprechpartner.",
     locale: "de_DE",
@@ -159,8 +159,8 @@ const copy = {
         url: "https://carbon-care.de",
         visitLabel: "Kundenwebsite öffnen",
         internalLink: {
-          href: "/webdesign-bergisches-land",
-          label: "Webdesign im Bergischen Land",
+          href: "/individuelle-software",
+          label: "Individuelle Software",
         },
         caseStudyLink: {
           href: "/projekte/carbon-care",
@@ -243,7 +243,7 @@ const copy = {
       {
         key: "Build",
         title: "Websites",
-        text: "Für Unternehmen, die ihr Angebot klar zeigen, Vertrauen aufbauen und leichter Anfragen erhalten möchten.",
+        text: "Für Unternehmen, die ihr Angebot klar zeigen und einen verständlichen Kontaktweg anbieten möchten.",
         cta: "Website besprechen",
         href: "/consultation?package=sichtbar&modell=kauf",
       },
@@ -294,7 +294,7 @@ const copy = {
       {
         n: "01",
         title: "Websites",
-        text: "Ihr Angebot wird schneller verstanden und führt klar zur nächsten Anfrage.",
+        text: "Ich strukturiere Ihr Angebot und die Kontaktwege passend zu Ihren Besuchern.",
         detail: "Enthält: Struktur, Gestaltung, mobile Umsetzung und klare Kontaktwege.",
       },
       {
@@ -496,7 +496,7 @@ const copy = {
       },
     ],
     allServicesHeading: "Additional services and software",
-    allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins. All prices are final prices — as a small business under § 19 UStG (German VAT law), PageFoundry does not charge VAT.",
+    allServicesText: "Transparent starting prices for clearly scoped work. I clarify custom combinations before anything begins. All prices are final prices — as a small business under § 19 UStG (German VAT law), PageFoundry does not charge VAT.",
     detailLinks: [
       { label: "Webdesign Bergisches Land (German)", href: "/webdesign-bergisches-land" },
       { label: "SEO Hückeswagen (German)", href: "/seo-hueckeswagen" },
@@ -584,7 +584,7 @@ const copy = {
       },
       {
         q: "Do you only build new sites?",
-        a: "No. We also optimize existing sites when they are worth keeping, and add focused landing pages where search intent is missing.",
+        a: "No. I also optimize existing sites when they are worth keeping, and add focused landing pages where search intent is missing.",
       },
       {
         q: "Do you combine SEO with hosting and technology?",

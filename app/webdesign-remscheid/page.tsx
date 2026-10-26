@@ -14,7 +14,7 @@ const data: ServiceLandingData = {
   references: regionalReferences,
   "eyebrow": "Webdesign · Remscheid",
   "heroHeading": "Webdesign für Remscheid: technische Leistung klar auf den Punkt.",
-  "heroSubline": "Für Werkzeugbau, Fertigung, Handwerk oder technische Dienstleistungen muss eine Website mehr leisten als einen guten ersten Eindruck. Sie soll zeigen, welche Aufgaben Ihr Unternehmen übernimmt und wie ein Interessent mit Ihnen ins Gespräch kommt. PageFoundry plant und entwickelt diese Seiten in Hückeswagen, mit Fabian Franke als direktem Ansprechpartner.",
+  "heroSubline": "Für Werkzeugbau, Fertigung, Handwerk oder technische Dienstleistungen muss eine Website mehr leisten als einen guten ersten Eindruck. Sie soll zeigen, welche Aufgaben Ihr Unternehmen übernimmt und wie ein Interessent mit Ihnen ins Gespräch kommt. Ich plane und entwickle diese Seiten in Hückeswagen und bleibe Ihr direkter Ansprechpartner.",
   "problem": {
     "label": "Ihre Ausgangslage",
     "heading": "Fachlich präzise, auch beim ersten Besuch.",

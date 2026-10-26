@@ -162,7 +162,7 @@
     "phoneHint": "Telefon (mein KI-Assistent nimmt an, ich rufe zurück):",
     "phoneHintSuffix": "",
     "phoneOptional": "Telefon (optional)",
-    "phoneHelp": "Nur falls wir Sie für Rückfragen anrufen sollen.",
+    "phoneHelp": "Nur falls ich Sie für Rückfragen anrufen soll.",
     "requiredLegend": "* Pflichtfeld",
     "packageBanner": "Ihre Anfrage zu",
     "packageRemove": "Entfernen",
@@ -185,7 +185,7 @@
       "title": "Termin angefragt.",
       "nextLabel": "So geht es weiter",
       "next1": "Sie erhalten sofort eine Bestätigungs-E-Mail mit dem Zoom-Link.",
-      "next2": "Zum Termin treffen wir uns im Zoom-Call – Kamera optional.",
+      "next2": "Zum Termin spreche ich mit Ihnen im Zoom-Call – Kamera optional.",
       "next3": "Nach dem Gespräch erhalten Sie eine klare Empfehlung, ohne Verpflichtung."
     },
     "types": {
@@ -198,9 +198,9 @@
       "SYSTEMS_AUTOMATION": "Systeme & Automatisierung",
       "SPEED_AUDIT": "Performance & Speed-Audit"
     },
-    "sourceLabel": "Wie sind Sie auf uns aufmerksam geworden?",
+    "sourceLabel": "Wie sind Sie auf mich aufmerksam geworden?",
     "sourcePlaceholder": "Keine Angabe",
-    "sourcePrivacy": "Optional. Ihre Antwort hilft uns nur zu verstehen, wie Menschen uns finden.",
+    "sourcePrivacy": "Optional. Ihre Antwort hilft mir zu verstehen, wie Menschen mich finden.",
     "sources": {
       "search": "Suchmaschine",
       "recommendation": "Empfehlung",

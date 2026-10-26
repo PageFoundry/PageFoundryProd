@@ -14,7 +14,7 @@ const data: ServiceLandingData = {
   references: regionalReferences,
   "eyebrow": "Webdesign · Wipperfürth",
   "heroHeading": "Webdesign für Wipperfürth: vom ersten Eindruck zur konkreten Anfrage.",
-  "heroSubline": "Sie führen einen Handwerksbetrieb, ein Geschäft oder einen Gastronomiebetrieb in Wipperfürth? Ihre Website soll vor dem ersten Anruf zeigen, ob Ihr Angebot passt. PageFoundry entwickelt dafür eine klare Struktur, verständliche Inhalte und einen Kontaktweg, der auch unterwegs funktioniert. Ihr Ansprechpartner ist Fabian Franke aus Hückeswagen.",
+  "heroSubline": "Sie führen einen Handwerksbetrieb, ein Geschäft oder einen Gastronomiebetrieb in Wipperfürth? Ihre Website soll vor dem ersten Anruf zeigen, ob Ihr Angebot passt. Ich entwickle dafür eine klare Struktur, verständliche Inhalte und einen Kontaktweg, der auch unterwegs funktioniert. Ihr Ansprechpartner ist Fabian Franke aus Hückeswagen.",
   "problem": {
     "label": "Ihre Ausgangslage",
     "heading": "Was möchten Ihre Besucher vor dem Kontakt wissen?",
