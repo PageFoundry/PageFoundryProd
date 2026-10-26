@@ -19,7 +19,7 @@ export default async function DatenschutzPage() {
   const { lang } = await getServerI18n();
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16 text-zinc-200">
+    <main data-public-page className="mx-auto max-w-3xl px-4 py-16 text-zinc-200">
       <h1 className="text-3xl font-bold mb-8">
         {lang === "de" ? "Datenschutzerklärung" : "Privacy Policy"}
       </h1>

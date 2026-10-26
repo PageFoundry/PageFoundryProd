@@ -1,3 +1,11 @@
+export const regionalAreaServed = [
+  ...["Hückeswagen", "Wipperfürth", "Wermelskirchen", "Remscheid", "Radevormwald"].map(
+    (name) => ({ "@type": "City", name })
+  ),
+  { "@type": "Place", name: "Bergisches Land" },
+  { "@type": "Country", name: "Deutschland" },
+];
+
 type JsonLdProps = { data: Record<string, unknown> };
 
 export default function JsonLd({ data }: JsonLdProps) {
@@ -25,10 +33,10 @@ export function getServiceSchema({
     description,
     url,
     provider: {
-      "@type": "ProfessionalService",
+      "@type": "Organization",
       name: "PageFoundry",
       url: "https://pagefoundry.de",
     },
-    areaServed: { "@type": "Country", name: "Germany" },
+    areaServed: regionalAreaServed,
   };
 }

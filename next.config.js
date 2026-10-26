@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  poweredByHeader: false,
   // Worktrees liegen unterhalb des Haupt-Repositories. Ohne explizite Root-Angabe
   // waehlt Next wegen des uebergeordneten package-lock.json das Haupt-Repo und legt
   // server.js in einem verschachtelten Standalone-Pfad ab.

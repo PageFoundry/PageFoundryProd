@@ -34,7 +34,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <section className="section-pad flex items-start justify-center min-h-screen">
+    <section data-public-page className="section-pad flex items-start justify-center min-h-screen">
       <div className="w-full max-w-sm fade-in">
 
         <div className="mb-10">

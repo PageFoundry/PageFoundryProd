@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <section className="section-pad flex min-h-screen items-start justify-center">
+    <section data-public-page className="section-pad flex min-h-screen items-start justify-center">
       <div className="pf-card w-full max-w-md p-7 sm:p-9">
         {done ? (
           <div role="status" tabIndex={-1}>

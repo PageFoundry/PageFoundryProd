@@ -193,3 +193,20 @@ textarea.pf-input {
   font-family: var(--font-display), Impact, sans-serif;
   @apply text-5xl md:text-7xl leading-none tracking-wide text-pfText;
 }
+
+@media (max-width: 639px) {
+  html[lang="de"] main[data-public-page] {
+    padding-top: 96px;
+  }
+
+  html[lang="de"] body:has([data-public-page]) :is(main, nav, footer) :is(a, button, select, summary, input:not([type="checkbox"]):not([type="radio"])) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  html[lang="de"] body:has([data-public-page]) :is(main, nav, footer) a {
+    display: inline-flex;
+    align-items: center;
+    padding-block: 10px;
+  }
+}

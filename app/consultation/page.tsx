@@ -278,7 +278,7 @@ export default function ConsultationPage() {
   const hasErrors = Object.keys(fieldErrors).length > 0;
 
   return (
-    <section className="section-pad">
+    <section data-public-page className="section-pad">
       <div className="max-w-screen-xl mx-auto fade-in">
 
         {/* Header */}

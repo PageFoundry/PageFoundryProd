@@ -59,7 +59,7 @@ const data: ProjectCaseStudyData = {
   related: {
     label: "Passende Seiten",
     items: [
-      { label: "Individuelle Software", href: "/individuelle-software" },
+      { label: "Softwareentwicklung im Bergischen Land", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Projekt The Loft", href: "/projekte/the-loft" },
     ],

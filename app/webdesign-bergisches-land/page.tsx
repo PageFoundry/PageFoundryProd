@@ -149,6 +149,10 @@ const data: ServiceLandingData = {
     label: "Passende Seiten",
     items: [
       { label: "SEO in Hückeswagen", href: "/seo-hueckeswagen" },
+      { label: "Webdesign Wipperfürth", href: "/webdesign-wipperfuerth" },
+      { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
+      { label: "Webdesign Remscheid", href: "/webdesign-remscheid" },
+      { label: "Webdesign Radevormwald", href: "/webdesign-radevormwald" },
       { label: "Website-Rettung", href: "/website-rettung" },
       { label: "Website-Wache (Monitoring)", href: "/website-wache" },
       { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de" },
@@ -167,6 +171,7 @@ export default function WebdesignBergischesLandPage() {
             { "@type": "City", name: "Remscheid" },
             { "@type": "City", name: "Wermelskirchen" },
             { "@type": "City", name: "Wipperfürth" },
+            { "@type": "City", name: "Radevormwald" },
           ],
         }}
       />

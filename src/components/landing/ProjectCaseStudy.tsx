@@ -23,7 +23,7 @@ export interface ProjectCaseStudyData {
 
 export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData }) {
   return (
-    <div lang="de" className="relative z-10 text-pfText">
+    <div data-public-page lang="de" className="relative z-10 text-pfText">
       <section className="relative overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pt-36">
         <div className="mx-auto max-w-screen-xl">
           <span className="label-mono mb-8 block">{data.eyebrow}</span>

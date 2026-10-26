@@ -36,7 +36,7 @@ export interface ServiceLandingData {
 
 export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
   return (
-    <div lang="de" className="relative z-10 text-pfText">
+    <div data-public-page lang="de" className="relative z-10 text-pfText">
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
         <div className="mx-auto max-w-screen-xl">

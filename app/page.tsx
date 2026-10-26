@@ -4,7 +4,7 @@ import PackageCard from "@/components/PackageCard";
 import { productOrderKeys } from "@/lib/products";
 import { getServerI18n } from "@/i18n/server";
 import { getUserFromCookie } from "@/lib/auth";
-import JsonLd from "@/components/JsonLd";
+import JsonLd, { regionalAreaServed } from "@/components/JsonLd";
 import CaseStudyShowcase from "@/components/landing/CaseStudyShowcase";
 import FounderTrust from "@/components/landing/FounderTrust";
 
@@ -72,7 +72,7 @@ function getOrganizationSchema(lang: "de" | "en") {
 
   return {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    "@type": isDe ? "LocalBusiness" : "ProfessionalService",
     name: "PageFoundry",
     url: "https://pagefoundry.de",
     description: isDe
@@ -90,8 +90,8 @@ function getOrganizationSchema(lang: "de" | "en") {
     image: "https://pagefoundry.de/PAGEfoundry.png",
     logo: "https://pagefoundry.de/PAGEfoundry.png",
     founder: { "@type": "Person", name: "Fabian Franke" },
-    areaServed: { "@type": "Country", name: "Germany" },
-    availableLanguage: ["German", "English"],
+    areaServed: isDe ? regionalAreaServed : { "@type": "Country", name: "Germany" },
+    ...(!isDe ? { availableLanguage: ["German", "English"] } : {}),
     priceRange: "€€",
     contactPoint: {
       "@type": "ContactPoint",
@@ -310,7 +310,7 @@ const copy = {
     packagesLabel: "04 - Pakete",
     packagesHeading: "Websites, Software und laufender Betrieb.",
     packagesText:
-      "Wähle ein Paket als Ausgangspunkt. Den genauen Umfang, Zeitplan und die nächsten Schritte klären wir transparent in der kostenlosen Erstberatung.",
+      "Wählen Sie ein Paket als Ausgangspunkt. Den genauen Umfang, Zeitplan und die nächsten Schritte klären wir transparent in der kostenlosen Erstberatung.",
     offerPathsLabel: "Der passende Einstieg",
     offerPaths: [
       {
@@ -340,6 +340,10 @@ const copy = {
     detailLinks: [
       { label: "Individuelle Software", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "Webdesign Wipperfürth", href: "/webdesign-wipperfuerth" },
+      { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
+      { label: "Webdesign Remscheid", href: "/webdesign-remscheid" },
+      { label: "Webdesign Radevormwald", href: "/webdesign-radevormwald" },
       { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
       { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
       { label: "Website-Wache", href: "/website-wache" },
@@ -353,7 +357,7 @@ const copy = {
     faqLabel: "06 - FAQ",
     faqHeading: "Häufige Fragen.",
     nextLabel: "Nächster Schritt",
-    nextHeading: "Bereit für eine Website die wirkt?",
+    nextHeading: "Bereit für eine Website, die wirkt?",
     nextText:
       "In der kostenlosen Erstberatung priorisieren wir die Seiten und Hebel mit der größten Wirkung - ohne Verkaufsgespräch.",
     consultationCta: "Kostenlose Beratung buchen",
@@ -420,11 +424,11 @@ const copy = {
         a: "Meist passen Snippet, Suchintention und Seiteninhalt nicht sauber zusammen. Dann erscheint die Website zwar in Google, überzeugt aber nicht zum Klick.",
       },
       {
-        q: "Baut ihr nur neue Seiten oder optimiert ihr auch bestehende?",
+        q: "Bauen Sie nur neue Seiten oder optimieren Sie auch bestehende?",
         a: "Beides. Wenn bestehende Seiten brauchbar sind, optimieren wir gezielt. Wo wichtige Suchintentionen fehlen, ergänzen wir neue Landingpages.",
       },
       {
-        q: "Kombiniert ihr SEO mit Hosting und Technik?",
+        q: "Kombinieren Sie SEO mit Hosting und Technik?",
         a: "Ja. Technische Schwächen, Performance und unklare Seitenstruktur wirken direkt darauf, ob Menschen Sie finden, verstehen und kontaktieren.",
       },
     ],
@@ -666,7 +670,7 @@ export default async function LandingPage() {
       : href;
 
   return (
-    <div className="relative z-10 text-pfText">
+    <div data-public-page className="relative z-10 text-pfText">
       <JsonLd data={getOrganizationSchema(lang)} />
 
       <section className="relative min-h-[82vh] overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">

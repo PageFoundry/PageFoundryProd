@@ -2,9 +2,9 @@ import ServiceLanding, { type ServiceLandingData } from "@/components/landing/Se
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
-const TITLE = "Individuelle Software";
+const TITLE = "Individuelle Software & Softwareentwicklung Bergisches Land";
 const DESCRIPTION =
-  "Individuelle Software von PageFoundry aus Hückeswagen: Anwendungen für Rechnungen, Daten und interne Abläufe, zugeschnitten auf Ihren Betrieb — am Beispiel der Carbon-Care-Rechnungssoftware im echten Tagesbetrieb.";
+  "Softwareentwicklung im Bergischen Land aus Hückeswagen: individuelle Software für Rechnungen und Betriebsabläufe. Praxisbeispiel Carbon Care.";
 const URL = "https://pagefoundry.de/individuelle-software";
 
 const TAX_NOTE =
@@ -18,10 +18,10 @@ export const metadata = createPageMetadata({
 });
 
 const data: ServiceLandingData = {
-  eyebrow: "Individuelle Software",
-  heroHeading: "Software, die zu Ihrem Betrieb passt — nicht umgekehrt.",
+  eyebrow: "Softwareentwicklung · Hückeswagen & Bergisches Land",
+  heroHeading: "Individuelle Software für Betriebe im Bergischen Land.",
   heroSubline:
-    "Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch über Listen, Zettel oder unpassende Standardsoftware laufen, bauen wir eine eigene Anwendung: genau auf Ihren Ablauf zugeschnitten, ohne Funktionen, die Sie nie nutzen.",
+    "Von Hückeswagen aus entwickeln wir Software für Unternehmen im Bergischen Land. Ein persönlicher Termin in Ihrem Betrieb ist nach Absprache möglich. Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch über Listen, Zettel oder unpassende Standardsoftware laufen, bauen wir eine eigene Anwendung: genau auf Ihren Ablauf zugeschnitten, ohne Funktionen, die Sie nie nutzen.",
   problem: {
     label: "Das Problem",
     heading: "Standardsoftware passt selten genau.",
@@ -119,11 +119,11 @@ const data: ServiceLandingData = {
   },
   consultationHref: "/consultation?package=request_offer",
   references: {
-    heading: "Ein umgesetztes Software-Projekt.",
+    heading: "Carbon Care: vom manuellen Rechnungsablauf zur eigenen Anwendung.",
     items: [
       {
         name: "Carbon Care · Rechnungssoftware",
-        text: "Individuelle Rechnungssoftware für den täglichen Betrieb: Rechnungsübersicht, Status und Zahlungsstand statt Zettelwirtschaft. Live seit 02/2026.",
+        text: "Vor dem Projekt hatte Carbon Care kein eigenes Werkzeug für einen wiederholbaren Rechnungsablauf. Wir entwickelten eine Anwendung mit eigenem Datenmodell für Rechnungen, Status und Zahlungsstand. Sie läuft seit Februar 2026 im Tagesbetrieb, unabhängig von der ebenfalls umgesetzten Landingpage. Die Abbildung zeigt Beispieldaten.",
         href: "https://carbon-care.de",
         label: "Kundenwebsite ansehen",
         internalLink: { href: "/projekte/carbon-care", label: "Projektseite ansehen" },

@@ -6,7 +6,7 @@ export default async function NotFound() {
   const de = lang === "de";
 
   return (
-    <section className="section-pad flex min-h-[70vh] items-center justify-center">
+    <section data-public-page className="section-pad flex min-h-[70vh] items-center justify-center">
       <div className="pf-card w-full max-w-2xl p-8 text-center sm:p-12">
         <span className="label-mono mb-5 block">404</span>
         <h1
@@ -20,7 +20,7 @@ export default async function NotFound() {
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-pfSubtle">
           {de
-            ? "Der Link ist veraltet oder die Seite wurde verschoben. Von hier kommst du sicher weiter."
+            ? "Der Link ist veraltet oder die Seite wurde verschoben. Von hier gelangen Sie zum passenden Angebot."
             : "The link is outdated or the page has moved. Continue from one of the options below."}
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
