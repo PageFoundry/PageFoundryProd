@@ -26,55 +26,110 @@
     "ctaSee": "See Packages"
   },
   "products": {
-    "heading": "Our Packages",
+    "heading": "My services",
     "cta": {
       "getStarted": "Order",
       "book": "Book consultation"
     },
     "landing_page": {
-      "title": "Landing Page",
-      "desc": "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-      "from": "from 590 €"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "landing_page_hosting": {
-      "title": "Landing Page Hosting",
-      "desc": "We host your existing landing page. Choose with or without domain management.",
-      "from": "from 19 €/month"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "all_inclusive": {
-      "title": "All-Inclusive Package",
-      "desc": "Landing Page, Domain, Basic SEO & Google Indexing – all included, incl. 12 months of hosting, then €19/month. Domain renewal billed separately.",
-      "from": "from 790 €"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "seo_basic": {
-      "title": "SEO Basic",
-      "desc": "Technical and content-based optimization for better visibility in search engines.",
-      "from": "from 149 €"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "seo_advanced": {
-      "title": "SEO Advanced",
-      "desc": "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-      "from": "from 299 €"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "speed_opt": {
-      "title": "Speed Optimization",
-      "desc": "Boost your website speed for optimal user experience and top Google rankings.",
-      "from": "from 299 €"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "maintenance": {
-      "title": "Maintenance Subscription",
-      "desc": "Monthly maintenance, backups, security updates & continuous performance checks.",
-      "from": "from 79 €/month"
+      "title": "Historical offer",
+      "desc": "This historical offer is no longer available. Please request a consultation.",
+      "from": "Consultation"
     },
     "request_offer": {
-      "title": "Request Offer",
-      "desc": "Custom scope or bundle. Ideal for unique requirements.",
+      "title": "Request a quote",
+      "desc": "I clarify your requirements and prepare a quote.",
       "from": "On request"
     },
     "free_consultation": {
-      "title": "Free Consultation",
-      "desc": "Talk to us. Get clarity on strategy, timelines, and budget.",
+      "title": "Free consultation",
+      "desc": "Talk to me about scope, timeline and budget.",
       "from": "Free"
+    },
+    "sichtbar": {
+      "title": "Sichtbar",
+      "desc": "A one-page website. Up to 6 sections.",
+      "from": "€790"
+    },
+    "gefunden": {
+      "title": "Gefunden",
+      "desc": "Company website with local SEO foundations. Up to 5 pages, contact form and Google Business Profile setup.",
+      "from": "€1,390"
+    },
+    "gebucht": {
+      "title": "Gebucht",
+      "desc": "Website with booking, enquiry or shop functionality. Up to 10 content pages or up to 5 pages plus exactly one standard module.",
+      "from": "€2,490"
+    },
+    "betrieb": {
+      "title": "Operation",
+      "desc": "Hosting, domain, SSL, backups, monitoring and report. For purchased or existing sites I host. Changes billed separately; cancel with one month’s notice.",
+      "from": "€25/month"
+    },
+    "website_wache": {
+      "title": "Website Watch",
+      "desc": "External uptime, SSL and loading-time monitoring, alerts and monthly report.",
+      "from": "€49/month"
+    },
+    "website_wache_care": {
+      "title": "Website Watch Care",
+      "desc": "Website Watch plus 60 minutes of small fixes per month.",
+      "from": "€99/month"
+    },
+    "google_profil": {
+      "title": "Google Business Profile package",
+      "desc": "I set up or tidy your business profile: categories, services, photos and review link.",
+      "from": "€149 once"
+    },
+    "ai_readiness": {
+      "title": "AI-Readiness-Umsetzung",
+      "desc": "llms.txt, JSON-LD where useful, up to 3 evidenced technical findings, compact information/FAQ section, live verification and completion evidence, one correction round for implementation errors. Around 4 hours maximum; no migrations, new pages, extensive copy or image work.",
+      "from": "€490 once"
+    },
+    "ki_telefon": {
+      "title": "AI phone assistant",
+      "desc": "€790 setup + €249/month. 300 minutes included, then €0.45/min.",
+      "from": "€790 + €249/month"
+    },
+    "software": {
+      "title": "Custom software",
+      "desc": "I build custom applications for invoices, data and business workflows. Fixed-price projects from €2,500.",
+      "from": "from €2,500"
+    },
+    "extra_work": {
+      "title": "Additional changes",
+      "desc": "Additional work agreed with you in advance.",
+      "from": "€19 / started 15 min"
     }
   },
   "consultation": {
@@ -104,8 +159,8 @@
       "Wed": "Wed"
     },
     "eyebrow": "Free consultation",
-    "phoneHint": "Prefer to call? Reach us at",
-    "phoneHintSuffix": "— our AI assistant answers 24/7 and books an appointment for you.",
+    "phoneHint": "Phone (my AI assistant answers; I call you back):",
+    "phoneHintSuffix": "",
     "phoneOptional": "Phone (optional)",
     "phoneHelp": "Only if you want us to call you back with questions.",
     "requiredLegend": "* Required field",

@@ -84,6 +84,9 @@ const CONSULTATION_TYPES: ConsultationType[] = [
 
 // Sinnvolle Vorauswahl der Beratungsart je angefragtem Paket (frei aenderbar).
 const PACKAGE_TO_TYPE: Partial<Record<ProductKey, ConsultationType>> = {
+  sichtbar: "LANDING_PAGE",
+  gefunden: "LANDING_PAGE",
+  gebucht: "LANDING_PAGE",
   landing_page: "LANDING_PAGE",
   landing_page_hosting: "LANDING_PAGE",
   all_inclusive: "LANDING_PAGE",
@@ -121,6 +124,7 @@ export default function ConsultationPage() {
   const [consultationType, setConsultationType] =
     useState<ConsultationType>("FULL_SITE_REVIEW");
   const [packageKey, setPackageKey] = useState<ProductKey | null>(null);
+  const [websiteModel, setWebsiteModel] = useState<"kauf" | "betreut" | null>(null);
   const [selfReportedSource, setSelfReportedSource] = useState("");
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -137,7 +141,10 @@ export default function ConsultationPage() {
   // Vorausgewaehltes Paket aus ?package= (kommt von den Paket-CTAs der Startseite).
   // Bewusst im Effect statt ueber useSearchParams: kein Suspense-Zwang, kein Mismatch.
   useEffect(() => {
-    const raw = new URLSearchParams(window.location.search).get("package");
+    const query = new URLSearchParams(window.location.search);
+    const model = query.get("modell");
+    if (model === "kauf" || model === "betreut") setWebsiteModel(model);
+    const raw = query.get("package");
     if (raw && (productOrderKeys as string[]).includes(raw)) {
       const key = raw as ProductKey;
       setPackageKey(key);
@@ -254,6 +261,7 @@ export default function ConsultationPage() {
           participants,
           consultationType,
           ...(packageKey ? { packageKey } : {}),
+          ...(websiteModel ? { websiteModel } : {}),
           ...(selfReportedSource ? { selfReportedSource } : {}),
           observedSource: provenance.observedSource,
           entryPathname: provenance.entryPathname,
@@ -283,7 +291,7 @@ export default function ConsultationPage() {
 
         {/* Header */}
         <div className="border-b border-pfBorder pb-8 mb-12">
-          <span className="label-mono block mb-4">{t("consultation.eyebrow")}</span>
+
           <h1
             className="leading-none text-pfText"
             style={{
@@ -341,7 +349,7 @@ export default function ConsultationPage() {
                 <span className="font-mono text-[0.6rem] tracking-widest uppercase text-pfAccent block mb-1">
                   {t("consultation.packageBanner")}
                 </span>
-                {t(`products.${packageKey}.title`)}
+                {t(`products.${packageKey}.title`)}{websiteModel ? ` · ${websiteModel === "kauf" ? (lang === "de" ? "Kauf" : "Purchase") : (lang === "de" ? "Betreut (nur Unternehmen, 24 Monate)" : "Managed (businesses only, 24 months)")}` : ""}
               </p>
               <button
                 type="button"

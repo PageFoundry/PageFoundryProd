@@ -1,73 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { useI18n } from "@/i18n/useI18n";
 import type { ProductKey } from "@/lib/products";
-import { getServerI18n } from "@/i18n/server";
 
-interface Props {
-  id: ProductKey;
-  isAuthed: boolean;
-}
-
-export default async function PackageCard({ id, isAuthed }: Props) {
-  const { t, lang } = await getServerI18n();
-
-  const title = t(`products.${id}.title`);
-  const desc  = t(`products.${id}.desc`);
-  const from  = t(`products.${id}.from`);
-
-  const href  = id === "free_consultation" ? `/consultation?lang=${lang}` : `/checkout/${id}`;
-  const label = id === "free_consultation"
-    ? t("products.cta.book")
-    : t("products.cta.getStarted");
-
-  const isFeatured = id === "free_consultation";
-
+export default function PackageCard({ id }: { id: ProductKey; isAuthed?: boolean }) {
+  const { t, lang } = useI18n();
+  const href = id === "ai_readiness" ? "https://audit.pagefoundry.de" : id === "software" ? "/individuelle-software" : `/consultation?package=${id}&lang=${lang}`;
   return (
-    <div
-      className={`pf-card h-full rounded-none flex flex-col gap-4 p-6 relative overflow-hidden ${
-        isFeatured ? "border-pfBorderAccent bg-pfAccentDim" : ""
-      }`}
-    >
-      {isFeatured && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.08) 0%, transparent 60%)",
-          }}
-        />
-      )}
-
-      <div className="flex items-start justify-between gap-2">
-        <span
-          className="text-pfText font-semibold text-base leading-snug"
-          style={{ fontFamily: "var(--font-display), Impact, sans-serif", letterSpacing: "0.03em", fontSize: "1.3rem" }}
-        >
-          {title}
-        </span>
-        <span
-          className="shrink-0 font-mono text-[0.75rem] font-bold tracking-wider text-pfAccent"
-          style={{ fontFamily: "var(--font-mono)" }}
-        >
-          {from}
-        </span>
-      </div>
-
-      <p className="text-pfSubtle text-sm leading-relaxed flex-1">{desc}</p>
-
-      {isFeatured ? (
-        <Link href={href} className="btn-accent mt-auto self-start text-[0.68rem] px-4 py-2">
-          {label} →
-        </Link>
-      ) : (
-        <Link
-          // Neukunden landen in der Beratung mit vorausgewaehltem Paket —
-          // nie auf /login. Eingeloggte Bestandskunden gehen direkt in den Checkout.
-          href={isAuthed ? href : `/consultation?package=${id}&lang=${lang}`}
-          className="btn-outline mt-auto self-start text-[0.68rem] px-4 py-2"
-          prefetch={false}
-        >
-          {label}
-        </Link>
-      )}
-    </div>
+    <article className="pf-card h-full rounded-none flex flex-col gap-4 p-6">
+      <h4 className="font-display text-3xl text-pfText">{t(`products.${id}.title`)}</h4>
+      <p className="text-pfAccent font-mono text-sm">{t(`products.${id}.from`)}</p>
+      <p className="text-pfSubtle text-sm leading-7 flex-1">{t(`products.${id}.desc`)}</p>
+      <Link href={href} className="btn-outline mt-auto self-start" prefetch={false}>
+        {id === "free_consultation" ? t("products.cta.book") : t("products.cta.getStarted")}
+      </Link>
+    </article>
   );
 }

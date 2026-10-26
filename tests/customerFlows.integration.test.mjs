@@ -1,5 +1,6 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
+import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 
 const BASE = process.env.TEST_BASE_URL || "http://127.0.0.1:3011";
@@ -42,14 +43,13 @@ async function findBookableSlot() {
   throw new Error("No bookable test slot found");
 }
 
-test("geschützte Checkout-URL bewahrt das interne Redirect-Ziel", async () => {
+test("alte Checkout-URL führt ohne Login zur Beratung", async () => {
   const response = await fetch(`${BASE}/checkout/landing_page?from=flow-test`, {
     redirect: "manual",
   });
   assert.ok([307, 308].includes(response.status), `unexpected status ${response.status}`);
   const location = response.headers.get("location") || "";
-  assert.match(location, /\/login\?next=/);
-  assert.equal(new URL(location, BASE).searchParams.get("next"), "/checkout/landing_page?from=flow-test");
+  assert.equal(new URL(location, BASE).pathname, "/consultation");
 });
 
 test("Passwort-Reset verrät nicht, ob ein Konto existiert", async () => {
@@ -117,17 +117,37 @@ test("Beratung akzeptiert optionale Telefon-/Notizfelder und speichert den Paket
       slotId: slot.id,
       participants: 1,
       consultationType: "LANDING_PAGE",
-      packageKey: "landing_page",
+      packageKey: "gefunden",
+      websiteModel: "betreut",
     }),
   });
   assert.equal(response.status, 200, JSON.stringify(await response.json().catch(() => ({}))));
 
   const booking = await prisma.consultationBooking.findUniqueOrThrow({ where: { slotId: slot.id } });
-  assert.match(booking.description, /Landingpage/i);
+  assert.match(booking.description, /Gefunden/);
+  assert.match(booking.description, /Betreut \(nur Unternehmen, 24 Monate\)/);
 });
 
 test("404-Seite liefert einen echten 404-Status", async () => {
   const response = await fetch(`${BASE}/gibt-es-garantiert-nicht-${Date.now()}`);
   assert.equal(response.status, 404);
   assert.match(await response.text(), /404/);
+});
+
+
+test("Stripe verweigert gesperrte Produkte für eingeloggte Kunden", async () => {
+  const user = await prisma.user.create({ data: { email: `test+stripe-${Date.now()}@example.com`, passwordHash: "test-placeholder" } });
+  touchedUserIds.add(user.id);
+  const product = await prisma.product.create({ data: { id: `test-restricted-${Date.now()}`, name: "Restricted", description: "Beratung", priceCents: 79000, restricted: true } });
+  try {
+    const token = jwt.sign({ sub: user.id, role: "USER", sv: user.sessionVersion }, process.env.JWT_SECRET || "DEV_ONLY_CHANGE_ME");
+    const response = await fetch(`${BASE}/api/stripe/session`, { method: "POST", headers: { "Content-Type": "application/json", Cookie: `pf_session=${token}` }, body: JSON.stringify({ productId: product.id }) });
+    assert.equal(response.status, 409); assert.equal((await response.json()).consultationUrl, "/consultation");
+  } finally { await prisma.product.delete({ where: { id: product.id } }); }
+});
+
+test("Website-Stufen übernehmen Paket und Kaufmodell ohne Login", async () => {
+  const response = await fetch(`${BASE}/checkout/gefunden`, { redirect: "manual" });
+  const target = new URL(response.headers.get("location"), BASE);
+  assert.equal(target.pathname,"/consultation"); assert.equal(target.searchParams.get("package"),"gefunden"); assert.equal(target.searchParams.get("modell"),"kauf");
 });

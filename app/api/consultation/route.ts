@@ -34,6 +34,7 @@ const bodySchema = z.object({
   note: z.string().trim().max(4000).optional().default(""),
   participants: z.coerce.number().int().min(1).max(10).optional().default(1),
   consultationType: z.enum(CONSULTATION_TYPES),
+  websiteModel: z.enum(["kauf", "betreut"]).optional(),
   packageKey: z.string().trim().max(100).optional(),
   selfReportedSource: z.string().refine(isSelfReportedSource).optional(),
   observedSource: z.enum(OBSERVED_SOURCES).optional(),
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
       ? `Angefragtes Paket: ${packageTitleDe(packageKey)}`
       : "";
 
-    const description = [packageLine, body.note].filter(Boolean).join("\n\n");
+    const description = [packageLine, body.websiteModel ? `Modell: ${body.websiteModel === "kauf" ? "Kauf" : "Betreut (nur Unternehmen, 24 Monate)"}` : "", body.note].filter(Boolean).join("\n\n");
 
     const { slot, booking } = await bookSlot({
       slotId: body.slotId,

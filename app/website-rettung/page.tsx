@@ -1,10 +1,11 @@
+import { regionalPricing } from "@/lib/seo/regionalWebdesign";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
-const TITLE = "Website-Rettung – bestehende Website überarbeiten & Relaunch";
+const TITLE = "Bestehende Website neu — Analyse und Relaunch";
 const DESCRIPTION =
-  "Website-Rettung von PageFoundry: Wir überarbeiten Ihre bestehende Website oder setzen einen Website-Relaunch um — verständlich positioniert, schnell und mit Vorschau vorab. Ab 890 €.";
+  "Website-Rettung von PageFoundry: Ich überarbeite Ihre bestehende Website oder setze einen Website-Relaunch um — verständlich positioniert, schnell und mit Vorschau vorab. Ab 790 €.";
 const URL = "https://pagefoundry.de/website-rettung";
 
 const TAX_NOTE =
@@ -19,9 +20,9 @@ export const metadata = createPageMetadata({
 
 const data: ServiceLandingData = {
   eyebrow: "Website-Rettung",
-  heroHeading: "Ihre Website ist da — bringt aber keine Anfragen.",
+  heroHeading: "Ihre bestehende Website. Mit einer passenden neuen Basis.",
   heroSubline:
-    "Im Website-Rettung-Sprint machen wir aus einer veralteten oder schwachen Seite eine, die verständlich positioniert, schnell lädt und zum Anrufen oder Schreiben bewegt. Mit konkreter Vorschau, bevor Sie sich entscheiden.",
+    "Ich analysiere Ihre bestehende Website und kläre, welche Inhalte und Funktionen erhalten bleiben. Für den Neubau gelten dieselben drei Stufen wie für neue Websites: Sichtbar, Gefunden und Gebucht. Sie erhalten eine Vorschau vor der Entscheidung.",
   problem: {
     label: "Das Problem",
     heading: "Eine schwache Website kostet jeden Tag leise Geld.",
@@ -37,21 +38,21 @@ const data: ServiceLandingData = {
     items: [
       {
         title: "Audit & Vorschau",
-        text: "Wir analysieren Ihre aktuelle Seite und bauen eine konkrete Vorher/Nachher-Vorschau — Sie sehen das Ergebnis, bevor Sie sich festlegen.",
+        text: "Ich analysiere Ihre aktuelle Seite und bauen eine konkrete Vorher/Nachher-Vorschau — Sie sehen das Ergebnis, bevor Sie sich festlegen.",
       },
       {
         title: "Umsetzung",
-        text: "Wir bauen die neue Startseite bzw. Landingpage: klare Struktur, starke erste Sekunde, sauber auf dem Handy, mit eindeutigem Call-to-Action.",
+        text: "Ich baue die neue Startseite bzw. Landingpage: klare Struktur, starke erste Sekunde, sauber auf dem Handy, mit eindeutigem Call-to-Action.",
       },
       {
         title: "Live & gefunden",
-        text: "Wir bringen die Seite live, richten lokale Auffindbarkeit (LocalBusiness-SEO) ein und verlinken Impressum und Datenschutz korrekt.",
+        text: "Ich bringe die Seite live, richten lokale Auffindbarkeit (LocalBusiness-SEO) ein und verlinken Impressum und Datenschutz korrekt.",
       },
     ],
   },
   included: {
     label: "Leistungsumfang",
-    heading: "Was im Sprint steckt.",
+    heading: "Vom Bestand zum vereinbarten Neubau.",
     items: [
       "Analyse Ihrer bestehenden Website",
       "Konkrete Vorschau vor der Entscheidung",
@@ -60,49 +61,9 @@ const data: ServiceLandingData = {
       "Klarer Kontakt-/Anruf-CTA",
       "Lokale Auffindbarkeit (LocalBusiness-SEO)",
     ],
-    note: "Der Einstieg ist bewusst klar geschnitten (eine starke Seite). Mehr Unterseiten, Buchung oder Online-Zahlung sind in den größeren Stufen enthalten — Umfang und Preis legen wir vorher gemeinsam fest, kein Scope-Creep.",
+    note: "Sichtbar umfasst eine Seite, Gefunden bis zu fünf Seiten. Gebucht umfasst bis zu zehn Inhaltsseiten oder bis zu fünf Seiten mit genau einem Standardmodul. Den Umfang lege ich mit Ihnen vorab fest.",
   },
-  pricing: {
-    label: "Preise",
-    heading: "Fester Preis. Klarer Umfang.",
-    tiers: [
-      {
-        name: "Sprint",
-        price: "890 €",
-        priceNote: "einmalig",
-        features: [
-          "Eine starke Startseite/Landingpage",
-          "Mobile Umsetzung",
-          "Kontakt-/Anruf-CTA",
-          "LocalBusiness-SEO-Grundlage",
-        ],
-      },
-      {
-        name: "Sprint+",
-        price: "1.490 €",
-        priceNote: "einmalig",
-        highlight: true,
-        features: [
-          "Alles aus Sprint",
-          "Mehrere Unterseiten",
-          "Erweiterte Inhalte & Struktur",
-          "Kontaktformular",
-        ],
-      },
-      {
-        name: "Komplett",
-        price: "2.290 €",
-        priceNote: "einmalig",
-        features: [
-          "Alles aus Sprint+",
-          "Terminbuchung",
-          "Online-Zahlung (Stripe)",
-          "Individuelle Funktionen nach Absprache",
-        ],
-      },
-    ],
-    footnote: TAX_NOTE,
-  },
+  pricing: regionalPricing,
   faq: {
     label: "FAQ",
     heading: "Häufige Fragen.",
@@ -113,21 +74,21 @@ const data: ServiceLandingData = {
       },
       {
         q: "Kann ich meine Inhalte und Bilder behalten?",
-        a: "Ja, vorhandene Inhalte und Bilder übernehmen wir, wo sinnvoll, und ergänzen, was fehlt.",
+        a: "Ja, vorhandene Inhalte und Bilder übernehme ich, wo sinnvoll, und ergänzen, was fehlt.",
       },
       {
         q: "Wie lange dauert das?",
-        a: "Ein Sprint ist in der Regel in wenigen Tagen live — abhängig davon, wie schnell Inhalte und Freigaben da sind.",
+        a: "Ein Neubau geht in der Regel nach rund 10–14 Tagen online — abhängig davon, wie schnell Inhalte und Freigaben da sind.",
       },
       {
         q: "Was ist mit laufender Pflege?",
-        a: "Auf Wunsch übernehmen wir die danach mit der Website-Wache — Überwachung, Updates und kleine Änderungen monatlich.",
+        a: "Sie wählen Kauf mit optionalem Betrieb für 25 €/Monat oder die betreute Variante für Unternehmen über 24 Monate.",
       },
     ],
   },
   cta: {
-    heading: "Holen wir das Potenzial aus Ihrer Seite?",
-    text: "In der kostenlosen Erstberatung schauen wir auf Ihre aktuelle Website und zeigen die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
+    heading: "Soll ich Ihre bestehende Website prüfen?",
+    text: "In der kostenlosen Erstberatung schaue ich auf Ihre aktuelle Website und zeigen die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
   },
   related: {
     label: "Passende Seiten",

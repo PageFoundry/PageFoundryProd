@@ -34,7 +34,6 @@ export default function FounderTrust({ copy }: Props) {
         </div>
 
         <div className="flex flex-col justify-center p-6 md:p-12 lg:p-16">
-          <span className="label-mono">{copy.label}</span>
           <h2 className="mt-5 max-w-3xl font-display text-4xl leading-[0.95] text-pfText md:mt-6 md:text-7xl">{copy.heading}</h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-pfSubtle md:mt-7 md:text-lg md:leading-8">{copy.text}</p>
 
@@ -42,7 +41,7 @@ export default function FounderTrust({ copy }: Props) {
             “{copy.quote}”
           </blockquote>
 
-          <div className="mt-8 grid gap-px bg-pfBorder sm:grid-cols-3 md:mt-12">
+          <div className="mt-8 grid gap-px bg-pfBorder sm:grid-cols-2 md:mt-12">
             <div className="bg-pfSurface p-4 md:p-5">
               <p className="font-mono text-[0.56rem] uppercase tracking-[0.18em] text-pfMuted">{copy.locationLabel}</p>
               <p className="mt-2 text-sm text-pfText">{copy.location}</p>
@@ -51,6 +50,7 @@ export default function FounderTrust({ copy }: Props) {
               <p className="font-mono text-[0.56rem] uppercase tracking-[0.18em] text-pfMuted">{copy.phoneLabel}</p>
               <p className="mt-2 text-sm text-pfText">+49 2192 8743999</p>
             </a>
+            <a href="https://wa.me/4915167076918" className="bg-pfSurface p-4 transition-colors hover:bg-pfCardHover md:p-5"><p className="text-sm text-pfAccent">WhatsApp</p></a>
             <a href="mailto:admin@pagefoundry.de" className="bg-pfSurface p-4 transition-colors hover:bg-pfCardHover md:p-5">
               <p className="font-mono text-[0.56rem] uppercase tracking-[0.18em] text-pfMuted">{copy.emailLabel}</p>
               <p className="mt-2 break-all text-sm text-pfText">admin@pagefoundry.de</p>

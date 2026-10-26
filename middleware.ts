@@ -39,6 +39,16 @@ export const config = {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  const checkoutMatch = pathname.match(/^\/checkout\/(sichtbar|gefunden|gebucht|landing_page|landing_page_hosting|all_inclusive|seo_basic|seo_advanced|speed_opt|maintenance|request_offer|free_consultation)$/);
+  if (checkoutMatch) {
+    const url = new URL("/consultation", req.url);
+    if (["sichtbar", "gefunden", "gebucht"].includes(checkoutMatch[1])) {
+      url.searchParams.set("package", checkoutMatch[1]);
+      url.searchParams.set("modell", "kauf");
+    }
+    return NextResponse.redirect(url);
+  }
+
   const needsAuth = AUTH_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );

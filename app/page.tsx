@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PackageCard from "@/components/PackageCard";
-import { productOrderKeys } from "@/lib/products";
+import WebsitePackages from "@/components/WebsitePackages";
+import { websiteStages } from "@/lib/websitePricing";
+import { additionalProductKeys } from "@/lib/products";
 import { getServerI18n } from "@/i18n/server";
-import { getUserFromCookie } from "@/lib/auth";
 import JsonLd, { regionalAreaServed } from "@/components/JsonLd";
 import CaseStudyShowcase from "@/components/landing/CaseStudyShowcase";
 import FounderTrust from "@/components/landing/FounderTrust";
@@ -105,91 +106,17 @@ function getOrganizationSchema(lang: "de" | "en") {
       "@type": "OfferCatalog",
       name: isDe ? "Web-Leistungen" : "Web services",
       itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Landing Page",
-            description: isDe
-              ? "Moderne Landingpage mit klarer Struktur und direkter Handlungsführung."
-              : "Modern landing page with clear structure and a direct path to action.",
-          },
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "590",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Individuelle Software",
-            description: isDe
-              ? "Individuelle Anwendungen für Rechnungen, Daten und interne Abläufe, zugeschnitten auf den jeweiligen Betrieb."
-              : "Custom applications for invoices, data, and internal workflows, tailored to the individual business.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "SEO Basic",
-            description: isDe
-              ? "Technische und inhaltliche Optimierung für bessere Sichtbarkeit in Suchmaschinen."
-              : "Technical and content optimization for stronger search visibility.",
-          },
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "149",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "SEO Advanced",
-            description: isDe
-              ? "Vertiefte SEO-Analyse, Suchstrategie und langfristige Optimierung."
-              : "Advanced SEO analysis, search strategy, and long-term optimization.",
-          },
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "299",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Speed Optimization",
-            description: isDe
-              ? "Core Web Vitals und Ladewege für eine schnellere Nutzung verbessern."
-              : "Improve Core Web Vitals and loading paths for a faster experience.",
-          },
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "299",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "All-Inclusive Package",
-            description: isDe
-              ? "Landingpage, Domain, Basic SEO, Google-Indexierung und 12 Monate Hosting."
-              : "Landing page, domain, basic SEO, Google indexing, and 12 months of hosting.",
-          },
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            price: "790",
-            priceCurrency: "EUR",
-          },
-        },
+        ...websiteStages.map((stage) => ({ "@type": "Offer", price: stage.purchase, priceCurrency: "EUR", url: `https://pagefoundry.de/consultation?package=${stage.id}&modell=kauf`, itemOffered: { "@type": "Service", name: stage.name, description: isDe ? `${stage.de}. ${stage.scope}. Betreut nur für Unternehmen: ${stage.setup} € Einrichtung + ${stage.monthly} €/Monat für 24 Monate; danach ${stage.later} €/Monat.` : `${stage.en}. ${stage.scopeEn}. Managed for businesses only: EUR ${stage.setup} setup + EUR ${stage.monthly}/month for 24 months; then EUR ${stage.later}/month.` } })),
+        ...[
+          ["Betrieb", 25, "Hosting, Domain, SSL, Backups, Überwachung, Bericht; monatlich, Änderungen nach Aufwand"],
+          ["Website-Wache", 49, "Monatlich: externe Überwachung, Frühwarnung, Monatsbericht"],
+          ["Website-Wache Care", 99, "Monatlich: Website-Wache plus 60 Minuten Kleinfixes"],
+          ["Google-Profil-Paket", 149, "Einmalig: Kategorien, Leistungen, Fotos, Bewertungslink"],
+          ["AI-Readiness-Umsetzung", 490, "Einmalig, abgegrenzter Scope unter audit.pagefoundry.de"],
+          ["KI-Telefonassistenz", 790, "Einrichtung plus 249 €/Monat, 300 Minuten inklusive, danach 0,45 €/Min"],
+          ["Individuelle Software", 2500, "Festpreisprojekte ab 2.500 €"],
+          ["Änderungen nach Aufwand", 19, "Je angefangene 15 Minuten"],
+        ].map(([name, price, description]) => ({ "@type": "Offer", price, priceCurrency: "EUR", itemOffered: { "@type": "Service", name, description } })),
       ],
     },
   };
@@ -199,18 +126,18 @@ const copy = {
   de: {
     eyebrow: "Websites & Software · Hückeswagen",
     subline:
-      "Für lokale und inhabergeführte Unternehmen: Wir machen Ihr Angebot online verständlich und entlasten Abläufe, die heute noch unnötig Zeit kosten.",
+      "Ich arbeite allein und mit eigener KI-Werkstatt. Deshalb liegen meine Preise unter dem üblichen Agenturniveau: Websites ab 790 € zum Kauf, für Unternehmen auch betreut ab 190 € Einrichtung und 49 € im Monat.",
     proof: ["Websites", "Landingpages", "Betriebliche Software", "SEO", "Hosting", "Bergisches Land"],
-    heroHeading: "Websites und Software für Unternehmen, die vorankommen.",
+    heroHeading: "Websites und Betriebssoftware. Gebaut und betreut von einem Ansprechpartner aus Hückeswagen.",
     heroLocation: "Hückeswagen · Bergisches Land · deutschlandweit",
     heroOffers: [
       {
-        title: "Websites & Landingpages",
+        title: "Websites",
         text: "Für mehr Vertrauen beim ersten Kontakt und einen klaren Weg zur Anfrage.",
       },
       {
         title: "Betriebliche Software",
-        text: "Für Rechnungen, Daten und Abläufe, die zuverlässig zu Ihrem Betrieb passen.",
+        text: "Individuelle Anwendungen für Rechnungen, Daten und Betriebsabläufe. Festpreisprojekte ab 2.500 €.",
       },
     ],
     workLabel: "02 - Ausgewählte Arbeiten",
@@ -241,18 +168,18 @@ const copy = {
         },
         image: "/work/carbon-care.jpg",
         imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
-        scope: "Landingpage · Rechnungssoftware",
+        scope: "Betriebliche Rechnungssoftware",
         headline: "Vom Neustart zur funktionierenden digitalen Basis.",
         problem:
           "0 eigene Web-Systeme: weder Website noch eigener, wiederholbarer Rechnungsablauf.",
         delivery:
-          "2 Systeme live: eine fokussierte Landingpage und eine individuelle Rechnungssoftware für den täglichen Betrieb.",
+          "Ich entwickelte eine Rechnungssoftware mit eigenem Datenmodell, Rechnungen, Status und Zahlungsstand.",
         result:
-          "Projektstand nach dem Go-live: Website und Rechnungstool sind live; der gespeicherte Google-Stand vom 22.04.2026 weist 10 Bewertungen mit Ø 5,0 aus.",
+          "Die individuelle Rechnungssoftware ist seit Februar 2026 im Tagesbetrieb. Die Abbildung zeigt Beispieldaten.",
         evidenceSource: "Stand 22.04.26",
         metrics: [
-          { value: "2", label: "Systeme live", detail: "Website + Rechnungstool" },
-          { value: "10", label: "Google-Rezensionen", detail: "Ø 5,0 am 22.04.26" },
+          { value: "1", label: "Anwendung", detail: "Rechnungssoftware" },
+
           { value: "02/26", label: "Go-live", detail: "im laufenden Betrieb" },
         ],
       },
@@ -297,10 +224,10 @@ const copy = {
       imageAlt: "Fabian Franke, Founder und Developer von PageFoundry",
       location: "Hückeswagen, Deutschland",
       locationLabel: "Standort",
-      phoneLabel: "Direkter Kontakt",
+      phoneLabel: "Telefon (mein KI-Assistent nimmt an, ich rufe zurück)",
       emailLabel: "E-Mail",
     },
-    servicesLabel: "03 - Was wir bauen",
+    servicesLabel: "03 - Was ich baue",
     servicesHeading: "Websites für Kunden. Software für den Betrieb.",
     servicesText:
       "Zwei klare Angebote, ein direkter Ansprechpartner: nach außen eine Website, die Vertrauen schafft; nach innen Software, die Arbeit abnimmt.",
@@ -310,20 +237,20 @@ const copy = {
     packagesLabel: "04 - Pakete",
     packagesHeading: "Websites, Software und laufender Betrieb.",
     packagesText:
-      "Wählen Sie ein Paket als Ausgangspunkt. Den genauen Umfang, Zeitplan und die nächsten Schritte klären wir transparent in der kostenlosen Erstberatung.",
+      "Sie wählen eine Website-Stufe und Kauf oder Betreuung. Umfang, Zeitplan und Angebot stimme ich mit Ihnen persönlich ab.",
     offerPathsLabel: "Der passende Einstieg",
     offerPaths: [
       {
         key: "Build",
-        title: "Websites & Landingpages",
+        title: "Websites",
         text: "Für Unternehmen, die ihr Angebot klar zeigen, Vertrauen aufbauen und leichter Anfragen erhalten möchten.",
         cta: "Website besprechen",
-        href: "/consultation?package=landing_page",
+        href: "/consultation?package=sichtbar&modell=kauf",
       },
       {
         key: "Systems",
         title: "Betriebliche Software",
-        text: "Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch unnötig viel Handarbeit verursachen.",
+        text: "Festpreisprojekte ab 2.500 € für Rechnungen, Daten und wiederkehrende Betriebsabläufe. Carbon Care zeigt eine umgesetzte Rechnungssoftware.",
         cta: "Software besprechen",
         href: "/individuelle-software",
       },
@@ -335,8 +262,8 @@ const copy = {
         href: "/website-wache",
       },
     ],
-    allServicesHeading: "Alle Leistungen und Preise",
-    allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen klären wir vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
+    allServicesHeading: "Zusatzleistungen und Software",
+    allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen kläre ich vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
     detailLinks: [
       { label: "Individuelle Software", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
@@ -351,22 +278,22 @@ const copy = {
       { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de", external: true },
     ] as { label: string; href: string; external?: boolean }[],
     mobilePricesSummary: "Preisliste öffnen",
-    mobilePricesHint: "Landingpage ab 590 € · Betreuung ab 19 €/Monat",
+    mobilePricesHint: "Websites ab 790 € · betreut ab 190 € + 49 €/Monat (nur Unternehmen)",
     processLabel: "05 - Prozess",
-    processHeading: "So arbeiten wir.",
+    processHeading: "Ihr Fahrplan.",
     faqLabel: "06 - FAQ",
     faqHeading: "Häufige Fragen.",
     nextLabel: "Nächster Schritt",
     nextHeading: "Bereit für eine Website, die wirkt?",
     nextText:
-      "In der kostenlosen Erstberatung priorisieren wir die Seiten und Hebel mit der größten Wirkung - ohne Verkaufsgespräch.",
+      "In der kostenlosen Erstberatung priorisiere ich die Seiten und Hebel mit der größten Wirkung - ohne Verkaufsgespräch.",
     consultationCta: "Kostenlose Beratung buchen",
     packagesCta: "Pakete ansehen",
     detailLabel: "Im Detail",
     services: [
       {
         n: "01",
-        title: "Websites & Landingpages",
+        title: "Websites",
         text: "Ihr Angebot wird schneller verstanden und führt klar zur nächsten Anfrage.",
         detail: "Enthält: Struktur, Gestaltung, mobile Umsetzung und klare Kontaktwege.",
       },
@@ -397,27 +324,31 @@ const copy = {
       "Agenturpreise ohne transparente Kalkulation",
     ],
     process: [
-      {
-        title: "Brief & Ziel",
-        text: "Wir klären Zielgruppe, Angebot, Positionierung und Hauptaktion.",
-      },
-      {
-        title: "Struktur & Messaging",
-        text: "Dann legen wir Seitenaufbau, Prioritäten und die richtigen Worte fest.",
-      },
-      {
-        title: "Build & Launch",
-        text: "Wir bauen, optimieren und veröffentlichen schnell, sauber und nachvollziehbar.",
-      },
-      {
-        title: "Laufend optimieren",
-        text: "Auf Wunsch: Wartung, SEO, Hosting und laufende Verbesserungen aus einer Hand.",
-      },
-    ],
+    {
+        "title": "Antwort am selben Werktag",
+        "text": "Ich antworte mit passender Stufe, Preisrahmen und Arbeitsprobe."
+    },
+    {
+        "title": "Abstimmung",
+        "text": "Ich kläre mit Ihnen Branche, Inhalte und Fotos per WhatsApp, Telefon oder schriftlich."
+    },
+    {
+        "title": "Seitenplan und Vorschau-Link",
+        "text": "Sie erhalten einen Seitenplan und eine Vorschau mit Ihren Inhalten."
+    },
+    {
+        "title": "Korrektur und Abnahme",
+        "text": "Eine Korrekturrunde ist enthalten. Danach nehmen Sie die Website mit einer Prüfliste ab."
+    },
+    {
+        "title": "Online und betreut",
+        "text": "Nach rund 10–14 Tagen geht die Website online, abhängig von Inhalten und Freigaben. Bei Betreuung oder Betrieb folgt der Monatsbericht."
+    }
+],
     faq: [
       {
-        q: "Was kostet eine professionelle Website?",
-        a: "Eine Landingpage startet aktuell ab 590 Euro. Erweiterte Pakete, SEO, Hosting, Wartung und individuelle Angebote laufen über die bestehenden Produkt- und Checkout-Flows.",
+        q: "Was kostet eine Website?",
+        a: "Sichtbar kostet 790 €, Gefunden 1.390 € und Gebucht 2.490 € zum Kauf. Nur für Unternehmen gibt es alternativ Betreuung über 24 Monate: 190 € + 49 €/Monat, 390 € + 79 €/Monat oder 790 € + 119 €/Monat. Danach 25/39/59 € monatlich, mit einem Monat Frist kündbar. Den Umfang kläre ich mit Ihnen in der Beratung.",
       },
       {
         q: "Warum gibt es Impressionen, aber keine Klicks?",
@@ -425,7 +356,7 @@ const copy = {
       },
       {
         q: "Bauen Sie nur neue Seiten oder optimieren Sie auch bestehende?",
-        a: "Beides. Wenn bestehende Seiten brauchbar sind, optimieren wir gezielt. Wo wichtige Suchintentionen fehlen, ergänzen wir neue Landingpages.",
+        a: "Beides. Wenn bestehende Seiten brauchbar sind, optimiere ich gezielt. Wo wichtige Suchintentionen fehlen, ergänze ich neue Landingpages.",
       },
       {
         q: "Kombinieren Sie SEO mit Hosting und Technik?",
@@ -436,18 +367,18 @@ const copy = {
   en: {
     eyebrow: "Websites & software · Hückeswagen, Germany",
     subline:
-      "For local and owner-led businesses: make your offer easier to trust online and remove manual work from day-to-day operations.",
+      "I work independently with my own AI workshop. That keeps my prices below typical agency levels: websites from €790 to purchase, or for businesses a managed plan from €190 setup and €49 per month.",
     proof: ["Websites", "Landing pages", "Business software", "SEO", "Hosting", "Bergisches Land"],
-    heroHeading: "Websites and software for businesses that want to move forward.",
+    heroHeading: "Websites and business software. Built and maintained by one point of contact in Hückeswagen.",
     heroLocation: "Hückeswagen · Bergisches Land · Germany-wide",
     heroOffers: [
       {
-        title: "Websites & landing pages",
+        title: "Websites",
         text: "For more trust at the first contact and a clearer path to an enquiry.",
       },
       {
         title: "Business software",
-        text: "For invoices, data, and workflows that fit the way your business actually works.",
+        text: "Custom applications for invoices, data and business workflows. Fixed-price projects from €2,500.",
       },
     ],
     workLabel: "02 - Selected work",
@@ -474,18 +405,18 @@ const copy = {
         },
         image: "/work/carbon-care.jpg",
         imageAlt: "Tailored invoicing software for Carbon Care: invoice overview with status and payment state (demo view with sample data)",
-        scope: "Landing page · Invoicing software",
+        scope: "Business invoicing software",
         headline: "From a new business to a working digital base.",
         problem:
           "0 dedicated web systems: no website and no dedicated, repeatable invoicing workflow.",
         delivery:
-          "2 systems live: a focused landing page and a tailored invoicing application for daily operations.",
+          "I built an invoicing application with a dedicated data model, invoice statuses and payment tracking.",
         result:
-          "Project status after launch: the website and invoicing tool are live; the saved Google snapshot from 22 April 2026 records 10 reviews at a 5.0 average.",
+          "The custom invoicing software has been in daily use since February 2026. The image shows sample data.",
         evidenceSource: "As of 22 Apr 2026",
         metrics: [
-          { value: "2", label: "Systems live", detail: "website + invoicing tool" },
-          { value: "10", label: "Google reviews", detail: "5.0 avg · 22 Apr 2026" },
+          { value: "1", label: "Application", detail: "Invoicing software" },
+
           { value: "02/26", label: "Go-live", detail: "used in daily operations" },
         ],
       },
@@ -526,7 +457,7 @@ const copy = {
       imageAlt: "Fabian Franke, Founder and Developer at PageFoundry",
       location: "Hückeswagen, Germany",
       locationLabel: "Location",
-      phoneLabel: "Direct contact",
+      phoneLabel: "Phone (my AI assistant answers; I call you back)",
       emailLabel: "Email",
     },
     servicesLabel: "03 - What we build",
@@ -539,20 +470,20 @@ const copy = {
     packagesLabel: "04 - Packages",
     packagesHeading: "Websites, software, and ongoing care.",
     packagesText:
-      "Choose a package as a starting point. We clarify the exact scope, timeline, and next steps transparently in the free consultation.",
+      "Choose a website stage and purchase or managed service. I agree the scope, timeline and quote with you personally.",
     offerPathsLabel: "Choose your starting point",
     offerPaths: [
       {
         key: "Build",
-        title: "Websites & landing pages",
+        title: "Websites",
         text: "For businesses that want to explain their offer clearly, build trust, and earn more enquiries.",
         cta: "Discuss a website",
-        href: "/consultation?package=landing_page",
+        href: "/consultation?package=sichtbar&modell=kauf",
       },
       {
         key: "Systems",
         title: "Business software",
-        text: "For invoices, data, and repeatable workflows that still take too much manual effort.",
+        text: "Fixed-price projects from €2,500 for invoices, data and business workflows. Carbon Care is an implemented invoicing application.",
         cta: "Discuss software",
         href: "/consultation?package=request_offer",
       },
@@ -561,10 +492,10 @@ const copy = {
         title: "Hosting & ongoing care",
         text: "For uptime, updates, and clear technical ownership after launch.",
         cta: "Explore ongoing care",
-        href: "/consultation?package=maintenance",
+        href: "/website-wache",
       },
     ],
-    allServicesHeading: "All services and prices",
+    allServicesHeading: "Additional services and software",
     allServicesText: "Transparent starting prices for clearly scoped work. We clarify custom combinations before anything begins. All prices are final prices — as a small business under § 19 UStG (German VAT law), PageFoundry does not charge VAT.",
     detailLinks: [
       { label: "Webdesign Bergisches Land (German)", href: "/webdesign-bergisches-land" },
@@ -575,9 +506,9 @@ const copy = {
       { label: "AI Search Readiness Check (German)", href: "https://audit.pagefoundry.de", external: true },
     ] as { label: string; href: string; external?: boolean }[],
     mobilePricesSummary: "Open full price list",
-    mobilePricesHint: "Landing pages from €590 · care from €19/month",
+    mobilePricesHint: "Websites from €790 · managed from €190 + €49/month (businesses only)",
     processLabel: "05 - Process",
-    processHeading: "How we work.",
+    processHeading: "Your project roadmap.",
     faqLabel: "06 - FAQ",
     faqHeading: "Common questions.",
     nextLabel: "Next step",
@@ -590,7 +521,7 @@ const copy = {
     services: [
       {
         n: "01",
-        title: "Websites & landing pages",
+        title: "Websites",
         text: "Your offer is easier to understand and leads clearly to the next enquiry.",
         detail: "Includes structure, design, mobile delivery, and clear contact paths.",
       },
@@ -621,27 +552,31 @@ const copy = {
       "Agency pricing without transparent scope",
     ],
     process: [
-      {
-        title: "Brief & goal",
-        text: "We clarify audience, offer, positioning, and the primary action.",
-      },
-      {
-        title: "Structure & messaging",
-        text: "Then we define the page structure, priorities, and the right words.",
-      },
-      {
-        title: "Build & launch",
-        text: "We build, optimize, and publish quickly, cleanly, and transparently.",
-      },
-      {
-        title: "Ongoing optimization",
-        text: "Optional: maintenance, SEO, hosting, and continuous improvements from one place.",
-      },
-    ],
+    {
+        "title": "Same-business-day reply",
+        "text": "I reply with a suitable stage, price range and a work sample."
+    },
+    {
+        "title": "Alignment",
+        "text": "I clarify your business, content and photos via WhatsApp, phone or in writing."
+    },
+    {
+        "title": "Page plan and preview link",
+        "text": "You receive a page plan and a preview with your content."
+    },
+    {
+        "title": "Revision and acceptance",
+        "text": "One revision round is included, followed by acceptance using a checklist."
+    },
+    {
+        "title": "Launch and operation",
+        "text": "The website goes live in around 10–14 days, depending on content and approvals. Managed or operation plans include a monthly report."
+    }
+],
     faq: [
       {
         q: "What does a professional website cost?",
-        a: "A landing page currently starts at 590 euro. Extended packages, SEO, hosting, maintenance, and custom offers run through the existing product and checkout flows.",
+        a: "Purchase prices: Sichtbar €790, Gefunden €1,390, Gebucht €2,490. Managed plans for businesses only: €190 + €49/month, €390 + €79/month or €790 + €119/month for 24 months. From month 25: €25/€39/€59 monthly, cancellable with one month’s notice. I clarify your scope in a consultation.",
       },
       {
         q: "Why do impressions not turn into clicks?",
@@ -661,7 +596,6 @@ const copy = {
 
 export default async function LandingPage() {
   const { lang, t } = await getServerI18n();
-  const isAuthed = !!(await getUserFromCookie());
   const c = copy[lang];
   const consultationHref = `/consultation?lang=${lang}`;
   const localizeConsultation = (href: string) =>
@@ -678,24 +612,11 @@ export default async function LandingPage() {
 
         <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div className="fade-in">
-            <div className="mb-8 flex items-center gap-4">
-              <span className="font-display text-2xl tracking-widest text-pfText md:text-3xl">PAGEFOUNDRY</span>
-              <span className="h-px w-10 bg-pfAccent" />
-              <span className="label-mono">{c.eyebrow}</span>
-            </div>
             <h1
               className="max-w-5xl font-display leading-[0.9] text-balance text-pfText"
-              style={{ fontSize: "clamp(3.4rem, 6.5vw, 6.5rem)" }}
+              style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.8rem)" }}
             >
-              {lang === "de" ? (
-                <>
-                  Websites und Software für Unternehmen,{" "}
-                  <br />
-                  die vorankommen.
-                </>
-              ) : (
-                c.heroHeading
-              )}
+              {c.heroHeading}
             </h1>
             <div className="my-8 h-px w-28 bg-gradient-to-r from-pfAccent to-transparent" />
           </div>
@@ -737,7 +658,6 @@ export default async function LandingPage() {
       <section className="border-b border-pfBorder bg-pfSurface/40 px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="label-mono mb-5 block">{c.workLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-8xl">{c.workHeading}</h2>
           </div>
 
@@ -750,7 +670,6 @@ export default async function LandingPage() {
       <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
           <div className="mx-auto mb-8 max-w-3xl text-center md:mb-12">
-            <span className="label-mono mb-5 block">{c.servicesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.servicesHeading}
             </h2>
@@ -773,14 +692,11 @@ export default async function LandingPage() {
       <section id="packages" className="bg-pfSurface px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
           <div className="mx-auto mb-10 max-w-3xl text-center md:mb-12">
-            <span className="label-mono mb-5 block">{c.packagesLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.packagesHeading}
             </h2>
             <p className="mt-6 text-base leading-8 text-pfSubtle">{c.packagesText}</p>
           </div>
-
-          <span className="label-mono mb-5 block">{c.offerPathsLabel}</span>
           <div className="mb-12 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder md:mb-20 lg:grid-cols-3">
             {c.offerPaths.map((path) => (
               <Link
@@ -788,7 +704,6 @@ export default async function LandingPage() {
                 href={localizeConsultation(path.href)}
                 className="group flex flex-col bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-72 md:p-10"
               >
-                <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-pfAccent">{path.key}</span>
                 <h3 className="mt-6 font-display text-3xl leading-none text-pfText md:mt-8 md:text-5xl">{path.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-6 text-pfSubtle md:mt-5 md:leading-7">{path.text}</p>
                 <span className="mt-6 inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfText transition-colors group-hover:text-pfAccent md:mt-8">
@@ -798,34 +713,16 @@ export default async function LandingPage() {
             ))}
           </div>
 
+          <WebsitePackages lang={lang} />
+
           <div className="mb-8 border-t border-pfBorder pt-10 text-center">
             <h3 className="font-display text-4xl leading-none text-pfText md:text-5xl">{c.allServicesHeading}</h3>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-pfSubtle">{c.allServicesText}</p>
           </div>
 
-          <details className="group overflow-hidden rounded-xl border border-pfBorder bg-pfCard lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-5 p-5">
-              <span>
-                <span className="block font-display text-2xl leading-none text-pfText">{c.mobilePricesSummary}</span>
-                <span className="mt-2 block text-xs leading-5 text-pfSubtle">{c.mobilePricesHint}</span>
-              </span>
-              <span className="shrink-0 font-mono text-xl text-pfAccent transition-transform group-open:rotate-45">+</span>
-            </summary>
-            <div className="grid gap-px border-t border-pfBorder bg-pfBorder sm:grid-cols-2">
-              {productOrderKeys.map((id) => (
-                <div key={id} className="bg-pfSurface">
-                  <PackageCard id={id} isAuthed={isAuthed} />
-                </div>
-              ))}
-            </div>
-          </details>
-
-          <div className="hidden gap-px overflow-hidden rounded-3xl bg-pfBorder lg:grid lg:grid-cols-3">
-            {productOrderKeys.map((id) => (
-              <div key={id} className="bg-pfSurface">
-                <PackageCard id={id} isAuthed={isAuthed} />
-              </div>
-            ))}
+          <p className="mb-6 text-sm text-pfSubtle lg:hidden">{c.mobilePricesHint}</p>
+          <div className="grid gap-px border border-pfBorder bg-pfBorder sm:grid-cols-2 lg:grid-cols-3">
+            {additionalProductKeys.map((id) => <div key={id} className="bg-pfSurface"><PackageCard id={id} /></div>)}
           </div>
 
           {c.detailLinks.length > 0 && (
@@ -858,13 +755,12 @@ export default async function LandingPage() {
       <section className="px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-screen-xl">
           <div className="mx-auto mb-8 max-w-3xl text-center md:mb-12">
-            <span className="label-mono mb-5 block">{c.processLabel}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {c.processHeading}
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-pfBorder lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 lg:grid-cols-5">
             {c.process.map((step, index) => (
               <article key={step.title} className="min-h-60 bg-pfCard p-5 md:min-h-64 md:p-8">
                 <div className="font-display text-5xl leading-none text-pfAccent opacity-60 md:text-7xl">
@@ -880,7 +776,6 @@ export default async function LandingPage() {
 
       <section className="bg-pfSurface px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-3xl">
-          <span className="label-mono mb-5 block">{c.faqLabel}</span>
           <h2 className="mb-12 font-display text-5xl leading-none text-pfText md:text-7xl">
             {c.faqHeading}
           </h2>
@@ -906,7 +801,6 @@ export default async function LandingPage() {
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[16rem] w-[16rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfBorderAccent md:h-[26rem] md:w-[26rem]" />
 
         <div className="relative mx-auto max-w-4xl">
-          <span className="label-mono mb-8 block">{c.nextLabel}</span>
           <h2
             className="font-display leading-[0.9] text-pfText"
             style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)" }}

@@ -22,7 +22,7 @@ const data: ServiceLandingData = {
   eyebrow: "Website-Wache",
   heroHeading: "Ihre Website im Blick — bevor der Kunde den Ausfall meldet.",
   heroSubline:
-    "Wir überwachen Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melden Probleme früh und halten die Seite mit kleinen Updates sauber. Damit Ihre Online-Visitenkarte nicht still verfällt.",
+    "Ich überwache Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melden Probleme früh und halten die Seite mit kleinen Updates sauber. Damit Ihre Online-Visitenkarte nicht still verfällt.",
   problem: {
     label: "Das Problem",
     heading: "Die meisten Website-Probleme fallen zuerst dem Kunden auf.",
@@ -38,11 +38,11 @@ const data: ServiceLandingData = {
     items: [
       {
         title: "Einrichten",
-        text: "Wir nehmen Ihre Website in die Überwachung auf — Erreichbarkeit, SSL und Antwortzeit, von außen, ganz ohne Eingriff in Ihre Seite.",
+        text: "Ich nehme Ihre Website in die Überwachung auf — Erreichbarkeit, SSL und Antwortzeit, von außen, ganz ohne Eingriff in Ihre Seite.",
       },
       {
         title: "Überwachen & melden",
-        text: "Rund um die Uhr prüfen wir Ihre Seite. Fällt etwas auf — Ausfall, ablaufendes Zertifikat, hohe Latenz — schlagen wir früh Alarm.",
+        text: "Rund um die Uhr prüfe ich Ihre Seite. Fällt etwas auf — Ausfall, ablaufendes Zertifikat, hohe Latenz — schlage ich früh Alarm.",
       },
       {
         title: "Berichten & pflegen",
@@ -52,7 +52,7 @@ const data: ServiceLandingData = {
   },
   included: {
     label: "Leistungsumfang",
-    heading: "Was wir im Blick behalten.",
+    heading: "Was ich im Blick behalte.",
     items: [
       "Erreichbarkeit (Uptime) rund um die Uhr",
       "SSL-Zertifikat und rechtzeitige Ablauf-Warnung",
@@ -61,14 +61,14 @@ const data: ServiceLandingData = {
       "Kleine inhaltliche und technische Korrekturen (je nach Paket)",
       "Fester Ansprechpartner statt Hotline",
     ],
-    note: "Ehrlich gesagt: Die Überwachung läuft von außen über HTTP, TLS und Antwortzeit. Das deckt die häufigsten Ausfälle früh ab — ist aber kein automatisches Reparieren jeder denkbaren Störung. Was wir beheben, halten wir im Bericht fest.",
+    note: "Ehrlich gesagt: Die Überwachung läuft von außen über HTTP, TLS und Antwortzeit. Das deckt die häufigsten Ausfälle früh ab — ist aber kein automatisches Reparieren jeder denkbaren Störung. Was ich behebe, halte ich im Bericht fest.",
   },
   pricing: {
     label: "Preise",
-    heading: "Drei Stufen, monatlich kündbar.",
+    heading: "Zwei Leistungen für extern gehostete Websites.",
     tiers: [
       {
-        name: "Basic",
+        name: "Website-Wache",
         price: "49 €",
         priceNote: "pro Monat",
         features: [
@@ -78,30 +78,19 @@ const data: ServiceLandingData = {
         ],
       },
       {
-        name: "Care",
+        name: "Website-Wache Care",
         price: "99 €",
         priceNote: "pro Monat",
         highlight: true,
         features: [
-          "Alles aus Basic",
+          "Alles aus Website-Wache",
           "Bis zu 60 Min. Kleinfixes pro Monat",
           "Updates nach Absprache",
           "Bevorzugte Bearbeitung",
         ],
       },
-      {
-        name: "Care+SEO",
-        price: "199 €",
-        priceNote: "pro Monat",
-        features: [
-          "Alles aus Care",
-          "Laufende SEO-Pflege",
-          "Sichtbarkeits- & Performance-Check",
-          "Erweiterter Monatsbericht",
-        ],
-      },
     ],
-    footnote: TAX_NOTE,
+    footnote: `${TAX_NOTE} Wenn ich Ihre Website hosten soll: Betrieb für 25 €/Monat mit Hosting, Domain, SSL, Backups, Überwachung und Bericht. Änderungen nach Aufwand (19 € je angefangene 15 Minuten); jederzeit mit einem Monat Frist kündbar.`,
   },
   faq: {
     label: "FAQ",
@@ -113,23 +102,23 @@ const data: ServiceLandingData = {
       },
       {
         q: "Was ist der Unterschied zwischen Website-Überwachung und Website-Wartung?",
-        a: "Die Überwachung prüft, ob Ihre Website erreichbar ist, das SSL-Zertifikat gültig bleibt und die Antwortzeiten auffällig werden. Wartung umfasst konkrete Arbeiten an der Website. Bei der Website-Wache enthält Basic die Überwachung und einen monatlichen Kurzbericht. Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. So können Sie den Umfang passend zu Ihrer Website wählen.",
+        a: "Die Überwachung prüft, ob Ihre Website erreichbar ist, das SSL-Zertifikat gültig bleibt und die Antwortzeiten auffällig werden. Wartung umfasst konkrete Arbeiten an der Website. Bei der Website-Wache enthält Website-Wache die Überwachung und einen monatlichen Kurzbericht. Website-Wache Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. So können Sie den Umfang passend zu Ihrer Website wählen.",
       },
       {
         q: "Wird ein erkannter Fehler automatisch repariert?",
         a: (
           <>
-            Die Website-Wache erkennt Auffälligkeiten und meldet Probleme früh. Sie repariert nicht automatisch jede Störung. Kleine Korrekturen sind je nach Paket enthalten; größere Arbeiten stimmen wir vorab mit Ihnen ab. Wenn Ihre Website grundsätzlich überarbeitet werden muss, finden Sie unter <Link href="/website-rettung" className="text-pfAccent underline underline-offset-4">Website-Rettung</Link> das passende Angebot.
+            Die Website-Wache erkennt Auffälligkeiten und meldet Probleme früh. Sie repariert nicht automatisch jede Störung. Kleine Korrekturen sind je nach Paket enthalten; größere Arbeiten stimme ich vorab mit Ihnen ab. Wenn Ihre Website grundsätzlich überarbeitet werden muss, finden Sie unter <Link href="/website-rettung" className="text-pfAccent underline underline-offset-4">Website-Rettung</Link> das passende Angebot.
           </>
         ),
       },
       {
         q: "Was kostet es, wenn mal mehr zu tun ist?",
-        a: "Kleinere Arbeiten sind je nach Paket inklusive. Größere Aufgaben stimmen wir vorher transparent ab — keine Überraschungen auf der Rechnung.",
+        a: "Kleinere Arbeiten sind je nach Paket inklusive. Größere Aufgaben stimme ich vorher transparent ab — keine Überraschungen auf der Rechnung.",
       },
       {
         q: "Bekomme ich mit, was passiert?",
-        a: "Ja. Jeden Monat gibt es einen verständlichen Kurzbericht: Verfügbarkeit, Auffälligkeiten und was wir erledigt haben.",
+        a: "Ja. Jeden Monat gibt es einen verständlichen Kurzbericht: Verfügbarkeit, Auffälligkeiten und was ich erledigt habe.",
       },
       {
         q: "Kann ich monatlich kündigen?",
@@ -138,8 +127,8 @@ const data: ServiceLandingData = {
     ],
   },
   cta: {
-    heading: "Sollen wir Ihre Seite in die Wache nehmen?",
-    text: "Wir schauen uns Ihre Website kurz an und sagen Ihnen ehrlich, welches Paket sinnvoll ist — kostenlos und unverbindlich.",
+    heading: "Soll ich Ihre Seite in die Wache nehmen?",
+    text: "Ich schaue mir Ihre Website kurz an und sage Ihnen ehrlich, welches Paket sinnvoll ist — kostenlos und unverbindlich.",
   },
   related: {
     label: "Passende Seiten",

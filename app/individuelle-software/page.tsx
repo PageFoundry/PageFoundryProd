@@ -4,7 +4,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Individuelle Software & Softwareentwicklung Bergisches Land";
 const DESCRIPTION =
-  "Softwareentwicklung im Bergischen Land aus Hückeswagen: individuelle Software für Rechnungen und Betriebsabläufe. Praxisbeispiel Carbon Care.";
+  "Softwareentwicklung im Bergischen Land aus Hückeswagen: individuelle Software für Rechnungen und Betriebsabläufe. Festpreisprojekte ab 2.500 €. Praxisbeispiel Carbon Care.";
 const URL = "https://pagefoundry.de/individuelle-software";
 
 const TAX_NOTE =
@@ -21,7 +21,7 @@ const data: ServiceLandingData = {
   eyebrow: "Softwareentwicklung · Hückeswagen & Bergisches Land",
   heroHeading: "Individuelle Software für Betriebe im Bergischen Land.",
   heroSubline:
-    "Von Hückeswagen aus entwickeln wir Software für Unternehmen im Bergischen Land. Ein persönlicher Termin in Ihrem Betrieb ist nach Absprache möglich. Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch über Listen, Zettel oder unpassende Standardsoftware laufen, bauen wir eine eigene Anwendung: genau auf Ihren Ablauf zugeschnitten, ohne Funktionen, die Sie nie nutzen.",
+    "Von Hückeswagen aus entwickle ich Software für Unternehmen im Bergischen Land. Ein persönlicher Termin in Ihrem Betrieb ist nach Absprache möglich. Für Rechnungen, Daten und wiederkehrende Abläufe, die heute noch über Listen, Zettel oder unpassende Standardsoftware laufen, baue ich eine eigene Anwendung: genau auf Ihren Ablauf zugeschnitten, ohne Funktionen, die Sie nie nutzen.",
   problem: {
     label: "Das Problem",
     heading: "Standardsoftware passt selten genau.",
@@ -32,12 +32,12 @@ const data: ServiceLandingData = {
     ],
   },
   steps: {
-    label: "So laufen Projekte bei uns",
+    label: "So laufen Projekte bei mir",
     heading: "Vom Ablauf zur fertigen Anwendung.",
     items: [
       {
         title: "Ablauf verstehen",
-        text: "Wir schauen uns Ihren bestehenden Ablauf an: Was wird heute wie erfasst, wo hakt es, was muss die Software wirklich können.",
+        text: "Ich schaue mir Ihren bestehenden Ablauf an: Was wird heute wie erfasst, wo hakt es, was muss die Software wirklich können.",
       },
       {
         title: "Konzept & Angebot",
@@ -45,7 +45,7 @@ const data: ServiceLandingData = {
       },
       {
         title: "Build, Test & Übergabe",
-        text: "Wir entwickeln die Anwendung, testen sie mit echten Daten aus Ihrem Betrieb und übergeben sie einsatzbereit, inklusive Einweisung.",
+        text: "Ich entwickle die Anwendung, testen sie mit echten Daten aus Ihrem Betrieb und übergeben sie einsatzbereit, inklusive Einweisung.",
       },
     ],
   },
@@ -60,16 +60,16 @@ const data: ServiceLandingData = {
       "Übergabe mit Einweisung und Dokumentation der Bedienung",
       "Wartung und Weiterentwicklung optional über die Website-Wache",
     ],
-    note: "Ehrliche Grenzen: Individuelle Software ist kein Ersatz für ein vollständiges ERP-System oder eine Buchhaltungssoftware mit Finanzamts-Schnittstelle. Wir bauen fokussierte Anwendungen für konkrete Abläufe — Umfang und technische Grenzen klären wir vorab gemeinsam.",
+    note: "Ehrliche Grenzen: Individuelle Software ist kein Ersatz für ein vollständiges ERP-System oder eine Buchhaltungssoftware mit Finanzamts-Schnittstelle. Ich baue fokussierte Anwendungen für konkrete Abläufe — Umfang und technische Grenzen kläre ich vorab gemeinsam.",
   },
   pricing: {
     label: "Kalkulation",
-    heading: "Kein Festpreis von der Stange — ein individuelles Angebot.",
+    heading: "Festpreisprojekte ab 2.500 €.",
     tiers: [
       {
         name: "Individuelle Anwendung",
-        price: "Individuelles Angebot",
-        priceNote: "nach Aufwand",
+        price: "ab 2.500 €",
+        priceNote: "Festpreis nach vereinbartem Umfang",
         highlight: true,
         features: [
           "Umfang und Anzahl der benötigten Funktionen",
@@ -80,7 +80,7 @@ const data: ServiceLandingData = {
         ],
       },
     ],
-    footnote: `${TAX_NOTE} Den konkreten Preis legen wir erst nach dem Erstgespräch fest, wenn der Funktionsumfang klar ist.`,
+    footnote: `${TAX_NOTE} Den konkreten Preis lege ich erst nach dem Erstgespräch fest, wenn der Funktionsumfang klar ist.`,
     image: {
       src: "/work/carbon-care.jpg",
       alt: "Carbon-Care-Rechnungssoftware mit Rechnungsübersicht, Status und Zahlungsstand – Demoansicht mit Beispieldaten",
@@ -93,19 +93,19 @@ const data: ServiceLandingData = {
     items: [
       {
         q: "Was kostet individuelle Software?",
-        a: "Das hängt vom Funktionsumfang ab. Es gibt keinen pauschalen Startpreis — im kostenlosen Erstgespräch klären wir Ihren Bedarf und Sie bekommen danach ein konkretes, verbindliches Angebot.",
+        a: "Das hängt vom Funktionsumfang ab. Festpreisprojekte starten ab 2.500 € — im kostenlosen Erstgespräch kläre ich Ihren Bedarf und Sie bekommen danach ein konkretes, verbindliches Angebot.",
       },
       {
         q: "Gibt es ein Beispiel aus der Praxis?",
-        a: "Ja. Für Carbon Care haben wir eine individuelle Rechnungssoftware gebaut, die im täglichen Betrieb läuft. Details dazu finden Sie auf der Projektseite unten.",
+        a: "Ja. Für Carbon Care habe ich eine individuelle Rechnungssoftware gebaut, die im täglichen Betrieb läuft. Details dazu finden Sie auf der Projektseite unten.",
       },
       {
         q: "Ersetzt das ein ERP-System oder eine Buchhaltungssoftware?",
-        a: "Nein. Wir bauen fokussierte Anwendungen für konkrete Abläufe wie Rechnungen oder interne Datenpflege — keine vollständige Finanzbuchhaltung mit Finanzamts-Anbindung. Ob das für Ihren Fall passt, klären wir ehrlich im Erstgespräch.",
+        a: "Nein. Ich baue fokussierte Anwendungen für konkrete Abläufe wie Rechnungen oder interne Datenpflege — keine vollständige Finanzbuchhaltung mit Finanzamts-Anbindung. Ob das für Ihren Fall passt, kläre ich ehrlich im Erstgespräch.",
       },
       {
         q: "Wie lange dauert ein Software-Projekt?",
-        a: "Das hängt vom Funktionsumfang ab. Nach dem Konzept- und Angebotsschritt nennen wir einen konkreten Zeitplan, bevor die Entwicklung startet.",
+        a: "Das hängt vom Funktionsumfang ab. Nach dem Konzept- und Angebotsschritt nenne ich einen konkreten Zeitplan, bevor die Entwicklung startet.",
       },
       {
         q: "Übernehmen Sie auch die spätere Pflege?",
@@ -114,8 +114,8 @@ const data: ServiceLandingData = {
     ],
   },
   cta: {
-    heading: "Welchen Ablauf wollen wir für Sie vereinfachen?",
-    text: "In der kostenlosen Erstberatung schauen wir uns Ihren aktuellen Ablauf an und sagen Ihnen ehrlich, ob und wie sich eine eigene Anwendung lohnt.",
+    heading: "Welchen Ablauf darf ich für Sie vereinfachen?",
+    text: "In der kostenlosen Erstberatung schaue ich mir Ihren aktuellen Ablauf an und sage Ihnen ehrlich, ob und wie sich eine eigene Anwendung lohnt.",
   },
   consultationHref: "/consultation?package=request_offer",
   references: {
@@ -123,7 +123,7 @@ const data: ServiceLandingData = {
     items: [
       {
         name: "Carbon Care · Rechnungssoftware",
-        text: "Vor dem Projekt hatte Carbon Care kein eigenes Werkzeug für einen wiederholbaren Rechnungsablauf. Wir entwickelten eine Anwendung mit eigenem Datenmodell für Rechnungen, Status und Zahlungsstand. Sie läuft seit Februar 2026 im Tagesbetrieb, unabhängig von der ebenfalls umgesetzten Landingpage. Die Abbildung zeigt Beispieldaten.",
+        text: "Vor dem Projekt hatte Carbon Care kein eigenes Werkzeug für einen wiederholbaren Rechnungsablauf. Ich entwickelte eine Anwendung mit eigenem Datenmodell für Rechnungen, Status und Zahlungsstand. Sie läuft seit Februar 2026 im Tagesbetrieb, unabhängig von der ebenfalls umgesetzten Landingpage. Die Abbildung zeigt Beispieldaten.",
         href: "https://carbon-care.de",
         label: "Kundenwebsite ansehen",
         internalLink: { href: "/projekte/carbon-care", label: "Projektseite ansehen" },
@@ -136,6 +136,7 @@ const data: ServiceLandingData = {
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Website-Wache (Wartung)", href: "/website-wache" },
       { label: "Website-Rettung", href: "/website-rettung" },
+      { label: "Lernplattform für Ausbildungsbetriebe (Zusatzangebot)", href: "https://verkauf.pagefoundry.de" },
     ],
   },
 };

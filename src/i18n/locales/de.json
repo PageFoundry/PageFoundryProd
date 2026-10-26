@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "PageFoundry",
-    "description": "Konvertierende Landingpages, Hosting, SEO, Wartung."
+    "description": "Websites ab 790 € und Betriebssoftware ab 2.500 € aus Hückeswagen. Ich baue und betreue Ihr Projekt."
   },
   "navbar": {
     "packages": "Pakete",
@@ -26,55 +26,110 @@
     "ctaSee": "Pakete ansehen"
   },
   "products": {
-    "heading": "Unsere Pakete",
+    "heading": "Meine Leistungen",
     "cta": {
       "getStarted": "Anfragen",
       "book": "Beratung buchen"
     },
     "landing_page": {
-      "title": "Landingpage",
-      "desc": "Moderne, ästhetische Landingpage mit Fokus auf maximale Conversion.",
-      "from": "ab 590 €"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "landing_page_hosting": {
-      "title": "Landingpage-Hosting",
-      "desc": "Wir hosten Ihre bestehende Landingpage. Optional mit Domainverwaltung.",
-      "from": "ab 19 €/Monat"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "all_inclusive": {
-      "title": "All-Inclusive-Paket",
-      "desc": "Landingpage, Domain, Basic-SEO & Google-Indexing – alles enthalten, inkl. 12 Monate Hosting, danach 19 €/Monat. Domain-Verlängerung separat.",
-      "from": "ab 790 €"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "seo_basic": {
-      "title": "SEO Basic",
-      "desc": "Technische und inhaltliche Optimierung für bessere Sichtbarkeit.",
-      "from": "ab 149 €"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "seo_advanced": {
-      "title": "SEO Advanced",
-      "desc": "Erweiterte Analyse, Keyword-Strategie und langfristige Optimierung.",
-      "from": "ab 299 €"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "speed_opt": {
-      "title": "Speed-Optimierung",
-      "desc": "Wir beschleunigen Ihre Website für UX und Rankings.",
-      "from": "ab 299 €"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "maintenance": {
-      "title": "Wartungs-Abo",
-      "desc": "Monatliche Wartung, Backups, Sicherheitsupdates & Checks.",
-      "from": "ab 79 €/Monat"
+      "title": "Früheres Angebot",
+      "desc": "Dieses Angebot ist nicht mehr verfügbar. Ich berate Sie zu den aktuellen Leistungen.",
+      "from": "Beratung"
     },
     "request_offer": {
       "title": "Angebot anfragen",
-      "desc": "Individueller Umfang oder Bundle. Ideal bei Sonderfällen.",
+      "desc": "Ich kläre Ihren individuellen Umfang und erstelle ein passendes Angebot.",
       "from": "auf Anfrage"
     },
     "free_consultation": {
       "title": "Kostenlose Beratung",
-      "desc": "Sprechen Sie mit uns. Klarheit zu Strategie, Timing und Budget.",
+      "desc": "Sprechen Sie mit mir über Umfang, Zeitplan und Budget.",
       "from": "kostenlos"
+    },
+    "sichtbar": {
+      "title": "Sichtbar",
+      "desc": "Website auf einer Seite. Onepage, bis 6 Abschnitte.",
+      "from": "790 €"
+    },
+    "gefunden": {
+      "title": "Gefunden",
+      "desc": "Firmenwebsite mit lokaler SEO-Grundlage. Bis 5 Seiten, Kontaktformular und Google-Unternehmensprofil eingerichtet.",
+      "from": "1.390 €"
+    },
+    "gebucht": {
+      "title": "Gebucht",
+      "desc": "Website mit Buchungs-, Anfrage- oder Shopfunktion. Bis 10 Inhaltsseiten oder bis 5 Seiten plus genau ein Standardmodul.",
+      "from": "2.490 €"
+    },
+    "betrieb": {
+      "title": "Betrieb",
+      "desc": "Hosting, Domain, SSL, Backups, Überwachung und Bericht. Nach Kauf oder für bestehende Seiten, die ich hoste. Änderungen nach Aufwand; mit einem Monat Frist kündbar.",
+      "from": "25 €/Monat"
+    },
+    "website_wache": {
+      "title": "Website-Wache",
+      "desc": "Externe Überwachung von Erreichbarkeit, SSL und Ladezeit, Frühwarnung und Monatsbericht.",
+      "from": "49 €/Monat"
+    },
+    "website_wache_care": {
+      "title": "Website-Wache Care",
+      "desc": "Website-Wache plus 60 Minuten Kleinfixes pro Monat.",
+      "from": "99 €/Monat"
+    },
+    "google_profil": {
+      "title": "Google-Profil-Paket",
+      "desc": "Ich richte Ihr Unternehmensprofil ein oder bereinige es: Kategorien, Leistungen, Fotos und Bewertungslink.",
+      "from": "149 € einmalig"
+    },
+    "ai_readiness": {
+      "title": "AI-Readiness-Umsetzung",
+      "desc": "llms.txt, ggf. JSON-LD, bis zu 3 belegte technische Befunde, kompakte Informations-/FAQ-Sektion, Live-Prüfung und Abschlussnachweis, eine Korrekturschleife für Umsetzungsfehler. Grenze rund 4 Stunden; keine Migration, neuen Unterseiten, umfangreichen Texte oder Bildarbeiten.",
+      "from": "490 € einmalig"
+    },
+    "ki_telefon": {
+      "title": "KI-Telefonassistenz",
+      "desc": "790 € Einrichtung + 249 €/Monat. 300 Minuten inklusive, danach 0,45 €/Min.",
+      "from": "790 € + 249 €/Monat"
+    },
+    "software": {
+      "title": "Individuelle Software",
+      "desc": "Ich baue individuelle Anwendungen für Rechnungen, Daten und Betriebsabläufe. Festpreisprojekte ab 2.500 €.",
+      "from": "ab 2.500 €"
+    },
+    "extra_work": {
+      "title": "Änderungen nach Aufwand",
+      "desc": "Zusätzliche Arbeiten stimme ich vorab mit Ihnen ab.",
+      "from": "19 € / angefangene 15 Min"
     }
   },
   "consultation": {
@@ -96,7 +151,7 @@
     "noSlots": "Keine freien Zeiten für diesen Tag.",
     "noSlotsShort": "keine freien Zeiten",
     "noDates": "Keine verfügbaren Termine in den nächsten 14 Tagen.",
-    "ok": "Anfrage erhalten. Wir haben Ihnen die Zoom-Details per E-Mail gesendet.",
+    "ok": "Anfrage erhalten. Ich habe Ihnen die Zoom-Details per E-Mail gesendet.",
     "failed": "Übermittlung fehlgeschlagen. Bitte erneut versuchen.",
     "slot": {
       "Mon": "Mo",
@@ -104,8 +159,8 @@
       "Wed": "Mi"
     },
     "eyebrow": "Kostenlose Erstberatung",
-    "phoneHint": "Lieber telefonisch? Rufen Sie an:",
-    "phoneHintSuffix": "— unser KI-Assistent nimmt 24/7 an und vereinbart direkt einen Termin.",
+    "phoneHint": "Telefon (mein KI-Assistent nimmt an, ich rufe zurück):",
+    "phoneHintSuffix": "",
     "phoneOptional": "Telefon (optional)",
     "phoneHelp": "Nur falls wir Sie für Rückfragen anrufen sollen.",
     "requiredLegend": "* Pflichtfeld",

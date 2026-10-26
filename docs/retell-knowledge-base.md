@@ -1,60 +1,51 @@
 # PageFoundry Knowledge Base für den Telefonassistenten
 
-Diese Fassung ist als Textquelle für Retell vorbereitet. Preise sind öffentliche Einstiegspreise und Endpreise nach § 19 UStG, sofern nicht anders beschrieben. Der konkrete Umfang wird vor einem Auftrag festgelegt. Rankings, Umsatzsteigerungen, feste Projektzeiten oder technische Ergebnisse werden nicht garantiert.
+Stand: 26.10.2026. Der Assistent sagt klar, dass er eine KI ist und für Fabian Franke aufnimmt; er darf sich nicht als Fabian ausgeben. Die Ich-Form in den Angebotsbeschreibungen bezieht sich auf Fabian. Keine Preise oder Zusagen erfinden.
 
-## PageFoundry
+Ich bin Fabian Franke, Webentwickler und Applied AI Engineer aus Hückeswagen. Ich arbeite allein mit eigener KI-Werkstatt und baue Websites und Betriebssoftware. Ein fester Ansprechpartner von Planung bis Betreuung.
 
-PageFoundry ist ein Webdesign- und Softwarestudio von Fabian Franke in Hückeswagen. PageFoundry arbeitet für Unternehmen im Bergischen Land und darüber hinaus. Die Zusammenarbeit erfolgt per Telefon oder Videogespräch; Termine vor Ort werden individuell vereinbart.
+## Website-Stufen
 
-PageFoundry baut und verbessert Websites, Landingpages und betriebliche Software. Der Ansprechpartner ist Fabian Franke. Der telefonische Assistent ist eine KI und kein menschlicher Mitarbeiter.
+- Sichtbar — Website auf einer Seite: Onepage, bis 6 Abschnitte. Kauf 790 €. Betreut nur für Unternehmen: 190 € Einrichtung + 49 €/Monat für Monat 1–24; 2 Änderungen / 20 Min pro Monat. Ab Monat 25: 25 €/Monat, Änderungen nach Aufwand.
+- Gefunden — Firmenwebsite mit lokaler SEO-Grundlage: bis 5 Seiten, Google-Unternehmensprofil eingerichtet, lokale SEO, Kontaktformular. Kauf 1.390 €. Betreut nur für Unternehmen: 390 € Einrichtung + 79 €/Monat für Monat 1–24; 4 Änderungen / 45 Min pro Monat. Ab Monat 25: 39 €/Monat mit 15 Min.
+- Gebucht — Website mit Buchungs-, Anfrage- oder Shopfunktion: bis 10 Inhaltsseiten oder bis 5 Seiten plus genau ein Standardmodul: Terminbuchung über Fremddienst, Anfrage-Workflow oder kleiner Shop bis 20 Produkte ohne Varianten. Kauf 2.490 €. Betreut nur für Unternehmen: 790 € Einrichtung + 119 €/Monat für Monat 1–24; 6 Änderungen / 60 Min pro Monat. Ab Monat 25: 59 €/Monat mit 30 Min.
 
-## Websites und Landingpages
+Alle Stufen enthalten mobile Umsetzung, Kontakt/WhatsApp/Anruf, Karte, Impressum/Datenschutz eingebunden und Basis-SEO. Google-Unternehmensprofil ab Gefunden. Fremddienst-Lizenzen und Zahlungsgebühren trägt der Kunde.
 
-Eine individuelle Landingpage startet ab 590 Euro einmalig. Der genaue Preis hängt vom vereinbarten Umfang ab.
+Betreut: 24 Monate Mindestlaufzeit. Monatsbeitrag enthält Hosting, Domain, SSL, Backups, Überwachung, Monatsbericht und Kontingent. Domain auf den Kunden ab Tag 1; nach Kauf, Ablöse oder 24 Monaten gehört die Website dem Kunden, Übergabepaket inklusive. Ablöse jederzeit möglich. Ab Monat 25 jederzeit mit einem Monat Frist kündbar. Kleine Text-/Bildänderungen binnen 72 Stunden nach vollständig gelieferten, freigegebenen Angaben; keine Reaktionszeitgarantie. Darüber hinaus 19 € je angefangene 15 Minuten, vorher abgestimmt. Details gehören ins schriftliche Angebot. Website-Stufen werden über Beratung und Angebot beauftragt, ohne Stripe-Sofortkauf.
 
-Das All-Inclusive-Paket startet ab 790 Euro einmalig. Es umfasst Landingpage, Domain, Basic-SEO, Vorbereitung der Google-Indexierung und zwölf Monate Hosting. Danach kostet das Hosting 19 Euro pro Monat. Die Domain-Verlängerung wird separat berechnet.
+Bestehende Website neu: Bestandsanalyse und bei Neubau dieselben drei Stufen. Keine gesonderten Rettungspreise.
 
-Eine bestehende Website kann gezielt überarbeitet werden. Wenn die Basis brauchbar ist, werden einzelne Probleme behoben. Wenn eine neue Basis sinnvoller ist, wird das im Erstgespräch ehrlich erklärt.
+## Zusatzleistungen
 
-## SEO
+- Betrieb: 25 €/Monat nach Kauf, Ablöse oder für bestehende Seiten, die ich hosten soll. Hosting, Domain, SSL, Backups, Überwachung, Bericht; Änderungen nach Aufwand. Jederzeit mit einem Monat Frist kündbar.
+- Website-Wache: 49 €/Monat für externe Uptime-/SSL-/Ladezeitüberwachung, Frühwarnung und Monatsbericht.
+- Website-Wache Care: 99 €/Monat, zusätzlich 60 Min Kleinfixes. Wache-Leistungen monatlich kündbar.
+- Google-Profil-Paket: 149 € einmalig. Unternehmensprofil einrichten oder bereinigen: Kategorien, Leistungen, Fotos, Bewertungslink.
+- AI-Readiness-Umsetzung: 490 € einmalig. llms.txt und wo sinnvoll JSON-LD; bis zu drei im Report belegte technische Befunde; kompakte Informations-/FAQ-Sektion; Prüfung gelieferter Dateien live mit Abschlussnachweis; eine Korrekturschleife für Umsetzungsfehler. Keine CMS-/Hosting-Migration, Beschaffung von Zugängen, neuen Unterseiten, umfangreichen Texte oder Bildarbeiten. Befunde mit mehr als rund vier Arbeitsstunden erhalten nach Sichtung ein eigenes Angebot. Kostenloser Check: https://audit.pagefoundry.de
+- KI-Telefonassistenz: 790 € Einrichtung + 249 €/Monat, 300 Gesprächsminuten inklusive, danach 0,45 €/Min. Geschäftliche Anrufe, transparente KI-Ansage, Anliegen, Terminbuchung und Benachrichtigung.
+- Individuelle Software: Festpreisprojekte ab 2.500 € für Rechnungen, Daten und Betriebsabläufe. Carbon Care ist die Software-Referenz. Betrieb nach technischer Einstufung separat vereinbart.
+- Lernplattform für Ausbildungsbetriebe: Zusatzangebot, kein Erstkontakt-Angebot für Kleinbetriebe; https://verkauf.pagefoundry.de — Preis im Einzelangebot.
 
-SEO Basic startet ab 149 Euro einmalig. Es umfasst eine technische Basis-Optimierung, Titles und Descriptions sowie die Schärfung interner Verlinkungen.
+Alle Preise sind Endpreise. Als Kleinunternehmer nach § 19 UStG weise ich keine Umsatzsteuer aus. Keine Garantie für Rankings, KI-Erwähnungen, Anfragen, Buchungen oder Umsatz.
 
-SEO Advanced startet ab 299 Euro einmalig. Es umfasst die Leistungen von SEO Basic sowie eine vertiefte Analyse und Keyword-Strategie.
 
-Laufende SEO-Pflege ist im Paket Website-Wache Care+SEO für 199 Euro pro Monat enthalten. Das Paket umfasst Monitoring, Care, laufende SEO-Pflege, Sichtbarkeits- und Performance-Check sowie einen erweiterten Monatsbericht.
+## KI-Sichtbarkeit, GEO und AI-Search-Readiness
 
-PageFoundry garantiert kein bestimmtes Google-Ranking. Technische Änderungen können direkt geprüft werden; Suchmaschinenverarbeitung und messbare Sichtbarkeitsänderungen können deutlich länger dauern.
+PageFoundry bietet unter https://audit.pagefoundry.de einen kostenlosen KI-Sichtbarkeits-Check für öffentliche Websites an.
 
-## Website-Wache
+Der Check untersucht, wie gut eine Website für KI-Suchsysteme und Antwortmaschinen lesbar und technisch auffindbar ist. Der Bericht bewertet unter anderem maschinenlesbare Inhalte, strukturierte Daten, wichtige Unternehmensangaben, Fragen und Antworten sowie technische Zugänglichkeit.
 
-Die Website-Wache überwacht Erreichbarkeit, SSL-Zertifikat und Antwortzeit von außen. Bei Auffälligkeiten wird früh informiert. Es gibt einen monatlichen Kurzbericht.
+Der kostenlose Check zeigt einen kompakten Teaser. Ein vollständiger Bericht mit konkreten Befunden und Verbesserungsvorschlägen ist nach E-Mail-Bestätigung verfügbar.
 
-Die Pakete sind monatlich kündbar:
+Die AI-Readiness-Umsetzung kostet 490 Euro einmalig. Der verbindliche Umfang: llms.txt und, wo sinnvoll, Korrektur von JSON-LD; bis zu drei im Report belegte technische Befunde; kompakte Informations- oder FAQ-Sektion; Live-Prüfung der gelieferten Dateien und kurzer Abschlussnachweis; eine Korrekturschleife für Umsetzungsfehler. Nicht enthalten: CMS-/Hosting-Migration, Beschaffung von Zugängen, neue Unterseiten, umfangreiche Texte oder Bildarbeit. Befunde mit mehr als rund vier Arbeitsstunden erhalten nach Sichtung ein eigenes Angebot.
 
-* Basic: 49 Euro pro Monat für Uptime-, SSL- und Ladezeitüberwachung, Frühwarnung und monatlichen Kurzbericht.
-* Care: 99 Euro pro Monat, zusätzlich bis zu 60 Minuten Kleinfixes pro Monat, Updates nach Absprache und bevorzugte Bearbeitung.
-* Care+SEO: 199 Euro pro Monat, zusätzlich laufende SEO-Pflege, Sichtbarkeits- und Performance-Check sowie erweiterter Monatsbericht.
+PageFoundry garantiert keine Erwähnung in ChatGPT, Google AI Overviews oder anderen KI-Systemen. Die tatsächliche Verarbeitung hängt vom jeweiligen Anbieter und dessen Crawling- und Ranking-System ab.
 
-Die Website-Wache repariert nicht automatisch jede denkbare Störung. Kleine Korrekturen sind je nach Paket enthalten. Größere Arbeiten werden vorher abgestimmt.
 
-## Website-Rettung
+## Kontakt
 
-Die Website-Rettung ist ein klar abgegrenzter Sprint für eine veraltete oder schwache Website. Ablauf: Analyse, konkrete Vorschau, Umsetzung einer neuen Startseite oder Landingpage, mobile Umsetzung, klarer Kontaktweg und lokale SEO-Grundlage.
-
-Die Pakete starten bei:
-
-* Sprint: 890 Euro einmalig für eine starke Startseite oder Landingpage, mobile Umsetzung, Kontakt- oder Anruf-CTA und LocalBusiness-SEO-Grundlage.
-* Sprint+: 1.490 Euro einmalig, zusätzlich mehrere Unterseiten, erweiterte Inhalte und Kontaktformular.
-* Komplett: 2.290 Euro einmalig, zusätzlich Terminbuchung, Online-Zahlung mit Stripe und individuelle Funktionen nach Absprache.
-
-Mehr Unterseiten, Buchung oder Online-Zahlung gehören nicht automatisch zum Einstieg. Umfang und Preis werden vorher festgelegt.
-
-## KI-Telefonassistenz
-
-Die KI-Telefonassistenz nimmt Anrufe entgegen, erklärt transparent, dass sie digital ist, erfasst Anliegen, prüft freie Termine und kann nach Bestätigung einen Termin buchen. Wenn kein Termin gebucht wird und PageFoundry handeln muss, kann sie den relevanten Kontakt als Lead speichern.
-
-Die öffentliche Preisbasis lautet 790 Euro Einrichtung einmalig und 249 Euro pro Monat. Im Monatsbetrieb sind 300 Gesprächsminuten enthalten; danach kostet jede weitere Minute 0,45 Euro. Der konkrete Leistungsumfang und die technische Einrichtung werden vor dem Start abgestimmt.
+Telefon +49 2192 8743999: Der KI-Assistent nimmt an, Fabian ruft zurück. WhatsApp https://wa.me/4915167076918 als schneller schriftlicher Kanal. E-Mail admin@pagefoundry.de.
 
 ## Beratungstermine
 
@@ -64,7 +55,7 @@ Ein Termin ist erst verbindlich, wenn der Kalenderaufruf erfolgreich war. Die KI
 
 ## Referenzen
 
-Carbon Care: Landingpage und individuelle Rechnungssoftware als digitale Basis für den Betrieb.
+Carbon Care: individuelle Rechnungssoftware als Software-Referenz.
 
 The Loft in Wuppertal: statischer Website-Relaunch mit klarer Besucherführung und Zugang zur Speisekarte.
 

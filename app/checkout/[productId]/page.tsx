@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getUserFromCookie } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import CheckoutBriefForm from "@/components/CheckoutBriefForm";
-import type { ProductKey } from "@/lib/products";
+import { legacyProductKeys, type ProductKey } from "@/lib/products";
+import { websiteStages } from "@/lib/websitePricing";
 
 export const dynamic = "force-dynamic";
 
@@ -19,21 +20,12 @@ const nameToKey: Record<string, ProductKey> = {
   "Free Consultation": "free_consultation",
 };
 
-const keyToName: Record<ProductKey, string> = {
-  landing_page: "Landing Page",
-  landing_page_hosting: "Landing Page Hosting",
-  all_inclusive: "All-Inclusive Package",
-  seo_basic: "SEO Basic",
-  seo_advanced: "SEO Advanced",
-  speed_opt: "Speed Optimization",
-  maintenance: "Maintenance Subscription",
-  request_offer: "Request Offer",
-  free_consultation: "Free Consultation",
-};
-
 export default async function CheckoutPage(props: any) {
   const { t } = await getServerI18n();
-  const slug = props?.params?.productId as string | undefined;
+  const { productId: slug } = await props.params;
+  const stage = websiteStages.find((s) => s.id === slug);
+  if (stage) redirect(`/consultation?package=${stage.id}&modell=kauf`);
+  if ((legacyProductKeys as readonly string[]).includes(slug)) redirect("/consultation");
 
   const user = await getUserFromCookie();
   if (!user) redirect(`/login?next=/checkout/${props?.params?.productId}`);
@@ -43,19 +35,9 @@ export default async function CheckoutPage(props: any) {
   let product = await prisma.product.findUnique({ where: { id: slug } });
   let key: ProductKey | undefined = product ? nameToKey[product.name] : undefined;
 
-  if (!product || !key) {
-    const maybeKey = slug as ProductKey;
-    const nameFromKey = keyToName[maybeKey];
-    if (nameFromKey) {
-      const byName = await prisma.product.findFirst({ where: { name: nameFromKey } });
-      if (byName) {
-        product = byName;
-        key = maybeKey;
-      }
-    }
-  }
-
-  if (!product || !key) notFound();
+  if (!product) notFound();
+  if (product.restricted || key === "request_offer" || key === "free_consultation") redirect("/consultation");
+  if (!key) notFound();
 
   const localizedTitle = t(`products.${key}.title`);
   const localizedDesc = t(`products.${key}.desc`);

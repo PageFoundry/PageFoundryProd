@@ -1,11 +1,11 @@
-import { productDisplayInfo } from "@/lib/products";
+import { regionalPricing } from "@/lib/seo/regionalWebdesign";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Webdesign Bergisches Land";
 const DESCRIPTION =
-  "Webdesign im Bergischen Land für Websites und Landingpages: klare Angebote, mobile Umsetzung und transparente Festpreise ab 590 €. Kostenlose Erstberatung anfragen.";
+  "Webdesign im Bergischen Land für Websites und Landingpages: klare Angebote, mobile Umsetzung und transparente Festpreise ab 790 €. Kostenlose Erstberatung anfragen.";
 const URL = "https://pagefoundry.de/webdesign-bergisches-land";
 
 const TAX_NOTE =
@@ -33,7 +33,7 @@ const data: ServiceLandingData = {
     ],
   },
   steps: {
-    label: "So laufen Projekte bei uns",
+    label: "So laufen Projekte bei mir",
     heading: "Klarer Ablauf, ohne Umwege.",
     items: [
       {
@@ -42,11 +42,11 @@ const data: ServiceLandingData = {
       },
       {
         title: "Konzept & Festpreis",
-        text: "Wir stimmen Seitenumfang, Gestaltung, Inhalte und einen verbindlichen Angebotspreis mit Ihnen ab.",
+        text: "Ich stimme Seitenumfang, Gestaltung, Inhalte und einen verbindlichen Angebotspreis mit Ihnen ab.",
       },
       {
         title: "Build & Launch",
-        text: "Wir setzen die Seite um, prüfen die mobile Darstellung und den Kontaktweg und bereiten den gemeinsamen Start vor.",
+        text: "Ich setze die Seite um, prüfen die mobile Darstellung und den Kontaktweg und bereiten den gemeinsamen Start vor.",
       },
     ],
   },
@@ -60,57 +60,20 @@ const data: ServiceLandingData = {
       "Fester Ansprechpartner aus Hückeswagen",
       "Änderungswünsche im abgesprochenen Rahmen",
     ],
-    note: "Ehrliche Grenzen: Der Einstiegspreis umfasst eine fokussierte Seite, keine unbegrenzten Revisionen, kein Redaktionssystem und keine laufende redaktionelle Betreuung. Größere Vorhaben — mehrere Unterseiten, Buchung, Online-Zahlung — kalkulieren wir separat und transparent.",
+    note: "Ehrliche Grenzen: Der Einstiegspreis umfasst eine fokussierte Seite, keine unbegrenzten Revisionen, kein Redaktionssystem und keine laufende redaktionelle Betreuung. Mehr Seiten und Standardfunktionen sind in Gefunden und Gebucht enthalten. Individuelle Software kalkuliere ich ab 2.500 € separat.",
   },
-  pricing: {
-    label: "Preise",
-    heading: "Ein klarer Einstieg für Ihr Vorhaben.",
-    tiers: [
-      {
-        name: "Landingpage",
-        price: productDisplayInfo.landing_page.from.replace("from €", "ab ") + " €",
-        priceNote: "einmalig",
-        features: [
-          "Eine fokussierte Seite für Ihr Angebot",
-          "Mobile Umsetzung",
-          "Klarer Kontakt-/Anruf-CTA",
-        ],
-      },
-      {
-        name: "All-Inclusive",
-        price: productDisplayInfo.all_inclusive.from.replace("from €", "ab ") + " €",
-        priceNote: "einmalig",
-        highlight: true,
-        features: [
-          "Landingpage + Domain",
-          "Basic-SEO & Vorbereitung der Google-Indexierung",
-          "Inkl. 12 Monate Hosting, danach 19 €/Monat",
-        ],
-      },
-      {
-        name: "Hosting",
-        price: productDisplayInfo.landing_page_hosting.from.replace("from €", "ab ").replace("/month", " €"),
-        priceNote: "pro Monat",
-        features: [
-          "Hosting & Erreichbarkeit",
-          "Website-Wache optional ab 49 €/Monat",
-          "Wartung optional ab 79 €/Monat",
-        ],
-      },
-    ],
-    footnote: `${TAX_NOTE} Der endgültige Umfang wird vorab vereinbart. Beim All-Inclusive-Paket wird die Domainverlängerung separat berechnet. Google entscheidet über die Indexierung.`,
-  },
+  pricing: regionalPricing,
   faq: {
     label: "FAQ",
     heading: "Häufige Fragen.",
     items: [
       {
         q: "Wo genau sitzt PageFoundry?",
-        a: "PageFoundry sitzt in Hückeswagen. Wir betreuen auch Unternehmen in Remscheid, Wermelskirchen, Wipperfürth und der Umgebung. Die Zusammenarbeit erfolgt per Telefon oder Videogespräch; Termine vor Ort vereinbaren wir individuell.",
+        a: "PageFoundry sitzt in Hückeswagen. Ich betreue auch Unternehmen in Remscheid, Wermelskirchen, Wipperfürth und der Umgebung. Die Zusammenarbeit erfolgt per Telefon oder Videogespräch; Termine vor Ort vereinbare ich individuell.",
       },
       {
         q: "Können Sie eine bestehende Website übernehmen?",
-        a: "Ja. Wenn die Basis brauchbar ist, optimieren wir gezielt (Website-Rettung ab 890 €). Wenn nicht, bauen wir neu — das klären wir ehrlich im Erstgespräch.",
+        a: "Ja. Wenn die Basis brauchbar ist, optimiere ich gezielt (bei einem Neubau gelten Sichtbar, Gefunden und Gebucht ab 790 €). Wenn nicht, baue ich neu — das kläre ich ehrlich im Erstgespräch.",
       },
       {
         q: "Welche Referenzen haben Sie aus der Region?",
@@ -118,13 +81,13 @@ const data: ServiceLandingData = {
       },
       {
         q: "Wie lange dauert ein Projekt?",
-        a: "Eine fokussierte Landingpage typischerweise wenige Wochen nach Kickoff — abhängig von Ihren Materialien und Freigaben. Den konkreten Zeitplan legen wir vor dem Start fest.",
+        a: "Eine fokussierte Landingpage typischerweise wenige Wochen nach Kickoff — abhängig von Ihren Materialien und Freigaben. Den konkreten Zeitplan lege ich vor dem Start fest.",
       },
     ],
   },
   cta: {
-    heading: "Lassen Sie uns über Ihre Website sprechen.",
-    text: "Kostenlose Erstberatung: Wir schauen uns Ihre Situation an und sagen Ihnen ehrlich, was etwas bringen würde — auch wenn die Antwort „Ihre Seite ist okay“ lautet.",
+    heading: "Sprechen Sie mit mir über Ihre Website.",
+    text: "Kostenlose Erstberatung: Ich schaue mir Ihre Situation an und sage Ihnen ehrlich, was etwas bringen würde — auch wenn die Antwort „Ihre Seite ist okay“ lautet.",
   },
   references: {
     heading: "Zwei umgesetzte Kundenprojekte.",

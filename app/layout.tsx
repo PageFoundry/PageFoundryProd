@@ -97,6 +97,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-mono text-[0.6rem] tracking-widest uppercase">
                   <a href="mailto:admin@pagefoundry.de" className="hover:text-pfAccent transition-colors">admin@pagefoundry.de</a>
                   <a href="tel:+4921928743999" className="hover:text-pfAccent transition-colors">+49 2192 8743999</a>
+                  <span className="block text-xs leading-6 text-pfMuted">{lang === "de" ? "Mein KI-Assistent nimmt an, ich rufe zurück." : "My AI assistant answers; I call you back."}</span>
+                  <a href="https://wa.me/4915167076918" className="block hover:text-pfAccent transition-colors">WhatsApp</a>
                 </div>
                 <div className="flex gap-6 font-mono text-[0.6rem] tracking-widest uppercase">
                   <a href="/impressum" className="hover:text-pfAccent transition-colors">{lang === "de" ? "Impressum" : "Imprint"}</a>

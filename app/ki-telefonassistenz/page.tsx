@@ -19,12 +19,12 @@ export const metadata = createPageMetadata({
 
 const data: ServiceLandingData = {
   eyebrow: "KI-Telefonassistenz",
-  heroHeading: "Kein verpasster Anruf. Kein verlorener Kunde.",
+  heroHeading: "Anrufe annehmen, Anliegen erfassen, Rückrufe vorbereiten.",
   heroSubline:
-    "Unsere KI-Telefonassistenz nimmt Anrufe entgegen, wenn Sie keine Zeit haben — erfasst das Anliegen, bucht auf Wunsch direkt einen Termin und gibt jeden Kontakt sauber an Sie weiter. Mit echter Festnetznummer.",
+    "Meine KI-Telefonassistenz nimmt Anrufe entgegen, wenn Sie keine Zeit haben — erfasst das Anliegen, bucht auf Wunsch direkt einen Termin und gibt jeden Kontakt sauber an Sie weiter. Mit echter Festnetznummer.",
   problem: {
     label: "Das Problem",
-    heading: "Jeder unbeantwortete Anruf ist ein Auftrag, der woanders landet.",
+    heading: "Im Tagesgeschäft bleibt wenig Zeit für das Telefon.",
     points: [
       "Im Tagesgeschäft, am Kunden oder nach Feierabend bleibt das Telefon liegen — Anrufer wählen dann einfach den Nächsten.",
       "Ein klassischer Anrufbeantworter wird selten besprochen und noch seltener zurückgerufen.",
@@ -37,7 +37,7 @@ const data: ServiceLandingData = {
     items: [
       {
         title: "Nummer & Weiterleitung",
-        text: "Sie bekommen eine eigene Festnetznummer oder leiten Ihre bestehende auf die Assistenz um — die Technik übernehmen wir komplett.",
+        text: "Sie bekommen eine eigene Festnetznummer oder leiten Ihre bestehende auf die Assistenz um — die Technik übernehme ich komplett.",
       },
       {
         title: "KI nimmt an & versteht",
@@ -45,7 +45,7 @@ const data: ServiceLandingData = {
       },
       {
         title: "Sie werden benachrichtigt",
-        text: "Name, Anliegen und Wunschtermin landen sofort bei Ihnen — übersichtlich festgehalten. Nichts geht verloren.",
+        text: "Name, Anliegen und Wunschtermin landen sofort bei Ihnen — übersichtlich festgehalten. Die Angaben werden für Ihren Rückruf festgehalten.",
       },
     ],
   },
@@ -60,7 +60,7 @@ const data: ServiceLandingData = {
       "Sofort-Benachrichtigung pro Anruf",
       "Anpassungen an Ansage und Ablauf nach dem Start",
     ],
-    note: "Datenschutz: Die Assistenz ist auf geschäftliche Anrufe ausgelegt und sagt Anrufern klar an, dass ein digitaler Assistent antwortet. Den passenden Datenschutz- und Auftragsverarbeitungsrahmen stimmen wir vor dem Start gemeinsam ab.",
+    note: "Datenschutz: Die Assistenz ist auf geschäftliche Anrufe ausgelegt und sagt Anrufern klar an, dass ein digitaler Assistent antwortet. Den passenden Datenschutz- und Auftragsverarbeitungsrahmen stimme ich vor dem Start gemeinsam ab.",
   },
   pricing: {
     label: "Preise",
@@ -102,11 +102,11 @@ const data: ServiceLandingData = {
       },
       {
         q: "Was passiert, wenn die KI nicht weiterweiß?",
-        a: "Dann erfasst sie sauber Name, Anliegen und Rückrufwunsch und gibt den Kontakt an Sie weiter — kein Anrufer fällt durchs Raster.",
+        a: "Dann erfasst sie sauber Name, Anliegen und Rückrufwunsch und gibt den Kontakt an Sie weiter — damit Sie den Rückruf vorbereiten können.",
       },
       {
         q: "Kann ich meine vorhandene Nummer behalten?",
-        a: "Ja. Sie können Ihre bestehende Nummer auf die Assistenz umleiten oder eine eigene Festnetznummer von uns nutzen.",
+        a: "Ja. Sie können Ihre bestehende Nummer auf die Assistenz umleiten oder eine eigene Festnetznummer von mir nutzen.",
       },
       {
         q: "Für wen lohnt sich das?",
@@ -115,8 +115,8 @@ const data: ServiceLandingData = {
     ],
   },
   cta: {
-    heading: "Testen wir es an Ihrem Betrieb?",
-    text: "In einem kurzen, kostenlosen Gespräch klären wir, wie Ihre Anrufe heute laufen und wie die Assistenz konkret aussehen würde.",
+    heading: "Wie soll Ihre Telefonassistenz arbeiten?",
+    text: "In einem kurzen, kostenlosen Gespräch kläre ich, wie Ihre Anrufe heute laufen und wie die Assistenz konkret aussehen würde.",
   },
 };
 

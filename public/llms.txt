@@ -1,57 +1,57 @@
-# PageFoundry
+# PageFoundry — Websites und Betriebssoftware
 
-> PageFoundry aus Hückeswagen entwickelt Websites und Landingpages für die Kundengewinnung sowie individuelle betriebliche Software für Rechnungen, Daten und interne Abläufe. Beide Bereiche sind eigenständige Angebote mit Fabian Franke als direktem Ansprechpartner.
+Ich bin Fabian Franke, Webentwickler und Applied AI Engineer aus Hückeswagen. Ich arbeite allein mit eigener KI-Werkstatt und baue Websites und Betriebssoftware. Ein fester Ansprechpartner von Planung bis Betreuung.
 
-## Angebot und Arbeitsweise
+## Website-Stufen
 
-PageFoundry betreut Unternehmen im Bergischen Land, insbesondere in Hückeswagen, Wipperfürth, Wermelskirchen, Remscheid und Radevormwald, sowie überregional in Deutschland. Der Firmensitz ist Kastanienweg 20a, 42499 Hückeswagen. In den anderen genannten Städten bestehen keine Niederlassungen. Persönliche Termine im Betrieb sind nach Absprache möglich; die Zusammenarbeit erfolgt auch per Telefon und Video.
+- Sichtbar — Website auf einer Seite: Onepage, bis 6 Abschnitte. Kauf 790 €. Betreut nur für Unternehmen: 190 € Einrichtung + 49 €/Monat für Monat 1–24; 2 Änderungen / 20 Min pro Monat. Ab Monat 25: 25 €/Monat, Änderungen nach Aufwand.
+- Gefunden — Firmenwebsite mit lokaler SEO-Grundlage: bis 5 Seiten, Google-Unternehmensprofil eingerichtet, lokale SEO, Kontaktformular. Kauf 1.390 €. Betreut nur für Unternehmen: 390 € Einrichtung + 79 €/Monat für Monat 1–24; 4 Änderungen / 45 Min pro Monat. Ab Monat 25: 39 €/Monat mit 15 Min.
+- Gebucht — Website mit Buchungs-, Anfrage- oder Shopfunktion: bis 10 Inhaltsseiten oder bis 5 Seiten plus genau ein Standardmodul: Terminbuchung über Fremddienst, Anfrage-Workflow oder kleiner Shop bis 20 Produkte ohne Varianten. Kauf 2.490 €. Betreut nur für Unternehmen: 790 € Einrichtung + 119 €/Monat für Monat 1–24; 6 Änderungen / 60 Min pro Monat. Ab Monat 25: 59 €/Monat mit 30 Min.
 
-Leistungsumfang, Inhalte, technische Grenzen und Preis werden vor Projektstart vereinbart. Es gibt keine Garantien für Rankings, Anfragen oder Umsätze.
+Alle Stufen enthalten mobile Umsetzung, Kontakt/WhatsApp/Anruf, Karte, Impressum/Datenschutz eingebunden und Basis-SEO. Google-Unternehmensprofil ab Gefunden. Fremddienst-Lizenzen und Zahlungsgebühren trägt der Kunde.
 
-## Websites, Landingpages und laufender Betrieb
+Betreut: 24 Monate Mindestlaufzeit. Monatsbeitrag enthält Hosting, Domain, SSL, Backups, Überwachung, Monatsbericht und Kontingent. Domain auf den Kunden ab Tag 1; nach Kauf, Ablöse oder 24 Monaten gehört die Website dem Kunden, Übergabepaket inklusive. Ablöse jederzeit möglich. Ab Monat 25 jederzeit mit einem Monat Frist kündbar. Kleine Text-/Bildänderungen binnen 72 Stunden nach vollständig gelieferten, freigegebenen Angaben; keine Reaktionszeitgarantie. Darüber hinaus 19 € je angefangene 15 Minuten, vorher abgestimmt. Details gehören ins schriftliche Angebot. Website-Stufen werden über Beratung und Angebot beauftragt, ohne Stripe-Sofortkauf.
 
-- [Landingpage](https://pagefoundry.de/#packages): individuelle, fokussierte Seite mit mobilem Kontaktweg, ab 590 € einmalig.
-- [Landingpage-Hosting](https://pagefoundry.de/#packages): Hosting einer bestehenden Landingpage, Domainverwaltung optional, ab 19 €/Monat.
-- [All-Inclusive-Paket](https://pagefoundry.de/#packages): Landingpage, Domain, Basic-SEO und Vorbereitung der Google-Indexierung, ab 790 € einmalig. 12 Monate Hosting inklusive, danach 19 €/Monat. Domainverlängerung separat; Google entscheidet über die Indexierung.
-- [SEO Basic](https://pagefoundry.de/seo-hueckeswagen): technische und inhaltliche Basis-Optimierung, ab 149 € einmalig.
-- [SEO Advanced](https://pagefoundry.de/seo-hueckeswagen): erweiterte Analyse und Keyword-Strategie, ab 299 € einmalig.
-- [Speed-Optimierung](https://pagefoundry.de/#packages): Ladezeiten und Core Web Vitals verbessern, ab 299 € einmalig.
-- [Wartungs-Abo](https://pagefoundry.de/#packages): Wartung, Backups, Sicherheitsupdates und Checks, ab 79 €/Monat.
-- [Website-Wache](https://pagefoundry.de/website-wache): Basic 49 €/Monat, Care 99 €/Monat, Care+SEO 199 €/Monat. Basic umfasst Uptime-, SSL- und Ladezeitüberwachung plus Monatsbericht. Care ergänzt bis zu 60 Minuten Kleinfixes pro Monat und Updates nach Absprache. Care+SEO ergänzt laufende SEO-Pflege und einen erweiterten Bericht.
-- [Website-Rettung](https://pagefoundry.de/website-rettung): Sprint für eine bestehende schwache Website mit Audit und Vorschau, ab 890 € einmalig.
-- [KI-Telefonassistenz](https://pagefoundry.de/ki-telefonassistenz): Einrichtung 790 € einmalig, Betrieb 249 €/Monat mit 300 Gesprächsminuten, danach 0,45 € je weitere Minute.
+Bestehende Website neu: Bestandsanalyse und bei Neubau dieselben drei Stufen. Keine gesonderten Rettungspreise.
 
-## Individuelle betriebliche Software
+## Zusatzleistungen
 
-- [Individuelle Software und Softwareentwicklung im Bergischen Land](https://pagefoundry.de/individuelle-software): browserbasierte Anwendungen für konkrete Betriebsabläufe, Rechnungen und Daten. Individuelles Angebot nach Klärung von Funktionen, Datenmodell und Schnittstellen; kein pauschaler Einstiegspreis.
-- [Projekt Carbon Care](https://pagefoundry.de/projekte/carbon-care): Landingpage für Fahrzeugaufbereitung und eigenständige Rechnungssoftware mit Rechnungen, Status und Zahlungsstand. Beide Systeme laufen seit Februar 2026 im Tagesbetrieb. Die Abbildung zeigt eine Demoansicht mit Beispieldaten. Das Projekt ist keine Behauptung einer vollständigen Finanzbuchhaltung oder eines ERP-Systems.
+- Betrieb: 25 €/Monat nach Kauf, Ablöse oder für bestehende Seiten, die ich hosten soll. Hosting, Domain, SSL, Backups, Überwachung, Bericht; Änderungen nach Aufwand. Jederzeit mit einem Monat Frist kündbar.
+- Website-Wache: 49 €/Monat für externe Uptime-/SSL-/Ladezeitüberwachung, Frühwarnung und Monatsbericht.
+- Website-Wache Care: 99 €/Monat, zusätzlich 60 Min Kleinfixes. Wache-Leistungen monatlich kündbar.
+- Google-Profil-Paket: 149 € einmalig. Unternehmensprofil einrichten oder bereinigen: Kategorien, Leistungen, Fotos, Bewertungslink.
+- AI-Readiness-Umsetzung: 490 € einmalig. llms.txt und wo sinnvoll JSON-LD; bis zu drei im Report belegte technische Befunde; kompakte Informations-/FAQ-Sektion; Prüfung gelieferter Dateien live mit Abschlussnachweis; eine Korrekturschleife für Umsetzungsfehler. Keine CMS-/Hosting-Migration, Beschaffung von Zugängen, neuen Unterseiten, umfangreichen Texte oder Bildarbeiten. Befunde mit mehr als rund vier Arbeitsstunden erhalten nach Sichtung ein eigenes Angebot. Kostenloser Check: https://audit.pagefoundry.de
+- KI-Telefonassistenz: 790 € Einrichtung + 249 €/Monat, 300 Gesprächsminuten inklusive, danach 0,45 €/Min. Geschäftliche Anrufe, transparente KI-Ansage, Anliegen, Terminbuchung und Benachrichtigung.
+- Individuelle Software: Festpreisprojekte ab 2.500 € für Rechnungen, Daten und Betriebsabläufe. Carbon Care ist die Software-Referenz. Betrieb nach technischer Einstufung separat vereinbart.
+- Lernplattform für Ausbildungsbetriebe: Zusatzangebot, kein Erstkontakt-Angebot für Kleinbetriebe; https://verkauf.pagefoundry.de — Preis im Einzelangebot.
 
-## Webdesign in der Region
+Alle Preise sind Endpreise. Als Kleinunternehmer nach § 19 UStG weise ich keine Umsatzsteuer aus. Keine Garantie für Rankings, KI-Erwähnungen, Anfragen, Buchungen oder Umsatz.
 
-- [Webdesign Bergisches Land](https://pagefoundry.de/webdesign-bergisches-land): regionale Übersicht zu Websites und Landingpages aus Hückeswagen.
-- [Webdesign Wipperfürth](https://pagefoundry.de/webdesign-wipperfuerth): Angebotsdarstellung und Kontaktwege für Handwerk, Handel und Gastronomie.
-- [Webdesign Wermelskirchen](https://pagefoundry.de/webdesign-wermelskirchen): Leistungen, Einsatzgebiet und passende Anfragen für Handwerk und technische Dienstleistungen.
-- [Webdesign Remscheid](https://pagefoundry.de/webdesign-remscheid): technische Angebote, Zielgruppen und nachvollziehbare Leistungsinformationen.
-- [Webdesign Radevormwald](https://pagefoundry.de/webdesign-radevormwald): Bestandsprüfung, Überarbeitung und geplanter Website-Neustart.
-- [SEO Hückeswagen](https://pagefoundry.de/seo-hueckeswagen): technische und inhaltliche Suchoptimierung ohne Ranking-Garantie.
+## Ablauf und Kontakt
 
-## Weitere belegte Projekte
+Antwort am selben Werktag, Abstimmung, Seitenplan und Vorschau-Link, eine Korrekturrunde, Abnahme mit Prüfliste. Website online nach rund 10–14 Tagen, abhängig von Inhalten und Freigaben; bei Betreuung/Betrieb danach Monatsbericht.
 
-- [Projekt The Loft](https://pagefoundry.de/projekte/the-loft): Gastronomiebetrieb in Wuppertal; Relaunch eines WordPress-Themes mit Plugin-Stack als statische Website mit Besuchsinformationen und Zugang zur Speisekarte.
+Fabian Franke, PageFoundry, Kastanienweg 20a, 42499 Hückeswagen, Deutschland.
+Telefon: +49 2192 8743999 (mein KI-Assistent nimmt an, ich rufe zurück).
+WhatsApp: https://wa.me/4915167076918
+E-Mail: admin@pagefoundry.de
+Beratung: https://pagefoundry.de/consultation
 
-Die Projektseiten dokumentieren den umgesetzten Umfang. Kundenbewertungen von Carbon Care sind keine Bewertungen von PageFoundry. Für die neu angelegten Stadtseiten werden keine örtlichen Kundenreferenzen behauptet.
+## Seiten
 
-## Kontakt und Erstberatung
-
-- [Kostenlose Erstberatung](https://pagefoundry.de/consultation): 30 Minuten per Zoom, kostenlos und unverbindlich.
-- Telefon: +49 2192 8743999
-- E-Mail: admin@pagefoundry.de
-- [Deutsche Startseite](https://pagefoundry.de/)
-- [Englische Startseite](https://pagefoundry.de/en)
-- [Impressum](https://pagefoundry.de/impressum)
-
-## Hinweise zur Einordnung
-
-Alle Preise sind Endpreise in EUR. PageFoundry ist Kleinunternehmer nach § 19 UStG; Umsatzsteuer wird nicht ausgewiesen. Maßgeblich sind der auf der jeweiligen Angebotsseite beschriebene Umfang und das individuell vereinbarte Angebot. Es werden keine weiteren Preise aus regionalen Seiten abgeleitet.
-
-Checkout, Dashboard, Einstellungen und Admin-Bereiche erfordern eine Anmeldung und sind keine öffentlichen Angebotsseiten. Die Startseiten existieren getrennt auf Deutsch und Englisch; die regionalen Detailseiten und die Software-Leistungsseite sind deutschsprachig.
+- https://pagefoundry.de/ — deutsche Startseite
+- https://pagefoundry.de/en — English homepage
+- https://pagefoundry.de/individuelle-software
+- https://pagefoundry.de/webdesign-bergisches-land
+- https://pagefoundry.de/webdesign-wipperfuerth
+- https://pagefoundry.de/webdesign-wermelskirchen
+- https://pagefoundry.de/webdesign-remscheid
+- https://pagefoundry.de/webdesign-radevormwald
+- https://pagefoundry.de/seo-hueckeswagen
+- https://pagefoundry.de/website-wache
+- https://pagefoundry.de/website-rettung
+- https://pagefoundry.de/ki-telefonassistenz
+- https://pagefoundry.de/projekte/the-loft — Website-Referenz
+- https://pagefoundry.de/projekte/carbon-care — Software-Referenz
+- https://pagefoundry.de/impressum
+- https://pagefoundry.de/datenschutz

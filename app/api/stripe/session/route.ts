@@ -2,6 +2,8 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { legacyProductKeys } from "@/lib/products";
+import { websiteStages } from "@/lib/websitePricing";
 import { getUserFromCookie } from "@/lib/auth";
 
 const APP_BASE_URL = process.env.APP_BASE_URL || "https://pagefoundry.de";
@@ -29,6 +31,10 @@ export async function POST(req: Request) {
         { error: "Product not found" },
         { status: 404 }
       );
+    }
+
+    if (product.restricted || product.priceCents <= 0 || (legacyProductKeys as readonly string[]).includes(product.id) || websiteStages.some((stage) => stage.id === product.id)) {
+      return NextResponse.json({ error: "Dieses Angebot läuft über die Beratung.", consultationUrl: "/consultation" }, { status: 409 });
     }
 
     const user = await prisma.user.findUnique({ where: { id: me.sub } });

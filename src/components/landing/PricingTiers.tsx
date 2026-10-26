@@ -24,7 +24,6 @@ export default function PricingTiers({ label, heading, tiers, footnote, image }:
     <section id="preise" className="bg-pfSurface px-6 py-24 md:px-10">
       <div className="mx-auto max-w-screen-xl">
         <div className="mb-12 max-w-2xl">
-          <span className="label-mono mb-5 block">{label}</span>
           <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">{heading}</h2>
         </div>
 

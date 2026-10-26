@@ -40,7 +40,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
         <div className="mx-auto max-w-screen-xl">
-          <span className="label-mono mb-8 block">{data.eyebrow}</span>
           <h1 className="max-w-4xl font-display text-5xl leading-[0.9] tracking-wide text-pfText md:text-7xl">
             {data.heroHeading}
           </h1>
@@ -50,10 +49,12 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
             <Link href={data.consultationHref ?? "/consultation"} className="btn-accent">
               Kostenlose Beratung buchen →
             </Link>
-            <a href="tel:+4921928743999" className="btn-outline">
-              02192 8743999
+            <a href="https://wa.me/4915167076918" className="btn-outline">WhatsApp</a>
+          <a href="tel:+4921928743999" className="btn-outline">
+              Telefon: 02192 8743999
             </a>
           </div>
+          <p className="mt-4 text-xs leading-6 text-pfMuted">Telefon: Mein KI-Assistent nimmt an, ich rufe zurück.</p>
         </div>
       </section>
 
@@ -61,7 +62,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       <section className="px-6 py-20 md:px-10">
         <div className="mx-auto max-w-screen-xl">
           <div className="mb-10 max-w-2xl">
-            <span className="label-mono mb-5 block">{data.problem.label}</span>
             <h2 className="font-display text-4xl leading-none text-pfText md:text-6xl">
               {data.problem.heading}
             </h2>
@@ -83,7 +83,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       <section className="bg-pfSurface px-6 py-24 md:px-10">
         <div className="mx-auto max-w-screen-xl">
           <div className="mb-12 max-w-2xl">
-            <span className="label-mono mb-5 block">{data.steps.label}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {data.steps.heading}
             </h2>
@@ -106,7 +105,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       <section className="px-6 py-20 md:px-10">
         <div className="mx-auto max-w-screen-xl">
           <div className="mb-10 max-w-2xl">
-            <span className="label-mono mb-5 block">{data.included.label}</span>
             <h2 className="font-display text-4xl leading-none text-pfText md:text-6xl">
               {data.included.heading}
             </h2>
@@ -139,7 +137,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       <section className="px-6 py-24 md:px-10">
         <div className="mx-auto max-w-screen-xl">
           <div className="mb-12 max-w-2xl">
-            <span className="label-mono mb-5 block">{data.faq.label}</span>
             <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">
               {data.faq.heading}
             </h2>
@@ -182,7 +179,6 @@ export default function ServiceLanding({ data }: { data: ServiceLandingData }) {
       {data.related && data.related.items.length > 0 && (
         <section className="border-t border-pfBorder bg-pfSurface/40 px-6 py-14 md:px-10">
           <div className="mx-auto max-w-screen-xl">
-            <span className="label-mono mb-5 block">{data.related.label}</span>
             <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
               {data.related.items.map((link) => (
                 <Link key={link.href} href={link.href} className="btn-outline">

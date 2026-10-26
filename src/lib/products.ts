@@ -1,63 +1,108 @@
 export const productDisplayInfo = {
-  landing_page: {
-    title: "Landing Page",
-    desc: "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-    from: "from €590",
+  "sichtbar": {
+    "title": "Sichtbar",
+    "desc": "A one-page website. Up to 6 sections.",
+    "from": "€790"
   },
-  landing_page_hosting: {
-    title: "Landing Page Hosting",
-    desc: "We host your existing landing page. Choose with or without domain management.",
-    from: "from €19/month",
+  "gefunden": {
+    "title": "Gefunden",
+    "desc": "Company website with local SEO foundations. Up to 5 pages, contact form and Google Business Profile setup.",
+    "from": "€1,390"
   },
-  all_inclusive: {
-    title: "All-Inclusive Package",
-    desc: "Landing Page, Domain, Basic SEO & Google Indexing – all included, incl. 12 months of hosting, then €19/month. Domain renewal billed separately.",
-    from: "from €790",
+  "gebucht": {
+    "title": "Gebucht",
+    "desc": "Website with booking, enquiry or shop functionality. Up to 10 content pages or up to 5 pages plus exactly one standard module.",
+    "from": "€2,490"
   },
-  seo_basic: {
-    title: "SEO Basic",
-    desc: "Technical and content-based optimization for better visibility in search engines.",
-    from: "from €149",
+  "betrieb": {
+    "title": "Betrieb",
+    "desc": "Hosting, domain, SSL, backups, monitoring and report. For purchased or existing sites I host. Changes billed separately; cancel with one month’s notice.",
+    "from": "€25/month"
   },
-  seo_advanced: {
-    title: "SEO Advanced",
-    desc: "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-    from: "from €299",
+  "website_wache": {
+    "title": "Website-Wache",
+    "desc": "External uptime, SSL and loading-time monitoring, alerts and monthly report.",
+    "from": "€49/month"
   },
-  speed_opt: {
-    title: "Speed Optimization",
-    desc: "Boost your website speed for optimal user experience and top Google rankings.",
-    from: "from €299",
+  "website_wache_care": {
+    "title": "Website-Wache Care",
+    "desc": "Website Watch plus 60 minutes of small fixes per month.",
+    "from": "€99/month"
   },
-  maintenance: {
-    title: "Maintenance Subscription",
-    desc: "Monthly maintenance, backups, security updates & continuous performance checks.",
-    from: "from €79/month",
+  "google_profil": {
+    "title": "Google-Profil-Paket",
+    "desc": "I set up or tidy your business profile: categories, services, photos and review link.",
+    "from": "€149 once"
   },
-  request_offer: {
-    title: "Request Offer",
-    desc: "Custom scope or bundle. Ideal for unique requirements.",
-    from: "On request",
+  "ai_readiness": {
+    "title": "AI-Readiness-Umsetzung",
+    "desc": "llms.txt, JSON-LD where useful, up to 3 evidenced technical findings, compact information/FAQ section, live verification and completion evidence, one correction round for implementation errors. Around 4 hours maximum; no migrations, new pages, extensive copy or image work.",
+    "from": "€490 once"
   },
-  free_consultation: {
-    title: "Free Consultation",
-    desc: "Talk to us. Get clarity on strategy, timelines, and budget.",
-    from: "Free",
+  "ki_telefon": {
+    "title": "KI-Telefonassistenz",
+    "desc": "€790 setup + €249/month. 300 minutes included, then €0.45/min.",
+    "from": "€790 + €249/month"
   },
+  "software": {
+    "title": "Individuelle Software",
+    "desc": "I build custom applications for invoices, data and business workflows. Fixed-price projects from €2,500.",
+    "from": "from €2,500"
+  },
+  "extra_work": {
+    "title": "Änderungen nach Aufwand",
+    "desc": "Additional work agreed with you in advance.",
+    "from": "€19 / started 15 min"
+  },
+  "request_offer": {
+    "title": "Angebot anfragen",
+    "desc": "I clarify your requirements and prepare a quote.",
+    "from": "On request"
+  },
+  "free_consultation": {
+    "title": "Kostenlose Beratung",
+    "desc": "Talk to me about scope, timeline and budget.",
+    "from": "Free"
+  },
+  "landing_page": {
+    "title": "landing_page",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "landing_page_hosting": {
+    "title": "landing_page_hosting",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "all_inclusive": {
+    "title": "all_inclusive",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "seo_basic": {
+    "title": "seo_basic",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "seo_advanced": {
+    "title": "seo_advanced",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "speed_opt": {
+    "title": "speed_opt",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  },
+  "maintenance": {
+    "title": "maintenance",
+    "desc": "This historical offer is no longer available. Please request a consultation.",
+    "from": "Consultation"
+  }
 } as const;
 
 export type ProductKey = keyof typeof productDisplayInfo;
-
-export const productOrderKeys: ProductKey[] = [
-  "landing_page",
-  "landing_page_hosting",
-  "all_inclusive",
-  "seo_basic",
-  "seo_advanced",
-  "speed_opt",
-  "maintenance",
-  "request_offer",
-  "free_consultation",
-];
-
+export const legacyProductKeys = ["landing_page", "landing_page_hosting", "all_inclusive", "seo_basic", "seo_advanced", "speed_opt", "maintenance"] as const;
+export const productOrderKeys: ProductKey[] = ["sichtbar", "gefunden", "gebucht", "betrieb", "website_wache", "website_wache_care", "google_profil", "ai_readiness", "ki_telefon", "software", "extra_work", "request_offer", "free_consultation"];
+export const additionalProductKeys = productOrderKeys.filter((id) => !["sichtbar", "gefunden", "gebucht"].includes(id));
 export default productDisplayInfo;

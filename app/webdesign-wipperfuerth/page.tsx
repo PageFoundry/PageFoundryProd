@@ -4,7 +4,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { regionalPricing, regionalReferences } from "@/lib/seo/regionalWebdesign";
 
 const TITLE = "Webdesign Wipperfürth";
-const DESCRIPTION = "Webdesign für Wipperfürth aus dem benachbarten Hückeswagen: Websites für Handwerk, Handel und Gastronomie. Persönlicher Termin nach Absprache, Landingpage ab 590 €.";
+const DESCRIPTION = "Webdesign für Wipperfürth aus dem benachbarten Hückeswagen: Websites für Handwerk, Handel und Gastronomie. Persönlicher Termin nach Absprache, Website ab 790 €.";
 const PATH = "/webdesign-wipperfuerth";
 
 export const metadata = createPageMetadata({ path: PATH, title: TITLE, description: DESCRIPTION, locale: "de_DE" });
@@ -26,19 +26,19 @@ const data: ServiceLandingData = {
   },
   "steps": {
     "label": "Zusammenarbeit",
-    "heading": "Wir planen den Weg vom Angebot zum Kontakt.",
+    "heading": "Ich plane den Weg vom Angebot zum Kontakt.",
     "items": [
       {
         "title": "Angebot ordnen",
-        "text": "Wir klären, welche Leistungen Ihre Website erklären soll und welche Rückfragen Sie vor einem Auftrag regelmäßig beantworten."
+        "text": "Ich kläre, welche Leistungen Ihre Website erklären soll und welche Rückfragen Sie vor einem Auftrag regelmäßig beantworten."
       },
       {
         "title": "Inhalte aufbauen",
-        "text": "Aus vorhandenen Bildern, Leistungsangaben und Kontaktinformationen entsteht eine Seitenstruktur. Fehlende Inhalte und Zuständigkeiten halten wir vorab fest."
+        "text": "Aus vorhandenen Bildern, Leistungsangaben und Kontaktinformationen entsteht eine Seitenstruktur. Fehlende Inhalte und Zuständigkeiten halte ich vorab fest."
       },
       {
         "title": "Mobil abnehmen",
-        "text": "Vor dem Start prüfen wir gemeinsam die Darstellung, Links und Kontaktwege. Texte und Leistungsumfang geben Sie frei."
+        "text": "Vor dem Start prüfe ich gemeinsam die Darstellung, Links und Kontaktwege. Texte und Leistungsumfang geben Sie frei."
       }
     ]
   },
@@ -51,7 +51,7 @@ const data: ServiceLandingData = {
       "Direkter Anruf- oder Anfrageweg für mobile Besucher",
       "Individuelle Gestaltung mit Ihren vorhandenen Bildern und Inhalten"
     ],
-    "note": "Texte, Bilder, Seitenumfang und spätere Betreuung werden im Angebot festgelegt. Wir versprechen weder bestimmte Google-Platzierungen noch feste Anfragezahlen."
+    "note": "Texte, Bilder, Seitenumfang und spätere Betreuung werden im Angebot festgelegt. Ich verspreche weder bestimmte Google-Platzierungen noch feste Anfragezahlen."
   },
   "faq": {
     "label": "Fragen zur Zusammenarbeit",
@@ -59,7 +59,7 @@ const data: ServiceLandingData = {
     "items": [
       {
         "q": "Wie kommt PageFoundry nach Wipperfürth?",
-        "a": "Hückeswagen und Wipperfürth sind über die B 237 verbunden. Für die Besprechung in Ihrem Geschäft oder Betrieb vereinbaren wir auf Wunsch einen persönlichen Termin. PageFoundry hat seinen Sitz in Hückeswagen, keine Niederlassung in Wipperfürth."
+        "a": "Hückeswagen und Wipperfürth sind über die B 237 verbunden. Für die Besprechung in Ihrem Geschäft oder Betrieb vereinbare ich auf Wunsch einen persönlichen Termin. PageFoundry hat seinen Sitz in Hückeswagen, keine Niederlassung in Wipperfürth."
       },
       {
         "q": "Muss ich für meinen Laden einen Onlineshop beauftragen?",
@@ -73,7 +73,7 @@ const data: ServiceLandingData = {
   },
   "cta": {
     "heading": "Welche Fragen soll Ihre Website vor dem ersten Anruf beantworten?",
-    "text": "In der kostenlosen Erstberatung klären wir Ausgangslage, Ziele und den nächsten sinnvollen Schritt. Ein persönlicher Termin vor Ort wird individuell vereinbart."
+    "text": "In der kostenlosen Erstberatung kläre ich Ausgangslage, Ziele und den nächsten sinnvollen Schritt. Ein persönlicher Termin vor Ort wird individuell vereinbart."
   },
   "related": {
     "label": "Weitere Leistungen aus Hückeswagen",

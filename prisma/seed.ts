@@ -1,140 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-
+import { websiteStages } from "../src/lib/websitePricing";
+import { legacyProductKeys } from "../src/lib/products";
 const prisma = new PrismaClient();
-
 async function main() {
-  const products = [
-    {
-      id: "landing_page",
-      name: "Landing Page",
-      description:
-        "A high-performing, modern, and aesthetic landing page optimized for maximum conversion.",
-      priceCents: 59000,
-      recurring: false,
-      recurringInfo: null,
-      restricted: true,
-    },
-    {
-      id: "landing_page_hosting",
-      name: "Landing Page Hosting",
-      description:
-        "We host your existing landing page. Choose with or without domain management.",
-      priceCents: 1900,
-      recurring: true,
-      recurringInfo: "from €19/month",
-      restricted: true,
-    },
-    {
-      id: "all_inclusive",
-      name: "All-Inclusive Package",
-      description:
-        "Landing Page, Domain, Basic SEO & Google Indexing – all included, incl. 12 months of hosting, then €19/month. Domain renewal billed separately.",
-      priceCents: 79000,
-      recurring: false,
-      recurringInfo: null,
-      restricted: true,
-    },
-    {
-      id: "seo_basic",
-      name: "SEO Basic",
-      description:
-        "Technical and content-based optimization for better visibility in search engines.",
-      priceCents: 14900,
-      recurring: false,
-      recurringInfo: null,
-      restricted: true,
-    },
-    {
-      id: "seo_advanced",
-      name: "SEO Advanced",
-      description:
-        "Advanced SEO analysis, keyword strategy & long-term performance optimization.",
-      priceCents: 29900,
-      recurring: false,
-      recurringInfo: null,
-      restricted: true,
-    },
-    {
-      id: "speed_opt",
-      name: "Speed Optimization",
-      description:
-        "Boost your website speed for optimal user experience and top Google rankings.",
-      priceCents: 29900,
-      recurring: false,
-      recurringInfo: null,
-      restricted: true,
-    },
-    {
-      id: "maintenance",
-      name: "Maintenance Subscription",
-      description:
-        "Monthly maintenance, backups, security updates & continuous performance checks.",
-      priceCents: 7900,
-      recurring: true,
-      recurringInfo: "from €79/month",
-      restricted: true,
-    },
-    {
-      id: "request_offer",
-      name: "Request Offer",
-      description:
-        "Custom scope or bundle. Ideal for unique requirements.",
-      priceCents: 0,
-      recurring: false,
-      recurringInfo: "On request",
-      restricted: true,
-    },
-    {
-      id: "free_consultation",
-      name: "Free Consultation",
-      description:
-        "Talk to us. Get clarity on strategy, timelines, and budget.",
-      priceCents: 0,
-      recurring: false,
-      recurringInfo: "Schedule a call",
-      restricted: false,
-    },
-  ];
-
-  // Produkte einfüllen / aktualisieren
-  for (const p of products) {
-    await prisma.product.upsert({
-      where: { id: p.id },
-      update: {
-        name: p.name,
-        description: p.description,
-        priceCents: p.priceCents,
-        recurring: p.recurring,
-        recurringInfo: p.recurringInfo,
-        restricted: p.restricted,
-      },
-      create: p,
-    });
+  await prisma.product.updateMany({ where: { id: { in: [...legacyProductKeys] } }, data: { restricted: true } });
+  for (const stage of websiteStages) {
+    const data = { name: stage.name, description: stage.de + ". " + stage.scope, priceCents: stage.purchase * 100, recurring: false, restricted: true };
+    await prisma.product.upsert({ where: { id: stage.id }, create: { id: stage.id, ...data }, update: data });
   }
-
-  // Admin-User
-  const hash = await bcrypt.hash("admin123", 10);
-
-  await prisma.user.upsert({
-    where: { email: "admin@pagefoundry.local" },
-    update: {},
-    create: {
-      email: "admin@pagefoundry.local",
-      phone: "+491234567890",
-      passwordHash: hash,
-      role: "ADMIN",
-    },
-  });
-
-  console.log("Seed done");
+  for (const id of ["free_consultation", "request_offer"]) {
+    await prisma.product.upsert({ where: { id }, update: {}, create: { id, name: id === "free_consultation" ? "Free Consultation" : "Request Offer", description: "Persönliche Beratung und schriftliches Angebot.", priceCents: 0, restricted: id !== "free_consultation" } });
+  }
 }
-
-main()
-  .catch((e) => {
-    console.error("Seed error:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().finally(() => prisma.$disconnect());
