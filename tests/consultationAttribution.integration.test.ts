@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { NextRequest } from "next/server";
 import { prisma } from "../src/lib/prisma";
-import { checkSlotPolicy } from "../src/lib/consultation/policy";
+import { berlinParts, berlinWallClockToUtc, checkSlotPolicy } from "../src/lib/consultation/policy";
 
 test("consultation provenance is validated, persisted and emitted exactly once", async () => {
   assert.equal(new URL(process.env.DATABASE_URL || "").pathname, "/pagefoundry_test");
@@ -17,18 +17,40 @@ test("consultation provenance is validated, persisted and emitted exactly once",
     return new Response("{}", { status: 200 });
   };
   const slots: string[] = [];
+  // Die Test-DB kann das komplette, lazy erzeugte Slot-Raster bereits enthalten. Freie
+  // vorhandene Slots werden deshalb mitbenutzt und danach zurückgesetzt; nur selbst
+  // angelegte Slots werden gelöscht. Berliner Wanduhr statt fester UTC-Stunden, damit
+  // die Suche bei Sommer- und Winterzeit dieselben Fenster trifft; 17–20 Uhr, weil
+  // 16–17 Uhr mit Telefonterminen kollidieren kann.
+  const createdSlots: string[] = [];
+  const borrowedSlots: string[] = [];
   const email = `attribution-${Date.now()}@example.invalid`;
   try {
     const { POST } = await import("../app/api/consultation/route");
-    for (let days = 2; days < 13 && slots.length < 2; days++) {
-      for (const minute of [0, 30]) {
-        const start = new Date(Date.now() + days * 86400000);
-        start.setUTCHours(16, minute, 0, 0);
+    const now = new Date();
+    const today = berlinParts(now);
+    for (let days = 2; days < 14 && slots.length < 2; days++) {
+      const date = new Date(Date.UTC(today.year, today.month - 1, today.day + days));
+      for (const [hour, minute] of [[17, 0], [17, 30], [18, 0], [18, 30], [19, 0], [19, 30]]) {
+        const start = berlinWallClockToUtc(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hour, minute);
         const end = new Date(start.getTime() + 1800000);
-        if (checkSlotPolicy(start, end, new Date()) !== null) continue;
-        if (await prisma.consultationSlot.findUnique({ where: { start } })) continue;
-        const row = await prisma.consultationSlot.create({ data: { start, end } });
-        slots.push(row.id);
+        if (checkSlotPolicy(start, end, now) !== null) continue;
+        const dayStart = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+        const dayOff = await prisma.consultationDayOff.findFirst({ where: { date: { gte: dayStart, lt: new Date(dayStart.getTime() + 86400000) } } });
+        if (dayOff) continue;
+        const phone = await prisma.calendarEvent.findFirst({ where: { status: { not: "cancelled" }, startDateTime: { lt: end }, endDateTime: { gt: start } } });
+        if (phone) continue;
+        const existing = await prisma.consultationSlot.findUnique({ where: { start } });
+        if (existing) {
+          const reserved = existing.temporaryReservedUntil && existing.temporaryReservedUntil > now;
+          if (existing.isBooked || existing.isDisabled || reserved) continue;
+          borrowedSlots.push(existing.id);
+          slots.push(existing.id);
+        } else {
+          const row = await prisma.consultationSlot.create({ data: { start, end } });
+          createdSlots.push(row.id);
+          slots.push(row.id);
+        }
         if (slots.length === 2) break;
       }
     }
@@ -63,7 +85,8 @@ test("consultation provenance is validated, persisted and emitted exactly once",
   } finally {
     globalThis.fetch = originalFetch;
     await prisma.consultationBooking.deleteMany({ where: { slotId: { in: slots } } });
-    await prisma.consultationSlot.deleteMany({ where: { id: { in: slots } } });
+    await prisma.consultationSlot.updateMany({ where: { id: { in: borrowedSlots } }, data: { isBooked: false, temporaryReservedUntil: null } });
+    await prisma.consultationSlot.deleteMany({ where: { id: { in: createdSlots } } });
     await prisma.$disconnect();
   }
 });
