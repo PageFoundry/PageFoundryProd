@@ -54,9 +54,6 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
-  alternates: {
-    canonical: BASE,
-  },
   openGraph: {
     type: "website",
     siteName: "PageFoundry",
