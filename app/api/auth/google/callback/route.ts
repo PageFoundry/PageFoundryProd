@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
-import { prisma } from "@/lib/prisma";
-import { signJWT, sessionCookieOpts } from "@/lib/auth";
+import { signJWT, sessionCookieOpts, type Role } from "@/lib/auth";
+import { resolveGoogleUser } from "@/lib/oauth";
 import { safeRelativePath } from "@/lib/safePath";
 
 export const dynamic = "force-dynamic";
@@ -89,32 +89,21 @@ export async function GET(req: NextRequest) {
       sub: string; email?: string; email_verified?: boolean; name?: string; picture?: string;
     };
     const email = b(g.email);
-    if (!email) return fail();
+    if (!email || !g.sub) return fail();
     // Unverifizierte Google-Mail darf kein bestehendes Konto mit dieser Adresse uebernehmen.
     if (g.email_verified !== true) {
       console.error("GOOGLE_OAUTH_EMAIL_UNVERIFIED", email);
       return fail();
     }
 
-    let user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      user = await prisma.user.create({ data: { email, passwordHash: "", role: "USER" as any } });
+    const resolved = await resolveGoogleUser({ sub: g.sub, email, name: b(g.name), picture: b(g.picture) });
+    if (!resolved.ok) {
+      console.error("GOOGLE_OAUTH_ACCOUNT_EXISTS", email);
+      return clearOauthCookies(NextResponse.redirect(`${origin}/login?err=oauth_account_exists`));
     }
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        // @ts-ignore
-        provider: "GOOGLE",
-        // @ts-ignore
-        providerId: g.sub,
-        // @ts-ignore
-        name: b(g.name) ?? undefined,
-        // @ts-ignore
-        avatarUrl: b(g.picture) ?? undefined,
-      },
-    });
+    const user = resolved.user;
 
-    const jwt = signJWT({ sub: user.id, role: user.role, sv: user.sessionVersion });
+    const jwt = signJWT({ sub: user.id, role: user.role as Role, sv: user.sessionVersion });
 
     const next = safeRelativePath(req.cookies.get("pf_oauth_next")?.value);
     const res = NextResponse.redirect(`${origin}${next}`);

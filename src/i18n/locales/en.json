@@ -248,6 +248,7 @@
       "forgot": "Forgot password?",
       "submit": "Sign in",
       "failed": "Sign-in failed. Please try again.",
+      "oauthAccountExists": "An account with this email address already exists. Please sign in with your password or reset it.",
       "noAccount": "No account yet?",
       "create": "Create one",
       "or": "or",

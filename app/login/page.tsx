@@ -18,7 +18,8 @@ export default function LoginPage() {
     // ?next= kommt u. a. von der Checkout-Middleware; nur interne Pfade zulassen.
     const params = new URLSearchParams(window.location.search);
     setNext(safeRelativePath(params.get("next")));
-    if (params.get("err")) setErr(t("auth.login.failed"));
+    const oauthErr = params.get("err");
+    if (oauthErr) setErr(t(oauthErr === "oauth_account_exists" ? "auth.login.oauthAccountExists" : "auth.login.failed"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

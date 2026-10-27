@@ -248,6 +248,7 @@
       "forgot": "Passwort vergessen?",
       "submit": "Anmelden",
       "failed": "Anmeldung fehlgeschlagen. Bitte erneut versuchen.",
+      "oauthAccountExists": "Für diese E-Mail-Adresse besteht bereits ein Konto. Bitte melden Sie sich mit Ihrem Passwort an oder setzen Sie es zurück.",
       "noAccount": "Noch kein Konto?",
       "create": "Konto erstellen",
       "or": "oder",
