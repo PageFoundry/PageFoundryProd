@@ -25,12 +25,19 @@ export async function POST(req: NextRequest) {
     const lang: Lang = langCookie ?? (accept.toLowerCase().startsWith("de") ? "de" : "en");
     const t = createT(await loadMessages(lang));
 
-    await sendMail({ attachments: [logoAttachment()],
-      to: email,
-      subject: t("auth.mail.welcomeSubject"),
-      text: t("auth.mail.welcomeText"),
-      html: `<p>${t("auth.mail.welcomeText")}</p>`,
-    });
+    // Willkommensmail ist nice-to-have. Das Konto existiert an dieser Stelle schon —
+    // ein SMTP-Fehler darf die Registrierung nicht als "error" melden (sonst versucht
+    // der Nutzer es erneut, bekommt "exists" und kennt sein gueltiges Passwort nicht).
+    try {
+      await sendMail({ attachments: [logoAttachment()],
+        to: email,
+        subject: t("auth.mail.welcomeSubject"),
+        text: t("auth.mail.welcomeText"),
+        html: `<p>${t("auth.mail.welcomeText")}</p>`,
+      });
+    } catch (mailErr) {
+      console.error("[register] Willkommensmail fehlgeschlagen, Registrierung trotzdem ok:", mailErr);
+    }
 
     const jwt = signJWT({ sub: user.id, role: user.role, sv: user.sessionVersion });
     const res = NextResponse.json({ id: user.id });
