@@ -20,7 +20,7 @@ export function sessionCookieOpts(maxAgeDays = 7) {
   };
 }
 
-export type Role = "ADMIN" | "USER";
+export type Role = "ADMIN" | "USER" | "SALES";
 export type JwtPayload = { sub: string; role: Role; sv: number };
 
 export function signJWT(payload: JwtPayload) {
@@ -62,5 +62,12 @@ export async function getUserFromCookie(): Promise<JwtPayload | null> {
 export async function requireAdmin(): Promise<JwtPayload> {
   const user = await getUserFromCookie();
   if (!user || user.role !== "ADMIN") throw new Error("FORBIDDEN");
+  return user;
+}
+
+/** Vertriebsportal: SALES oder ADMIN. Wirft FORBIDDEN, sonst wie requireAdmin. */
+export async function requireSalesOrAdmin(): Promise<JwtPayload> {
+  const user = await getUserFromCookie();
+  if (!user || (user.role !== "SALES" && user.role !== "ADMIN")) throw new Error("FORBIDDEN");
   return user;
 }

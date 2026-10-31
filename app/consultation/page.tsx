@@ -16,6 +16,7 @@ import {
 } from "@/lib/consultation/policy";
 import { productOrderKeys, type ProductKey } from "@/lib/products";
 import { parseObservedProvenance, SELF_REPORTED_SOURCES } from "@/lib/attribution";
+import { REFERRAL_CODE_RE } from "@/lib/sales/referral";
 
 type ApiSlot = {
   id: string;
@@ -131,6 +132,8 @@ export default function ConsultationPage() {
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState<null | string>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Vertriebs-Empfehlung aus ?ref= (nur Format; Zuordnung prueft der Server).
+  const [referralCode, setReferralCode] = useState<string | null>(null);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -144,6 +147,8 @@ export default function ConsultationPage() {
     const query = new URLSearchParams(window.location.search);
     const model = query.get("modell");
     if (model === "kauf" || model === "betreut") setWebsiteModel(model);
+    const ref = query.get("ref");
+    if (ref && REFERRAL_CODE_RE.test(ref)) setReferralCode(ref);
     const raw = query.get("package");
     if (raw && (productOrderKeys as string[]).includes(raw)) {
       const key = raw as ProductKey;
@@ -265,6 +270,7 @@ export default function ConsultationPage() {
           ...(selfReportedSource ? { selfReportedSource } : {}),
           observedSource: provenance.observedSource,
           entryPathname: provenance.entryPathname,
+          ...(referralCode ? { referralCode } : {}),
         }),
       });
       const data = await res.json().catch(() => ({}));

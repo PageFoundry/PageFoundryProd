@@ -8,6 +8,7 @@ export default async function Navbar() {
   const user = await getUserFromCookie();
   const isAuthed = !!user;
   const isAdmin = user?.role === "ADMIN";
+  const isSales = user?.role === "SALES";
 
   const { t, lang } = await getServerI18n();
   const homeHref = lang === "en" ? "/en" : "/";
@@ -75,6 +76,16 @@ export default async function Navbar() {
                 Settings
               </Link>
 
+              {(isSales || isAdmin) && (
+                <Link
+                  href="/sales"
+                  className="font-mono text-[0.65rem] tracking-widest uppercase text-pfSubtle hover:text-pfAccent transition-colors"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  Sales
+                </Link>
+              )}
+
               {isAdmin && (
                 <>
                   <Link
@@ -131,7 +142,7 @@ export default async function Navbar() {
         </div>
 
         {/* Mobile */}
-        <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} labels={labels} homeHref={homeHref} consultationHref={consultationHref} />
+        <MobileNav isAuthed={isAuthed} isAdmin={isAdmin} isSales={isSales} labels={labels} homeHref={homeHref} consultationHref={consultationHref} />
       </div>
     </nav>
   );

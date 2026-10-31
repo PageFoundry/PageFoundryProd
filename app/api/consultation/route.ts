@@ -7,6 +7,8 @@ import { productOrderKeys, type ProductKey } from "@/lib/products";
 import deMessages from "@/i18n/locales/de.json";
 import { notifyCrmEvent } from "@/lib/crmBridge";
 import { isSelfReportedSource, OBSERVED_SOURCES, ALLOWED_ENTRY_PATHS } from "@/lib/attribution";
+import { prisma } from "@/lib/prisma";
+import { isReferralCode } from "@/lib/sales/referral";
 
 const CONSULTATION_ADMIN_EMAIL =
   process.env.CONSULTATION_ADMIN_EMAIL || "admin@pagefoundry.de";
@@ -39,6 +41,8 @@ const bodySchema = z.object({
   selfReportedSource: z.string().refine(isSelfReportedSource).optional(),
   observedSource: z.enum(OBSERVED_SOURCES).optional(),
   entryPathname: z.string().refine((v) => (ALLOWED_ENTRY_PATHS as readonly string[]).includes(v)).nullable().optional(),
+  // Ungueltige Codes lehnen die Buchung nicht ab, sie werden nur nicht zugeordnet.
+  referralCode: z.string().trim().max(64).optional(),
 });
 
 function escapeHtml(value: string): string {
@@ -77,6 +81,16 @@ export async function POST(req: NextRequest) {
 
     const description = [packageLine, body.websiteModel ? `Modell: ${body.websiteModel === "kauf" ? "Kauf" : "Betreut (nur Unternehmen, 24 Monate)"}` : "", body.note].filter(Boolean).join("\n\n");
 
+    // Empfehlung nur einem existierenden SALES-User zuordnen; sonst still ignorieren.
+    let referredById: string | null = null;
+    if (isReferralCode(body.referralCode)) {
+      const rep = await prisma.user.findFirst({
+        where: { referralCode: body.referralCode, role: "SALES" },
+        select: { id: true },
+      });
+      referredById = rep?.id ?? null;
+    }
+
     const { slot, booking } = await bookSlot({
       slotId: body.slotId,
       email: body.email,
@@ -87,6 +101,7 @@ export async function POST(req: NextRequest) {
       selfReportedSource: body.selfReportedSource,
       observedSource: body.observedSource,
       entryPathname: body.entryPathname,
+      referredById,
     });
 
     const dateFormatter = new Intl.DateTimeFormat("de-DE", {
@@ -118,6 +133,7 @@ ${packageLine ? `${packageLine}\n` : ""}
 Datum: ${dateLabel}
 Zeit: ${startLabel}–${endLabel} (${TIMEZONE})
 Teilnehmer: ${booking.participants}
+${referredById ? `Vertriebs-Empfehlung: ${body.referralCode}` : ""}
 Typ: ${booking.consultationType}
 
 Notiz:

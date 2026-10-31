@@ -19,6 +19,8 @@ export type BookSlotInput = {
   selfReportedSource?: string | null;
   observedSource?: string | null;
   entryPathname?: string | null;
+  /** Bereits serverseitig aufgeloester SALES-User (nie ungeprueft aus dem Request). */
+  referredById?: string | null;
 };
 
 // Belegt einen Consultation-Slot und legt die Buchung an — beides in einer Transaktion.
@@ -105,6 +107,7 @@ export async function bookSlot(input: BookSlotInput, now: Date = new Date()) {
           selfReportedSource: input.selfReportedSource,
           observedSource: input.observedSource,
           entryPathname: input.entryPathname,
+          referredById: input.referredById ?? null,
         },
       });
 

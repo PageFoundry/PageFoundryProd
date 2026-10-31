@@ -8,9 +8,9 @@ type Labels = {
   login: string; getStarted: string; logout: string; language: string;
   menu: string; closeMenu: string;
 };
-type Props = { isAuthed: boolean; isAdmin: boolean; labels: Labels; homeHref: string; consultationHref: string; };
+type Props = { isAuthed: boolean; isAdmin: boolean; isSales?: boolean; labels: Labels; homeHref: string; consultationHref: string; };
 
-export default function MobileNav({ isAuthed, isAdmin, labels, homeHref, consultationHref }: Props) {
+export default function MobileNav({ isAuthed, isAdmin, isSales = false, labels, homeHref, consultationHref }: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -89,6 +89,9 @@ export default function MobileNav({ isAuthed, isAdmin, labels, homeHref, consult
             <>
               <Link href="/dashboard" onClick={close} className={navLinkClass}>{labels.dashboard}</Link>
               <Link href="/settings" onClick={close} className={navLinkClass}>Settings</Link>
+              {(isSales || isAdmin) && (
+                <Link href="/sales" onClick={close} className={navLinkClass}>Sales</Link>
+              )}
               {isAdmin && (
                 <>
                   <Link href="/outreach" onClick={close} className={navLinkClass}>Outreach</Link>

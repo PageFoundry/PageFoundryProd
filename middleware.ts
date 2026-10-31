@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { isLang, type Lang } from "@/i18n/config";
 
-const AUTH_PREFIXES = ["/checkout", "/dashboard", "/settings", "/admin"];
+const AUTH_PREFIXES = ["/checkout", "/dashboard", "/settings", "/admin", "/sales"];
 
 // Deutsche Detailseiten: eine URL, fester deutscher Inhalt. Die Middleware setzt
 // fuer genau diese oeffentlichen Pfade ein internes Header-Flag, damit <html lang>

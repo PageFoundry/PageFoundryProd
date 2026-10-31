@@ -10,6 +10,16 @@ datasource db {
 enum Role {
   USER
   ADMIN
+  SALES
+}
+
+enum SalesLeadStatus {
+  NEW
+  CONTACTED
+  MEETING
+  OFFER
+  WON
+  LOST
 }
 
 enum OrderStatus {
@@ -102,6 +112,13 @@ model User {
   consultationBookings ConsultationBooking[]
   passwordResetTokens  PasswordResetToken[]
 
+  // Vertrieb (Rolle SALES): Code ist unveraenderlich, sobald gesetzt; Zuordnung
+  // laeuft ueber die User-ID, nicht ueber den Code.
+  referralCode      String?               @unique @db.VarChar(32)
+  commissionPercent Int?
+  salesLeads        SalesLead[]           @relation("SalesLeadOwner")
+  referredBookings  ConsultationBooking[] @relation("BookingReferredBy")
+
   @@index([provider, providerId])
 }
 
@@ -150,11 +167,11 @@ model BusinessClient {
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
 
-  contacts ClientContact[]
-  services ClientService[]
-  invoices Invoice[]
+  contacts        ClientContact[]
+  services        ClientService[]
+  invoices        Invoice[]
   optionDocuments OptionDocument[]
-  websitePlans WebsitePlan[]
+  websitePlans    WebsitePlan[]
 
   @@index([status])
   @@index([name])
@@ -219,67 +236,67 @@ model ClientService {
 }
 
 model Invoice {
-  id                 String         @id @default(cuid())
-  number             String         @unique
+  id                 String                   @id @default(cuid())
+  number             String                   @unique
   clientId           String
-  client             BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  status             InvoiceStatus  @default(DRAFT)
-  issueDate          DateTime       @default(now())
+  client             BusinessClient           @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  status             InvoiceStatus            @default(DRAFT)
+  issueDate          DateTime                 @default(now())
   dueDate            DateTime?
   servicePeriodStart DateTime?
   servicePeriodEnd   DateTime?
-  currency           String         @default("EUR")
-  subtotalCents      Int            @default(0)
-  taxCents           Int            @default(0)
-  totalCents         Int            @default(0)
+  currency           String                   @default("EUR")
+  subtotalCents      Int                      @default(0)
+  taxCents           Int                      @default(0)
+  totalCents         Int                      @default(0)
   notes              String?
   websitePlanId      String?
-  websitePlan        WebsitePlan?   @relation(fields: [websitePlanId], references: [id], onDelete: Restrict)
+  websitePlan        WebsitePlan?             @relation(fields: [websitePlanId], references: [id], onDelete: Restrict)
   websitePlanStage   WebsitePlanInvoiceStage?
   websitePlanMonth   Int?
   sentAt             DateTime?
   paidAt             DateTime?
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
 
   items    InvoiceItem[]
   payments Payment[]
 
+  @@unique([websitePlanId, websitePlanStage, websitePlanMonth])
   @@index([clientId])
   @@index([status])
   @@index([issueDate])
   @@index([dueDate])
   @@index([websitePlanId])
-  @@unique([websitePlanId, websitePlanStage, websitePlanMonth])
 }
 
 model WebsitePlan {
-  id                   String         @id @default(cuid())
-  clientId             String
-  client               BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  title                String
-  setupPriceCents      Int
-  depositCents         Int
-  initialMonthlyCents  Int
-  initialMonths        Int
-  laterMonthlyCents    Int
-  laterPriceConfirmed  Boolean        @default(true)
-  contractSignedAt     DateTime?
-  acceptedAt           DateTime?
-  documentDraftsDisabled Boolean      @default(false)
-  goLiveDate           DateTime?
-  billedMonths         Int            @default(0)
-  cancelledAt          DateTime?
-  clientServiceId      String?
-  hostingProvider      String?
-  hostingRegion        String?
-  backupInterval       String?
-  backupRetention      String?
-  subprocessors        String?
-  supportEmail         String         @default("admin@pagefoundry.de")
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  invoices             Invoice[]
+  id                     String         @id @default(cuid())
+  clientId               String
+  client                 BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  title                  String
+  setupPriceCents        Int
+  depositCents           Int
+  initialMonthlyCents    Int
+  initialMonths          Int
+  laterMonthlyCents      Int
+  laterPriceConfirmed    Boolean        @default(true)
+  contractSignedAt       DateTime?
+  acceptedAt             DateTime?
+  documentDraftsDisabled Boolean        @default(false)
+  goLiveDate             DateTime?
+  billedMonths           Int            @default(0)
+  cancelledAt            DateTime?
+  clientServiceId        String?
+  hostingProvider        String?
+  hostingRegion          String?
+  backupInterval         String?
+  backupRetention        String?
+  subprocessors          String?
+  supportEmail           String         @default("admin@pagefoundry.de")
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  invoices               Invoice[]
 
   @@index([clientId])
   @@index([goLiveDate])
@@ -319,16 +336,16 @@ model Payment {
 }
 
 model OptionDocument {
-  id                    String   @id @default(cuid())
-  number                String   @unique
+  id                    String         @id @default(cuid())
+  number                String         @unique
   clientId              String
   client                BusinessClient @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  issueDate             DateTime @default(now())
+  issueDate             DateTime       @default(now())
   notes                 String?
-  cmsTotalCents         Int      @default(0)
-  maintenanceTotalCents Int      @default(0)
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  cmsTotalCents         Int            @default(0)
+  maintenanceTotalCents Int            @default(0)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
 
   items OptionDocumentItem[]
 
@@ -405,6 +422,10 @@ model ConsultationBooking {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
+  // Vertriebs-Empfehlung (?ref=<code>), serverseitig gegen einen SALES-User geprueft
+  referredById String?
+  referredBy   User?   @relation("BookingReferredBy", fields: [referredById], references: [id])
+
   // für Hover-Historie
   email String @db.VarChar(320)
 
@@ -412,10 +433,10 @@ model ConsultationBooking {
   participants Int @default(1)
 
   // Art der Beratung
-  consultationType ConsultationType
-  selfReportedSource String? @db.VarChar(64)
-  observedSource String? @db.VarChar(32)
-  entryPathname String? @db.VarChar(128)
+  consultationType   ConsultationType
+  selfReportedSource String?          @db.VarChar(64)
+  observedSource     String?          @db.VarChar(32)
+  entryPathname      String?          @db.VarChar(128)
 
   // Freitext-Beschreibung des Kunden
   description String
@@ -430,6 +451,7 @@ model ConsultationBooking {
   createdAt DateTime @default(now())
 
   @@index([email])
+  @@index([referredById])
   @@index([stripeSessionId])
   @@index([stripePaymentIntentId])
 }
@@ -495,4 +517,34 @@ model CalendarEvent {
   @@index([leadId])
   @@index([startDateTime, endDateTime])
   @@index([status])
+}
+
+// Vom Vertrieb erfasster Lead. websiteHost/emailNorm sind normalisiert und unique:
+// ein Lead gehoert genau einem Verkaeufer (Lead-Schutz), atomar per DB erzwungen.
+model SalesLead {
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation("SalesLeadOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+
+  companyName String  @db.VarChar(200)
+  contactName String? @db.VarChar(200)
+  email       String? @db.VarChar(320)
+  phone       String? @db.VarChar(50)
+  website     String? @db.VarChar(512)
+  websiteHost String? @unique @db.VarChar(255)
+  emailNorm   String? @unique @db.VarChar(320)
+  notes       String? @db.Text
+
+  status SalesLeadStatus @default(NEW)
+
+  // Nur ADMIN setzt Abschluss und Betraege. Provisionssatz wird beim Abschluss eingefroren.
+  oneTimeValueCents      Int?
+  monthlyValueCents      Int?
+  commissionPercentAtWin Int?
+  wonAt                  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId, status])
 }

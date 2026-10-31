@@ -101,12 +101,14 @@ run_auth()         {
 run_retell()       { npx tsx --test tests/retell.unit.test.ts; }
 run_consultation() { npx tsx --test tests/consultation.unit.test.ts tests/attribution.unit.test.ts tests/consultationAttribution.integration.test.ts; }
 run_flows()        { node --test tests/customerFlows.integration.test.mjs; }
+run_sales()        { npx tsx --test tests/sales.unit.test.ts && node --test tests/sales.integration.test.mjs; }
 
 case "$SUITE" in
   auth)         run_auth ;;
   retell)       run_retell ;;
   consultation) run_consultation ;;
   flows)        run_flows ;;
-  all)          run_auth && run_retell && run_consultation && run_flows ;;
-  *) echo "Unbekannte Suite '$SUITE' (auth|retell|consultation|flows)" >&2; exit 1 ;;
+  sales)        run_sales ;;
+  all)          run_auth && run_retell && run_consultation && run_flows && run_sales ;;
+  *) echo "Unbekannte Suite '$SUITE' (auth|retell|consultation|flows|sales)" >&2; exit 1 ;;
 esac
