@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { commissionFor, SALES_LEAD_STATUSES, SALES_SETTABLE_STATUSES, STATUS_LABELS_DE } from "@/lib/sales/leads";
+import { COMMISSION_MONTHS, commissionFor, SALES_LEAD_STATUSES, SALES_SETTABLE_STATUSES, STATUS_LABELS_DE } from "@/lib/sales/leads";
 
 type Status = (typeof SALES_LEAD_STATUSES)[number];
 
@@ -400,14 +400,14 @@ function CommissionView({ leads, isAdmin, commissionPercent }: { leads: Lead[]; 
       <div className={cardClass}>
         <h2 className="mb-2 text-lg text-pfText">So funktioniert die Provision</h2>
         <p className="text-sm text-pfSubtle">
-          {commissionPercent != null ? `${commissionPercent} %` : "Der vereinbarte Satz"} auf den Einmalbetrag und auf jede Monatsrate, solange der Kunde zahlt.
+          {commissionPercent != null ? `${commissionPercent} %` : "Der vereinbarte Satz"} auf den Einmalbetrag und auf jede bezahlte Monatsrate, für die {COMMISSION_MONTHS} Monate Mindestlaufzeit ab Abschluss.
           Ein Lead zählt, wenn Fabian ihn auf „Gewonnen“ setzt und die Beträge einträgt. Der Satz wird beim Abschluss festgehalten.
         </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Gewonnene Deals" value={String(won.length)} />
         <Stat label="Provision einmalig" value={euro.format(totalOneTime / 100)} />
-        <Stat label="Provision pro Monat" value={euro.format(totalMonthly / 100)} />
+        <Stat label={`Provision pro Monat (max. ${COMMISSION_MONTHS})`} value={euro.format(totalMonthly / 100)} />
       </div>
       {rows.length > 0 && (
         <ul className="space-y-2">
@@ -418,7 +418,7 @@ function CommissionView({ leads, isAdmin, commissionPercent }: { leads: Lead[]; 
                 {isAdmin && <span className="ml-2 text-xs text-pfMuted">{lead.owner.email}</span>}
               </span>
               <span className="text-sm text-pfSubtle" style={mono}>
-                {c ? `${euro.format(c.oneTimeCents / 100)} + ${euro.format(c.monthlyCents / 100)}/Monat (${lead.commissionPercentAtWin} %)` : "Satz nicht vereinbart"}
+                {c ? `${euro.format(c.oneTimeCents / 100)} + ${euro.format(c.monthlyCents / 100)}/Monat × ${COMMISSION_MONTHS} (${lead.commissionPercentAtWin} %)${lead.wonAt ? ` · bis ${dateFmt.format(endOfCommission(lead.wonAt))}` : ""}` : "Satz nicht vereinbart"}
               </span>
             </li>
           ))}
@@ -426,6 +426,12 @@ function CommissionView({ leads, isAdmin, commissionPercent }: { leads: Lead[]; 
       )}
     </div>
   );
+}
+
+function endOfCommission(wonAt: string): Date {
+  const d = new Date(wonAt);
+  d.setMonth(d.getMonth() + COMMISSION_MONTHS);
+  return d;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {

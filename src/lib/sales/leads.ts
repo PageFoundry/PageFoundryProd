@@ -141,12 +141,20 @@ export type CommissionLead = {
   commissionPercentAtWin: number | null;
 };
 
-/** Provision je Lead: Anteil am Einmalbetrag und an jeder Monatsrate. null = nicht gewonnen/nicht vereinbart. */
-export function commissionFor(lead: CommissionLead): { oneTimeCents: number; monthlyCents: number } | null {
+/** Monatsprovision laeuft nur ueber die Mindestlaufzeit (Fabian, 2026-10-31). */
+export const COMMISSION_MONTHS = 24;
+
+/**
+ * Provision je Lead: Anteil am Einmalbetrag und an jeder Monatsrate, Letzteres fuer
+ * hoechstens COMMISSION_MONTHS bezahlte Monate. null = nicht gewonnen/nicht vereinbart.
+ */
+export function commissionFor(lead: CommissionLead): { oneTimeCents: number; monthlyCents: number; monthlyMaxTotalCents: number } | null {
   if (lead.status !== "WON" || lead.commissionPercentAtWin == null) return null;
   const pct = lead.commissionPercentAtWin;
+  const monthlyCents = Math.round(((lead.monthlyValueCents ?? 0) * pct) / 100);
   return {
     oneTimeCents: Math.round(((lead.oneTimeValueCents ?? 0) * pct) / 100),
-    monthlyCents: Math.round(((lead.monthlyValueCents ?? 0) * pct) / 100),
+    monthlyCents,
+    monthlyMaxTotalCents: monthlyCents * COMMISSION_MONTHS,
   };
 }

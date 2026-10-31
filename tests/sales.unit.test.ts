@@ -47,10 +47,10 @@ test("ADMIN-Abschluss friert den Provisionssatz ein, Wiedereroeffnen loescht ihn
   assert.deepEqual(reopened, { status: "OFFER", wonAt: null, commissionPercentAtWin: null });
 });
 
-test("Provision: Prozent auf Einmalbetrag und jede Monatsrate", () => {
+test("Provision: Prozent auf Einmalbetrag und Monatsraten, max. 24 Monate", () => {
   assert.deepEqual(
     commissionFor({ status: "WON", oneTimeValueCents: 139000, monthlyValueCents: 7900, commissionPercentAtWin: 20 }),
-    { oneTimeCents: 27800, monthlyCents: 1580 }
+    { oneTimeCents: 27800, monthlyCents: 1580, monthlyMaxTotalCents: 37920 }
   );
   assert.equal(commissionFor({ status: "OFFER", oneTimeValueCents: 1, monthlyValueCents: 1, commissionPercentAtWin: 20 }), null);
   assert.equal(commissionFor({ status: "WON", oneTimeValueCents: 1, monthlyValueCents: 1, commissionPercentAtWin: null }), null);
