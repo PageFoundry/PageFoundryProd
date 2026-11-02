@@ -834,12 +834,16 @@ export default async function LandingPage() {
 
           <div className="grid gap-px overflow-hidden rounded-3xl bg-pfBorder sm:grid-cols-2 lg:grid-cols-5">
             {c.process.map((step, index) => (
-              <article key={step.title} className="min-h-60 bg-pfCard p-5 md:min-h-64 md:p-8">
-                <div className="font-display text-5xl leading-none text-pfAccent opacity-60 md:text-7xl">
+              // Subgrid keeps number, title and text on shared rows, so the texts start at the same height.
+              <article
+                key={step.title}
+                className={`flex flex-col gap-3 bg-pfCard p-5 sm:grid sm:row-span-3 sm:grid-rows-subgrid sm:gap-y-4 md:p-8 ${index === c.process.length - 1 && c.process.length % 2 === 1 ? "sm:col-span-2 lg:col-span-1" : ""}`}
+              >
+                <div className="mb-3 font-display text-5xl leading-none text-pfAccent opacity-60 md:mb-4 md:text-7xl">
                   {String(index + 1).padStart(2, "0")}
                 </div>
-                <h3 className="mt-6 font-display text-2xl leading-none text-pfText md:mt-8 md:text-3xl">{step.title}</h3>
-                <p className="mt-3 text-xs leading-5 text-pfSubtle md:mt-4 md:text-sm md:leading-7">{step.text}</p>
+                <h3 className="self-end font-display text-2xl leading-none text-balance text-pfText md:text-3xl">{step.title}</h3>
+                <p className="text-xs leading-5 text-pfSubtle md:text-sm md:leading-7">{step.text}</p>
               </article>
             ))}
           </div>

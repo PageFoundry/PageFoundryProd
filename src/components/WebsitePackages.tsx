@@ -27,7 +27,7 @@ export default function WebsitePackages({ lang = "de" }: { lang?: "de" | "en" })
               >
                 {value === "kauf" ? (de ? "Kauf" : "Purchase") : (de ? "Betreut" : "Managed")}
                 {value === "betreut" && (
-                  <span className={`border px-2 py-0.5 text-[0.6rem] tracking-[0.1em] ${active ? "border-black/30 text-black" : "border-pfAccent text-pfAccent"}`}>
+                  <span className={`border px-2 py-0.5 text-[0.6rem] tracking-[0.1em] ${active ? "border-black bg-black text-white" :"border-pfAccent text-pfAccent"}`}>
                     {de ? `ab ${formatEuro(entry.monthly)}/Monat` : `from ${formatEuro(entry.monthly, lang)}/mo`}
                   </span>
                 )}
