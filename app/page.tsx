@@ -772,7 +772,7 @@ export default async function LandingPage() {
                 href={localizeConsultation(path.href)}
                 className="group flex flex-col bg-pfCard p-6 transition-colors hover:bg-pfCardHover md:min-h-72 md:p-10"
               >
-                <h3 className="mt-6 font-display text-3xl leading-none text-pfText md:mt-8 md:text-5xl">{path.title}</h3>
+                <h3 className="font-display text-3xl leading-none text-balance text-pfText md:text-5xl lg:min-h-[2em]">{path.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-6 text-pfSubtle md:mt-5 md:leading-7">{path.text}</p>
                 <span className="mt-6 inline-flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfText transition-colors group-hover:text-pfAccent md:mt-8">
                   {path.cta} <span aria-hidden="true">→</span>
@@ -790,7 +790,11 @@ export default async function LandingPage() {
 
           <p className="mb-6 text-sm text-pfSubtle lg:hidden">{c.mobilePricesHint}</p>
           <div className="grid gap-px border border-pfBorder bg-pfBorder sm:grid-cols-2 lg:grid-cols-3">
-            {additionalProductKeys.map((id) => <div key={id} className="bg-pfSurface"><PackageCard id={id} /></div>)}
+            {additionalProductKeys.map((id, i) => {
+              // A lone card in the last row of the 3-column layout spans the full width.
+              const wide = i === additionalProductKeys.length - 1 && additionalProductKeys.length % 3 === 1;
+              return <div key={id} className={wide ? "lg:col-span-3" : ""}><PackageCard id={id} wide={wide} /></div>;
+            })}
           </div>
 
           {c.detailLinks.length > 0 && (
