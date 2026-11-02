@@ -47,9 +47,7 @@ export default function CallsView({ repName }: { repName: string }) {
   const [active, setActive] = useState<{ target: Target; attempt: Attempt } | null>(null);
   const [showDone, setShowDone] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Entwuerfe pro Anrufversuch: "Spaeter" schliesst das Fenster, ohne Eingaben zu verlieren
-  // (nur im Speicher der offenen Seite, bewusst kein localStorage – Datenschutz).
-  const drafts = useRef(new Map<string, Form>());
+  const drafts = DRAFTS;
 
   const load = useCallback(async () => {
     try {
@@ -166,13 +164,13 @@ export default function CallsView({ repName }: { repName: string }) {
           target={active.target}
           attempt={active.attempt}
           repName={repName}
-          initial={drafts.current.get(active.attempt.attemptId)}
+          initial={drafts.get(active.attempt.attemptId)}
           onClose={(draft) => {
-            drafts.current.set(active.attempt.attemptId, draft);
+            drafts.set(active.attempt.attemptId, draft);
             setActive(null);
           }}
           onSaved={() => {
-            drafts.current.delete(active.attempt.attemptId);
+            drafts.delete(active.attempt.attemptId);
             setActive(null);
             load();
           }}
@@ -315,6 +313,10 @@ type Form = {
   objection?: "PRICE" | "NO_TIME" | "HAS_PROVIDER" | "NO_NEED" | "OTHER"; objectionText: string; notes: string; newWebsite: string;
   demoEmail: string; demoBriefing: string; packageInterest?: "sichtbar" | "gefunden" | "gebucht" | "unklar";
 };
+
+// Entwuerfe pro Anrufversuch auf Modulebene: ueberleben "Spaeter" und Tab-Wechsel, solange die
+// Seite offen ist (bewusst kein localStorage – Gespraechsnotizen sind personenbezogen).
+const DRAFTS = new Map<string, Form>();
 
 const emptyForm: Form = { contactName: "", contactRole: "", callbackAt: "", demoAt: "", painPoint: "", websiteSituation: "", budgetRange: "", objectionText: "", notes: "", newWebsite: "", demoEmail: "", demoBriefing: "" };
 

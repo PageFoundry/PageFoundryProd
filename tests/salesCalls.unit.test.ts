@@ -273,3 +273,21 @@ test("Plattform-Profil ist keine eigene Website", () => {
   assert.equal(prefilter(cand({ name: "IG BAU Mitgliederbüro Siegen" })).ok, false);
   assert.equal(prefilter(cand({ name: "Provinzial Versicherung Torsten Wolf" })).ok, false);
 });
+
+test("Attribute mit Leerzeichen: name = \"viewport\" und url = im Meta-Refresh", async () => {
+  assert.equal(analyzeHtml(`<meta name = "viewport" content="width=device-width"><p>${"x ".repeat(100)}</p>`).noViewport, false);
+  const fx = fakeFetcher({ "https://r.example/": page(`<meta http-equiv = "refresh" content = "0; url = https://r.example/neu">`), "https://r.example/neu": page(GOOD) });
+  assert.equal((await checkSite("r.example", fx)).verdict, "OK");
+});
+
+test("Pfad-Gegenprobe auch per http und bei Platzhalter-Startseite", async () => {
+  const h = await checkSite("http://kunde.example/betrieb/", fakeFetcher({
+    "https://kunde.example/": page("", 404), "http://kunde.example/": page("", 404),
+    "https://kunde.example/betrieb/": page("", 404), "http://kunde.example/betrieb/": page(GOOD),
+  }));
+  assert.notEqual(h.verdict, "DEAD");
+  const d = await checkSite("https://kunde.example/betrieb/", fakeFetcher({
+    "https://kunde.example/": page("<title>Domain Default page</title>"), "https://kunde.example/betrieb/": page(GOOD),
+  }));
+  assert.notEqual(d.verdict, "DEAD");
+});

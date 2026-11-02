@@ -65,7 +65,21 @@ function attemptView(a: { id: string; phoneNorm: string; expiresAt: Date; salesL
  * tel:-Link. Pro Eintrag/Wiedervorlage gibt es hoechstens EINEN offenen Versuch; ein
  * paralleler zweiter Klick bekommt denselben Versuch zurueck.
  */
+class RetryConfirm extends Error {}
+
 export async function confirmCall(actor: JwtPayload, input: { entryId?: string; taskId?: string }, now = new Date()) {
+  for (let i = 0; ; i++) {
+    try {
+      return await confirmCallOnce(actor, input, now);
+    } catch (err) {
+      if (err instanceof RetryConfirm && i < 2) continue;
+      if (err instanceof RetryConfirm) throw new CallError(409, "BUSY", "Gerade parallel bearbeitet – bitte noch einmal klicken.");
+      throw err;
+    }
+  }
+}
+
+async function confirmCallOnce(actor: JwtPayload, input: { entryId?: string; taskId?: string }, now: Date) {
   requireSeller(actor);
   if (Boolean(input.entryId) === Boolean(input.taskId)) throw new CallError(400, "BAD_INPUT", "Genau ein Eintrag oder eine Wiedervorlage.");
 
@@ -74,9 +88,17 @@ export async function confirmCall(actor: JwtPayload, input: { entryId?: string; 
     if (!pre || pre.batch.ownerId !== actor.sub) throw new CallError(404, "NOT_FOUND", "Eintrag nicht gefunden.");
     assertNotOutreachExcluded({ leadfinderId: pre.leadfinderId, website: pre.website, email: pre.email });
 
+    // Vorhandenen Lead (gleiche Firma/Nummer/Domain/E-Mail) VOR der Transaktion bestimmen, damit
+    // sein Lock vor dem Eintrag geholt wird. Lock-Reihenfolge ueberall: Lead -> Eintrag -> Versuch.
+    const preIdent: Ident = { leadfinderId: pre.leadfinderId, phoneNorm: pre.phoneNorm, websiteHost: normalizeHost(pre.website), emailNorm: normalizeEmail(pre.email) };
+    const knownLeadId =
+      pre.salesLeadId ?? (await prisma.salesLead.findFirst({ where: { OR: identOr(preIdent) }, select: { id: true } }))?.id ?? null;
     const res = await prisma.$transaction(async (tx): Promise<{ attempt: ReturnType<typeof attemptView> } | { deferred: CallError }> => {
+      if (knownLeadId) await lockLead(tx, knownLeadId);
       await tx.$queryRaw`SELECT id FROM "CallListEntry" WHERE id = ${pre.id} FOR UPDATE`;
       const entry = await tx.callListEntry.findUniqueOrThrow({ where: { id: pre.id }, include: { batch: { select: { ownerId: true, day: true } } } });
+      // Inzwischen von einem parallelen Klick verknuepft? Dann neu starten (sonst Lock-Zyklus).
+      if (entry.salesLeadId !== pre.salesLeadId) throw new RetryConfirm();
       if (entry.batch.ownerId !== actor.sub) throw new CallError(404, "NOT_FOUND", "Eintrag nicht gefunden.");
       if (entry.status !== "OPEN") throw new CallError(409, "ENTRY_CLOSED", "Dieser Eintrag ist nicht mehr offen.");
       const claim = await tx.companyClaim.findUnique({ where: { key: `lf:${entry.leadfinderId}` } });
@@ -93,6 +115,8 @@ export async function confirmCall(actor: JwtPayload, input: { entryId?: string; 
       let leadId = entry.salesLeadId;
       if (!leadId) {
         const existing = await tx.salesLead.findFirst({ where: { OR: identOr(ident) }, select: { id: true, ownerId: true, status: true } });
+        // Inzwischen entstanden und nicht vorab gesperrt -> neu starten (Lock-Reihenfolge).
+        if (existing && existing.id !== knownLeadId) throw new RetryConfirm();
         if (existing) {
           if (existing.ownerId !== actor.sub || existing.status === "WON" || existing.status === "LOST") {
             await tx.callListEntry.update({ where: { id: entry.id }, data: { status: "BLOCKED" } });
@@ -127,7 +151,9 @@ export async function confirmCall(actor: JwtPayload, input: { entryId?: string; 
         return { deferred: new CallError(409, "LEAD_TAKEN", "Dieser Kontakt ist bereits vergeben oder abgeschlossen.") };
       }
       // Eine Nummer: gewaehlt wird die aktuelle Lead-Nummer (nach einer Korrektur nie die alte aus der Liste).
-      const callPhone = lead.phoneNorm || entry.phoneNorm;
+      // Nummer am Lead geloescht/ungueltig -> nicht auf die alte Listennummer zurueckfallen.
+      if (!lead.phoneNorm) return { deferred: new CallError(409, "NO_PHONE", "Am Lead steht keine gültige Telefonnummer. Bitte unter „Meine Leads“ korrigieren.") };
+      const callPhone = lead.phoneNorm;
       if (callPhone !== entry.phoneNorm && (await isBlocked(tx, { ...lead, phoneNorm: callPhone }))) {
         await tx.callListEntry.update({ where: { id: entry.id }, data: { status: "BLOCKED" } });
         return { deferred: new CallError(409, "BLOCKED", "Diese Nummer steht auf der Sperrliste.") };

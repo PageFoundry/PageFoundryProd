@@ -130,16 +130,29 @@ function tagSnippets(lower: string, name: string, max = 200): string[] {
 }
 
 function attr(snippet: string, name: string): string | null {
-  const at = snippet.indexOf(`${name}=`);
-  if (at < 0) return null;
-  let v = snippet.slice(at + name.length + 1, at + name.length + 1 + 400).trimStart();
-  const q = v[0];
-  if (q === '"' || q === "'") {
-    const e = v.indexOf(q, 1);
-    return e < 0 ? v.slice(1) : v.slice(1, e);
+  // Linear: Attributname mit Wortgrenze davor, erlaubte Leerzeichen um "=".
+  let i = 0;
+  while (i < snippet.length) {
+    const at = snippet.indexOf(name, i);
+    if (at < 0) return null;
+    i = at + name.length;
+    const prev = at > 0 ? snippet[at - 1] : " ";
+    if (!(prev === " " || prev === "\t" || prev === "\n" || prev === "\r" || prev === '"' || prev === "'" || prev === "/")) continue;
+    let j = i;
+    while (j < snippet.length && /\s/.test(snippet[j])) j++;
+    if (snippet[j] !== "=") continue;
+    j++;
+    while (j < snippet.length && /\s/.test(snippet[j])) j++;
+    const q = snippet[j];
+    if (q === '"' || q === "'") {
+      const e = snippet.indexOf(q, j + 1);
+      return e < 0 ? snippet.slice(j + 1, j + 401) : snippet.slice(j + 1, Math.min(e, j + 401));
+    }
+    let e = j;
+    while (e < snippet.length && e < j + 400 && !/[\s>]/.test(snippet[e])) e++;
+    return snippet.slice(j, e);
   }
-  const e = v.search(/[\s>]/);
-  return e < 0 ? v : v.slice(0, e);
+  return null;
 }
 
 /** Sichtbarer Text (ohne script/style/Tags), linear per Zustandsmaschine. */
@@ -175,10 +188,10 @@ function visibleTextLength(html: string, cap = 2000): number {
 function metaRefreshTarget(lower: string, original: string): string | null {
   for (const sn of tagSnippets(lower, "meta", 50)) {
     if ((attr(sn, "http-equiv") || "") !== "refresh") continue;
-    const content = attr(sn, "content") || "";
-    const at = content.indexOf("url=");
-    if (at < 0) continue;
-    const raw = content.slice(at + 4).trim().replace(/^['"]|['"]$/g, "");
+    const content = (attr(sn, "content") || "").slice(0, 400);
+    const m = content.match(/url\s*=\s*(\S+)/); // kurzer, begrenzter String
+    if (!m) continue;
+    const raw = m[1].trim().replace(/^['"]|['"]$/g, "");
     // Originalschreibweise (Gross/Klein im Pfad) aus dem Originaltext holen
     const pos = original.toLowerCase().indexOf(raw);
     return (pos >= 0 ? original.slice(pos, pos + raw.length) : raw).replace(/&amp;/g, "&");
@@ -303,13 +316,24 @@ export async function checkSite(website: string, fetcher: Fetcher = defaultFetch
     results.push(http);
     if (ok(http)) page = http;
   }
-  // 2) Gegenprobe: die tatsaechlich hinterlegte Adresse mit Pfad. Lebt sie, ist die Website
-  //    nicht "kaputt" – dann aber auch kein Befund ueber eine Startseite, die wir nicht sahen.
+  // 2) Gegenprobe: die tatsaechlich hinterlegte Adresse mit Pfad (https und http). Lebt sie,
+  //    ist die Website nicht "kaputt" – und wir behaupten nichts ueber eine Startseite.
   const path = stored.pathname + stored.search;
-  if (!page && path && path !== "/") {
-    const r = await fetchFollowing(`https://${host}${path}`, fetcher, deadline);
-    results.push(r);
-    if (ok(r)) return { ...base, hops: [...new Set(results.flatMap((x) => x.hops))], finalUrl: r.finalUrl, httpStatus: r.status, unknownReason: "root_missing_path_ok" };
+  const pathAlive = async (): Promise<Extract<PageResult, { kind: "page" }> | null> => {
+    if (!path || path === "/") return null;
+    for (const u of [`https://${host}${path}`, `http://${host}${path}`]) {
+      const r = await fetchFollowing(u, fetcher, deadline);
+      results.push(r);
+      if (ok(r)) {
+        const a = analyzeHtml(r.body, r.truncated);
+        if (!a.parked && !a.defaultPage) return r;
+      }
+    }
+    return null;
+  };
+  if (!page) {
+    const alive = await pathAlive();
+    if (alive) return { ...base, hops: [...new Set(results.flatMap((x) => x.hops))], finalUrl: alive.finalUrl, httpStatus: alive.status, unknownReason: "root_missing_path_ok" };
   }
   // 3) Vor jedem "kaputt"-Urteil auch die www-/ohne-www-Variante pruefen.
   if (!page) {
@@ -331,8 +355,12 @@ export async function checkSite(website: string, fetcher: Fetcher = defaultFetch
   if (page) {
     const a = analyzeHtml(page.body, page.truncated);
     const common = { ...base, hops, finalUrl: page.finalUrl, httpStatus: page.status };
-    if (a.parked) return { ...common, verdict: "DEAD", deadReason: "parked" };
-    if (a.defaultPage) return { ...common, verdict: "DEAD", deadReason: "default_page" };
+    if (a.parked || a.defaultPage) {
+      // Startseite geparkt/Standardseite, aber der hinterlegte Pfad lebt? Dann nicht "kaputt".
+      const alive = await pathAlive();
+      if (alive) return { ...common, hops: [...new Set(results.flatMap((x) => x.hops))], unknownReason: "root_placeholder_path_ok" };
+      return { ...common, verdict: "DEAD", deadReason: a.parked ? "parked" : "default_page" };
+    }
     if (a.jsShell) return { ...common, unknownReason: "js_shell" };
     if (platformOf(page.finalUrl)) return { ...common, unknownReason: "platform_redirect" };
     const flags: SiteFindings["flags"] = {};
