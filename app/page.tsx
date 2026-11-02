@@ -152,7 +152,7 @@ const copy = {
         priceNote: "KI-Telefon 790 € + 249 €/Monat · Software ab 2.500 €",
         cta: "KI-Telefon ansehen",
         href: "/ki-telefonassistenz",
-        image: "/work/hero-ki-telefon.webp",
+        image: "/work/hero-ki-callcenter.webp",
         badge: "Live testen · 02192 8743999",
       },
     ],
@@ -408,7 +408,7 @@ const copy = {
         priceNote: "AI phone €790 + €249/month · software from €2,500",
         cta: "Discuss AI phone & software",
         href: "/consultation?package=request_offer",
-        image: "/work/hero-ki-telefon.webp",
+        image: "/work/hero-ki-callcenter.webp",
         badge: "Live · +49 2192 8743999",
       },
     ],
@@ -674,8 +674,7 @@ export default async function LandingPage() {
                 </div>
                 {/* Inner wrapper: the global mobile touch-target rule turns links into centered inline-flex rows. */}
                 <div className="flex w-full flex-col gap-5 self-stretch p-6 pt-48 md:p-9 md:pt-72">
-                  <span className="inline-flex w-fit items-center gap-2 border border-pfBorderMid bg-black/75 px-2.5 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-pfText">
-                    <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#59c27a] shadow-[0_0_0_3px_rgba(89,194,122,0.2)]" />
+                  <span className="inline-flex w-fit items-center border border-pfBorderMid bg-black/75 px-2.5 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-pfText">
                     {door.badge}
                   </span>
                   <span className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfMuted">{door.kicker}</span>
