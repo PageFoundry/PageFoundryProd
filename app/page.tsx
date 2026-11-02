@@ -842,7 +842,7 @@ export default async function LandingPage() {
                 <div className="mb-3 font-display text-5xl leading-none text-pfAccent opacity-60 md:mb-4 md:text-7xl">
                   {String(index + 1).padStart(2, "0")}
                 </div>
-                <h3 className="self-end font-display text-2xl leading-none text-balance text-pfText md:text-3xl">{step.title}</h3>
+                <h3 className="self-center font-display text-2xl leading-none text-balance text-pfText md:text-3xl">{step.title}</h3>
                 <p className="text-xs leading-5 text-pfSubtle md:text-sm md:leading-7">{step.text}</p>
               </article>
             ))}
