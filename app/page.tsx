@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import PackageCard from "@/components/PackageCard";
 import WebsitePackages from "@/components/WebsitePackages";
 import { websiteStages } from "@/lib/websitePricing";
@@ -135,28 +136,24 @@ const copy = {
       {
         kicker: "Nach außen",
         title: "Mehr Anfragen über Ihre Website",
-        points: [
-          "Klare Struktur und Kontaktwege",
-          "Mobil schnell und lokal bei Google auffindbar",
-          "Kaufen oder betreuen lassen",
-        ],
+        points: ["Klare Struktur und Kontaktwege", "Mobil schnell und lokal bei Google auffindbar"],
         price: "ab 790 €",
         priceNote: "einmalig · für Unternehmen betreut ab 190 € + 49 €/Monat",
         cta: "Website besprechen",
         href: "/consultation?package=sichtbar&modell=kauf",
+        image: "/work/hero-the-loft.webp",
+        badge: "Live · theloftbrunch.de",
       },
       {
         kicker: "Nach innen",
         title: "Weniger Handarbeit im Betrieb",
-        points: [
-          "Software für Rechnungen, Daten und Abläufe",
-          "Statt Listen, Rückfragen und Doppelerfassung",
-          "Im Einsatz: Rechnungssoftware für Carbon Care",
-        ],
-        price: "ab 2.500 €",
-        priceNote: "Festpreisprojekt",
-        cta: "Software besprechen",
-        href: "/individuelle-software",
+        points: ["KI-Telefonassistent nimmt Anrufe an und bucht Termine", "Software für Rechnungen, Daten und Abläufe"],
+        price: "ab 790 €",
+        priceNote: "KI-Telefon 790 € + 249 €/Monat · Software ab 2.500 €",
+        cta: "KI-Telefon ansehen",
+        href: "/ki-telefonassistenz",
+        image: "/work/hero-ki-telefon.webp",
+        badge: "Live testen · 02192 8743999",
       },
     ],
     workLabel: "02 - Ausgewählte Arbeiten",
@@ -395,28 +392,24 @@ const copy = {
       {
         kicker: "Outward",
         title: "More enquiries through your website",
-        points: [
-          "Clear structure and contact paths",
-          "Fast on mobile and findable locally on Google",
-          "Buy it or have it managed",
-        ],
+        points: ["Clear structure and contact paths", "Fast on mobile and findable locally on Google"],
         price: "from €790",
         priceNote: "one-off · managed for businesses from €190 + €49/month",
         cta: "Discuss a website",
         href: "/consultation?package=sichtbar&modell=kauf",
+        image: "/work/hero-the-loft.webp",
+        badge: "Live · theloftbrunch.de",
       },
       {
         kicker: "Inward",
         title: "Less manual work in your business",
-        points: [
-          "Software for invoices, data and workflows",
-          "Instead of lists, follow-up questions and double entry",
-          "In use: invoicing software for Carbon Care",
-        ],
-        price: "from €2,500",
-        priceNote: "Fixed-price project",
-        cta: "Discuss software",
+        points: ["An AI phone assistant answers calls and books appointments", "Software for invoices, data and workflows"],
+        price: "from €790",
+        priceNote: "AI phone €790 + €249/month · software from €2,500",
+        cta: "Discuss AI phone & software",
         href: "/consultation?package=request_offer",
+        image: "/work/hero-ki-telefon.webp",
+        badge: "Live · +49 2192 8743999",
       },
     ],
     workLabel: "02 - Selected work",
@@ -667,10 +660,24 @@ export default async function LandingPage() {
               <Link
                 key={door.title}
                 href={localizeConsultation(door.href)}
-                className="group flex w-full bg-pfCard !py-0 transition-colors duration-200 hover:bg-pfCardHover focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-pfAccent"
+                className="group relative isolate flex w-full overflow-hidden bg-pfCard !py-0 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-pfAccent"
               >
+                <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-64 overflow-hidden md:h-[19rem]">
+                  <Image
+                    src={door.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover object-top opacity-75 transition duration-500 group-hover:scale-[1.04] group-hover:opacity-95"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pfCard/40 to-pfCard" />
+                </div>
                 {/* Inner wrapper: the global mobile touch-target rule turns links into centered inline-flex rows. */}
-                <div className="flex w-full flex-col gap-5 self-stretch p-6 md:p-9">
+                <div className="flex w-full flex-col gap-5 self-stretch p-6 pt-48 md:p-9 md:pt-72">
+                  <span className="inline-flex w-fit items-center gap-2 border border-pfBorderMid bg-black/75 px-2.5 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-pfText">
+                    <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#59c27a] shadow-[0_0_0_3px_rgba(89,194,122,0.2)]" />
+                    {door.badge}
+                  </span>
                   <span className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfMuted">{door.kicker}</span>
                   <h2 className="font-display text-4xl leading-[0.92] text-balance text-pfText md:text-5xl">{door.title}</h2>
                   <ul className="grid gap-1.5 text-sm leading-6 text-pfSubtle md:text-base">
