@@ -16,6 +16,7 @@ export type SendMailArgs = {
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
   attachments?: Array<{
     filename: string;
     content: Buffer;
@@ -40,6 +41,7 @@ export async function sendMail(args: SendMailArgs) {
     subject: args.subject,
     text: args.text ?? "",
     html: args.html,
+    replyTo: args.replyTo,
     attachments: args.attachments,
   });
 

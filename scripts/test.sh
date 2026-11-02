@@ -31,6 +31,20 @@ if [ "$DB_NAME" != "pagefoundry_test" ]; then
   echo "Die Tests schreiben echte Zeilen — sie laufen nicht gegen Prod." >&2
   exit 1
 fi
+# Anrufliste: Leadfinder- und Outreach-Quelle muessen Test-Fixtures sein (nie Prod-Daten).
+LF_DB="$(node -e 'try{process.stdout.write(new URL(process.env.LEADFINDER_DATABASE_URL||"").pathname.slice(1))}catch{}')"
+if [ "$LF_DB" != "leadfinder_test" ]; then
+  echo "ABBRUCH: LEADFINDER_DATABASE_URL zeigt auf '$LF_DB', erwartet 'leadfinder_test'." >&2
+  exit 1
+fi
+case "${OUTREACH_DB_PATH:-}" in
+  */tests/fixtures/*) : ;;
+  *) echo "ABBRUCH: OUTREACH_DB_PATH muss auf tests/fixtures/ zeigen (ist '${OUTREACH_DB_PATH:-}')." >&2; exit 1 ;;
+esac
+if [ "${SALES_SITECHECK_MODE:-}" != "fixture" ]; then
+  echo "ABBRUCH: SALES_SITECHECK_MODE=fixture fehlt – Tests duerfen keine echten Websites abrufen." >&2
+  exit 1
+fi
 if [ "${EMAIL_ENABLED:-}" = "true" ]; then
   echo "ABBRUCH: EMAIL_ENABLED=true in der Testumgebung — das wuerde echte Mails senden." >&2
   exit 1
@@ -50,7 +64,9 @@ echo "→ Test-DB: $DB_NAME | Server: $TEST_BASE_URL | Suite: $SUITE"
 
 # ── Schema auf die Test-DB bringen ───────────────────────────────────────────
 npx prisma migrate deploy >/dev/null
-echo "✓ Migrationen auf der Test-DB"
+npx prisma generate >/dev/null
+echo "✓ Migrationen auf der Test-DB, Prisma-Client generiert"
+node tests/fixtures/setup-sales-fixtures.mjs
 
 # ── Build: nur neu bauen, wenn der Standalone-Server veraltet ist ────────────
 SERVER=".next/standalone/server.js"
@@ -101,7 +117,7 @@ run_auth()         {
 run_retell()       { npx tsx --test tests/retell.unit.test.ts; }
 run_consultation() { npx tsx --test tests/consultation.unit.test.ts tests/attribution.unit.test.ts tests/consultationAttribution.integration.test.ts; }
 run_flows()        { node --test tests/customerFlows.integration.test.mjs; }
-run_sales()        { npx tsx --test tests/sales.unit.test.ts && node --test tests/sales.integration.test.mjs; }
+run_sales()        { npx tsx --test tests/sales.unit.test.ts tests/salesCalls.unit.test.ts tests/salesCallsGen.integration.test.ts && node --test tests/sales.integration.test.mjs tests/salesCalls.integration.test.mjs; }
 
 case "$SUITE" in
   auth)         run_auth ;;

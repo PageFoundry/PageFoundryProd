@@ -21,3 +21,4 @@ stripe-cli.*
 !.env.example
 !.env.test.example
 *.tsbuildinfo
+tests/fixtures/*.db*

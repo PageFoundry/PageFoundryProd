@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireSalesOrAdmin } from "@/lib/auth";
 import { createLeadSchema, normalizeEmail, normalizeHost } from "@/lib/sales/leads";
+import { firstValidPhoneDE } from "@/lib/sales/phone";
 import { leadSelect, listLeads } from "@/lib/sales/data";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,8 @@ export async function POST(req: NextRequest) {
         email: v.email ?? null,
         emailNorm: normalizeEmail(v.email),
         phone: v.phone ?? null,
+        // Manuelle Eingabe im deutschen Portal: nationale 0-Nummern gelten als deutsch.
+        phoneNorm: firstValidPhoneDE(v.phone, { assumeDE: true }),
         website: v.website ?? null,
         websiteHost: normalizeHost(v.website),
         notes: v.notes ?? null,
@@ -54,7 +57,7 @@ export async function POST(req: NextRequest) {
     // Unique auf websiteHost/emailNorm: Lead gehoert schon jemandem (Lead-Schutz).
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
       return NextResponse.json(
-        { message: "Dieser Lead (Website oder E-Mail) ist bereits erfasst." },
+        { message: "Dieser Lead (Website, E-Mail oder Telefon) ist bereits erfasst." },
         { status: 409 }
       );
     }

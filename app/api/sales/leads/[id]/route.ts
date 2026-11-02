@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { firstValidPhoneDE } from "@/lib/sales/phone";
 import { requireSalesOrAdmin } from "@/lib/auth";
 import { buildLeadUpdate, LeadPermissionError, updateLeadSchema } from "@/lib/sales/leads";
 import { leadSelect } from "@/lib/sales/data";
@@ -45,9 +47,31 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     throw err;
   }
 
+  const phoneChanged = "phone" in data;
+  if (phoneChanged) data.phoneNorm = firstValidPhoneDE(data.phone as string | null, { assumeDE: true });
+
   // updateMany mit Status-Bedingung: verhindert, dass ein paralleler Admin-Abschluss
   // von einem veralteten SALES-Request ueberschrieben wird.
-  const res = await prisma.salesLead.updateMany({ where: { id, status: lead.status }, data });
+  let res;
+  try {
+    res = await prisma.$transaction(async (tx) => {
+      const r = await tx.salesLead.updateMany({ where: { id, status: lead.status }, data });
+      if (r.count === 1) {
+        // Neue Nummer: offene Anrufversuche fuer die alte Nummer verfallen.
+        if (phoneChanged) await tx.callAttempt.updateMany({ where: { salesLeadId: id, log: null }, data: { expiresAt: new Date() } });
+        // Abschluss: Wiedervorlagen beenden.
+        if (data.status === "WON" || data.status === "LOST") {
+          await tx.callTask.updateMany({ where: { salesLeadId: id, state: "OPEN" }, data: { state: "CANCELLED" } });
+        }
+      }
+      return r;
+    });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return NextResponse.json({ message: "Diese Telefonnummer ist bereits bei einem anderen Lead erfasst." }, { status: 409 });
+    }
+    throw err;
+  }
   if (res.count === 0) return NextResponse.json({ message: "Lead wurde zwischenzeitlich geaendert" }, { status: 409 });
   const updated = await prisma.salesLead.findUnique({ where: { id }, select: leadSelect });
   return NextResponse.json({ lead: updated });

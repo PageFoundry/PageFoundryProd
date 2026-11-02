@@ -1,6 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import CallsView from "@/components/sales/CallsView";
+import DemosView from "@/components/sales/DemosView";
+import Handbook from "@/components/sales/Handbook";
+import ContractsView from "@/components/sales/ContractsView";
 import { COMMISSION_MONTHS, commissionFor, SALES_LEAD_STATUSES, SALES_SETTABLE_STATUSES, STATUS_LABELS_DE } from "@/lib/sales/leads";
 
 type Status = (typeof SALES_LEAD_STATUSES)[number];
@@ -33,8 +37,13 @@ type Kit = {
   terms: string;
 };
 
+type Doc = { file: string; title: string; offer: string; when: string };
+
 type Props = {
   isAdmin: boolean;
+  initialTab?: string;
+  repName: string;
+  docs: Doc[];
   me: { email: string; commissionPercent: number | null };
   referralUrl: string | null;
   initialLeads: Lead[];
@@ -43,9 +52,13 @@ type Props = {
 };
 
 const TABS = [
+  { id: "calls", label: "Anrufe heute" },
+  { id: "demos", label: "Demos" },
   { id: "leads", label: "Meine Leads" },
-  { id: "referral", label: "Empfehlungslink" },
+  { id: "handbook", label: "Leitfaden & Skript" },
+  { id: "contracts", label: "Verträge" },
   { id: "kit", label: "Verkaufsmaterial" },
+  { id: "referral", label: "Empfehlungslink" },
   { id: "commission", label: "Provision" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
@@ -74,8 +87,18 @@ function centsFromEuroInput(v: string): number | null {
   return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) : null;
 }
 
-export default function SalesPortal({ isAdmin, me, referralUrl, initialLeads, bookings, kit }: Props) {
-  const [tab, setTab] = useState<Tab>("leads");
+export default function SalesPortal({ isAdmin, initialTab, repName, docs, me, referralUrl, initialLeads, bookings, kit }: Props) {
+  const [tab, setTabState] = useState<Tab>(TABS.some((t) => t.id === initialTab) ? (initialTab as Tab) : "calls");
+  const setTab = (t: Tab) => {
+    setTabState(t);
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set("tab", t);
+      window.history.replaceState(null, "", u.toString());
+    } catch {
+      /* ignore */
+    }
+  };
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [filter, setFilter] = useState<"open" | "all">("open");
 
@@ -93,14 +116,14 @@ export default function SalesPortal({ isAdmin, me, referralUrl, initialLeads, bo
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap gap-2" role="tablist">
+      <div className="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" role="tablist">
         {TABS.map((t) => (
           <button
             key={t.id}
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`rounded-sm border px-3 py-2 text-[0.65rem] uppercase tracking-widest transition-colors ${
+            className={`shrink-0 whitespace-nowrap rounded-sm border px-3 py-2 text-[0.65rem] uppercase tracking-widest transition-colors ${
               tab === t.id ? "border-pfBorderAccent bg-pfAccentDim text-pfAccent" : "border-pfBorder text-pfSubtle hover:text-pfAccent"
             }`}
             style={mono}
@@ -109,6 +132,11 @@ export default function SalesPortal({ isAdmin, me, referralUrl, initialLeads, bo
           </button>
         ))}
       </div>
+
+      {tab === "calls" && <CallsView repName={repName} />}
+      {tab === "demos" && <DemosView isAdmin={isAdmin} />}
+      {tab === "handbook" && <Handbook repName={repName} packages={kit.packages} taxNote={kit.taxNote} />}
+      {tab === "contracts" && <ContractsView docs={docs} />}
 
       {tab === "leads" && (
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">

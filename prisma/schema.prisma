@@ -118,6 +118,12 @@ model User {
   commissionPercent Int?
   salesLeads        SalesLead[]           @relation("SalesLeadOwner")
   referredBookings  ConsultationBooking[] @relation("BookingReferredBy")
+  callListBatches   CallListBatch[]
+  callAttempts      CallAttempt[]
+  callLogs          CallLog[]
+  callTasks         CallTask[]
+  callBlocksCreated CallBlock[]
+  demoRequests      DemoRequest[]
 
   @@index([provider, providerId])
 }
@@ -526,14 +532,18 @@ model SalesLead {
   ownerId String
   owner   User   @relation("SalesLeadOwner", fields: [ownerId], references: [id], onDelete: Restrict)
 
-  companyName String  @db.VarChar(200)
-  contactName String? @db.VarChar(200)
-  email       String? @db.VarChar(320)
-  phone       String? @db.VarChar(50)
-  website     String? @db.VarChar(512)
-  websiteHost String? @unique @db.VarChar(255)
-  emailNorm   String? @unique @db.VarChar(320)
-  notes       String? @db.Text
+  companyName  String  @db.VarChar(200)
+  contactName  String? @db.VarChar(200)
+  email        String? @db.VarChar(320)
+  phone        String? @db.VarChar(50)
+  website      String? @db.VarChar(512)
+  websiteHost  String? @unique @db.VarChar(255)
+  emailNorm    String? @unique @db.VarChar(320)
+  // E.164 (+49...). Teil des Lead-Schutzes; ungueltige Nummern bleiben null.
+  phoneNorm    String? @unique @db.VarChar(20)
+  // Herkunft aus der Leadfinder-DB (Anrufliste). Dauerhafter Schutz vor Doppelvergabe.
+  leadfinderId String? @unique @db.VarChar(40)
+  notes        String? @db.Text
 
   status SalesLeadStatus @default(NEW)
 
@@ -546,5 +556,250 @@ model SalesLead {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  callEntries  CallListEntry[]
+  callAttempts CallAttempt[]
+  callLogs     CallLog[]
+  callTask     CallTask?
+  demoRequests DemoRequest[]
+
   @@index([ownerId, status])
+}
+
+// ── Anrufliste (Sales) ──────────────────────────────────────────────────────
+// Tagesliste pro Verkaeufer und Berliner Kalendertag. Erzeugung laeuft asynchron;
+// nur der Erzeuger mit dem aktuellen genToken darf den Batch fertigstellen.
+
+enum CallBatchState {
+  GENERATING
+  READY
+  FAILED
+}
+
+enum CallTier {
+  A
+  B
+  C
+}
+
+enum CallEntryStatus {
+  OPEN
+  DONE
+  EXPIRED
+  BLOCKED
+}
+
+enum CallReached {
+  NOT_REACHED
+  VOICEMAIL
+  WRONG_NUMBER
+  REACHED
+}
+
+enum CallOutcome {
+  NO_INTEREST
+  CALLBACK
+  DEMO_BOOKED
+  OFFER_REQUESTED
+  DO_NOT_CALL
+  HAS_NEW_WEBSITE
+}
+
+enum CallObjection {
+  PRICE
+  NO_TIME
+  HAS_PROVIDER
+  NO_NEED
+  OTHER
+}
+
+enum CallTaskKind {
+  CALLBACK
+  RETRY
+}
+
+enum CallTaskState {
+  OPEN
+  DONE
+  CANCELLED
+}
+
+model CallListBatch {
+  id          String         @id @default(cuid())
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  day         DateTime       @db.Date
+  state       CallBatchState @default(GENERATING)
+  genToken    String?        @db.VarChar(40)
+  leaseUntil  DateTime?
+  targetCount Int
+  actualCount Int            @default(0)
+  note        String?        @db.VarChar(500)
+  createdAt   DateTime       @default(now())
+  finishedAt  DateTime?
+
+  entries CallListEntry[]
+
+  @@unique([ownerId, day])
+}
+
+model CallListEntry {
+  id           String          @id @default(cuid())
+  batchId      String
+  batch        CallListBatch   @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  leadfinderId String          @db.VarChar(40)
+  rank         Int
+  tier         CallTier
+  reasonText   String          @db.VarChar(500)
+  siteCheck    Json?
+  companyName  String          @db.VarChar(200)
+  phoneNorm    String          @db.VarChar(20)
+  website      String?         @db.VarChar(512)
+  email        String?         @db.VarChar(320)
+  plz          String?         @db.VarChar(10)
+  city         String?         @db.VarChar(120)
+  isMobile     Boolean         @default(false)
+  sourceScanAt DateTime?
+  status       CallEntryStatus @default(OPEN)
+  salesLeadId  String?
+  salesLead    SalesLead?      @relation(fields: [salesLeadId], references: [id], onDelete: SetNull)
+  createdAt    DateTime        @default(now())
+
+  attempts CallAttempt[]
+
+  @@unique([batchId, leadfinderId])
+  @@unique([batchId, rank])
+  @@index([leadfinderId])
+}
+
+// Globale Tagesreservierung (verhindert Doppelvergabe zwischen Verkaeufern). Pro
+// Eintrag mehrere Schluessel: lf:<leadfinderId>, ph:<E.164>, host:<domain>, mail:<email>.
+// Abgelaufene Claims werden atomar uebernommen (INSERT ... ON CONFLICT ... WHERE).
+model CompanyClaim {
+  key          String   @id @db.VarChar(400)
+  leadfinderId String   @db.VarChar(40)
+  ownerId      String
+  entryId      String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([entryId])
+}
+
+// Ein Anrufversuch: entsteht beim Bestaetigen (Checkbox) und bindet Verkaeufer, Lead,
+// Eintrag/Wiedervorlage und die angerufene Nummer. Genau ein Protokoll pro Versuch.
+model CallAttempt {
+  id            String         @id @default(cuid())
+  ownerId       String
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  salesLeadId   String
+  salesLead     SalesLead      @relation(fields: [salesLeadId], references: [id], onDelete: Cascade)
+  entryId       String?
+  entry         CallListEntry? @relation(fields: [entryId], references: [id], onDelete: SetNull)
+  taskId        String?
+  phoneNorm     String         @db.VarChar(20)
+  reasonText    String         @db.VarChar(500)
+  confirmedText String         @db.VarChar(300)
+  confirmedAt   DateTime       @default(now())
+  expiresAt     DateTime
+
+  log CallLog?
+
+  @@index([salesLeadId])
+}
+
+model CallLog {
+  id               String         @id @default(cuid())
+  attemptId        String         @unique
+  attempt          CallAttempt    @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  ownerId          String
+  owner            User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  salesLeadId      String
+  salesLead        SalesLead      @relation(fields: [salesLeadId], references: [id], onDelete: Cascade)
+  reached          CallReached
+  contactName      String?        @db.VarChar(200)
+  contactRole      String?        @db.VarChar(120)
+  isDecisionMaker  Boolean?
+  outcome          CallOutcome?
+  callbackAt       DateTime?
+  demoAt           DateTime?
+  painPoint        String?        @db.VarChar(1000)
+  websiteSituation String?        @db.VarChar(1000)
+  budgetRange      String?        @db.VarChar(120)
+  objection        CallObjection?
+  objectionText    String?        @db.VarChar(1000)
+  notes            String?        @db.Text
+  newWebsite       String?        @db.VarChar(512)
+  anonymizedAt     DateTime?
+  createdAt        DateTime       @default(now())
+
+  @@index([salesLeadId, createdAt])
+  @@index([ownerId, createdAt])
+}
+
+// Aktueller Wiedervorlage-Zustand pro Lead (Logs bleiben Historie).
+model CallTask {
+  id             String        @id @default(cuid())
+  salesLeadId    String        @unique
+  salesLead      SalesLead     @relation(fields: [salesLeadId], references: [id], onDelete: Cascade)
+  ownerId        String
+  owner          User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  kind           CallTaskKind
+  nextAttemptAt  DateTime
+  failedAttempts Int           @default(0)
+  state          CallTaskState @default(OPEN)
+  updatedAt      DateTime      @updatedAt
+
+  @@index([ownerId, state, nextAttemptAt])
+}
+
+// Zentrale Werbewiderspruchsliste (Telefon + E-Mail-Outreach). Nur Minimaldaten.
+model CallBlock {
+  id           String   @id @default(cuid())
+  phoneNorm    String?  @unique @db.VarChar(20)
+  websiteHost  String?  @db.VarChar(255)
+  emailNorm    String?  @db.VarChar(320)
+  leadfinderId String?  @db.VarChar(40)
+  companyName  String   @db.VarChar(200)
+  reason       String   @db.VarChar(200)
+  createdById  String?
+  createdBy    User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+
+  @@index([websiteHost])
+  @@index([emailNorm])
+  @@index([leadfinderId])
+}
+
+// ── Demo-Anfragen (Vertrieb -> Fabian -> Vertrieb -> Kunde) ─────────────────
+
+enum DemoRequestState {
+  REQUESTED
+  IN_PROGRESS
+  READY
+  SENT
+  CANCELLED
+}
+
+model DemoRequest {
+  id              String           @id @default(cuid())
+  salesLeadId     String
+  salesLead       SalesLead        @relation(fields: [salesLeadId], references: [id], onDelete: Cascade)
+  requestedById   String
+  requestedBy     User             @relation(fields: [requestedById], references: [id], onDelete: Cascade)
+  state           DemoRequestState @default(REQUESTED)
+  packageInterest String?          @db.VarChar(40)
+  briefing        String           @db.Text
+  customerEmail   String           @db.VarChar(320)
+  meetingAt       DateTime?
+  demoUrl         String?          @db.VarChar(512)
+  adminNote       String?          @db.Text
+  sentMessage     String?          @db.Text
+  readyAt         DateTime?
+  sentAt          DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([state, createdAt])
+  @@index([requestedById, state])
+  @@index([salesLeadId])
 }
