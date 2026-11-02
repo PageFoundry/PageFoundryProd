@@ -124,20 +124,39 @@ function getOrganizationSchema(lang: "de" | "en") {
 
 const copy = {
   de: {
-    eyebrow: "Websites & Software · Hückeswagen",
+    eyebrow: "Webdesign & Software aus Hückeswagen",
     subline:
-      "Ich arbeite allein und mit eigener KI-Werkstatt. Deshalb liegen meine Preise unter dem üblichen Agenturniveau: Websites ab 790 € zum Kauf, für Unternehmen auch betreut ab 190 € Einrichtung und 49 € im Monat.",
+      "Ich plane, baue und betreue beides selbst und bleibe Ihr fester Ansprechpartner. Wählen Sie, womit wir anfangen.",
     proof: ["Websites", "Landingpages", "Betriebliche Software", "SEO", "Hosting", "Bergisches Land"],
-    heroHeading: "Websites und Betriebssoftware. Gebaut und betreut von einem Ansprechpartner aus Hückeswagen.",
+    heroHeading: "Was soll in Ihrem Betrieb besser laufen?",
     heroLocation: "Hückeswagen · Bergisches Land · deutschlandweit",
-    heroOffers: [
+    heroUnsure: "Noch unsicher?",
+    heroDoors: [
       {
-        title: "Websites",
-        text: "Für mehr Vertrauen beim ersten Kontakt und einen klaren Weg zur Anfrage.",
+        kicker: "Nach außen",
+        title: "Mehr Anfragen über Ihre Website",
+        points: [
+          "Klare Struktur und Kontaktwege",
+          "Mobil schnell und lokal bei Google auffindbar",
+          "Kaufen oder betreuen lassen",
+        ],
+        price: "ab 790 €",
+        priceNote: "einmalig · für Unternehmen betreut ab 190 € + 49 €/Monat",
+        cta: "Website besprechen",
+        href: "/consultation?package=sichtbar&modell=kauf",
       },
       {
-        title: "Betriebliche Software",
-        text: "Individuelle Anwendungen für Rechnungen, Daten und Betriebsabläufe. Festpreisprojekte ab 2.500 €.",
+        kicker: "Nach innen",
+        title: "Weniger Handarbeit im Betrieb",
+        points: [
+          "Software für Rechnungen, Daten und Abläufe",
+          "Statt Listen, Rückfragen und Doppelerfassung",
+          "Im Einsatz: Rechnungssoftware für Carbon Care",
+        ],
+        price: "ab 2.500 €",
+        priceNote: "Festpreisprojekt",
+        cta: "Software besprechen",
+        href: "/individuelle-software",
       },
     ],
     workLabel: "02 - Ausgewählte Arbeiten",
@@ -365,20 +384,39 @@ const copy = {
     ],
   },
   en: {
-    eyebrow: "Websites & software · Hückeswagen, Germany",
+    eyebrow: "Web design & software from Hückeswagen, Germany",
     subline:
-      "I work independently with my own AI workshop. That keeps my prices below typical agency levels: websites from €790 to purchase, or for businesses a managed plan from €190 setup and €49 per month.",
+      "I plan, build and maintain both myself and stay your single point of contact. Choose where we start.",
     proof: ["Websites", "Landing pages", "Business software", "SEO", "Hosting", "Bergisches Land"],
-    heroHeading: "Websites and business software. Built and maintained by one point of contact in Hückeswagen.",
+    heroHeading: "What should run better in your business?",
     heroLocation: "Hückeswagen · Bergisches Land · Germany-wide",
-    heroOffers: [
+    heroUnsure: "Not sure yet?",
+    heroDoors: [
       {
-        title: "Websites",
-        text: "For more trust at the first contact and a clearer path to an enquiry.",
+        kicker: "Outward",
+        title: "More enquiries through your website",
+        points: [
+          "Clear structure and contact paths",
+          "Fast on mobile and findable locally on Google",
+          "Buy it or have it managed",
+        ],
+        price: "from €790",
+        priceNote: "one-off · managed for businesses from €190 + €49/month",
+        cta: "Discuss a website",
+        href: "/consultation?package=sichtbar&modell=kauf",
       },
       {
-        title: "Business software",
-        text: "Custom applications for invoices, data and business workflows. Fixed-price projects from €2,500.",
+        kicker: "Inward",
+        title: "Less manual work in your business",
+        points: [
+          "Software for invoices, data and workflows",
+          "Instead of lists, follow-up questions and double entry",
+          "In use: invoicing software for Carbon Care",
+        ],
+        price: "from €2,500",
+        priceNote: "Fixed-price project",
+        cta: "Discuss software",
+        href: "/consultation?package=request_offer",
       },
     ],
     workLabel: "02 - Selected work",
@@ -607,39 +645,63 @@ export default async function LandingPage() {
     <div data-public-page className="relative z-10 text-pfText">
       <JsonLd data={getOrganizationSchema(lang)} />
 
-      <section className="relative min-h-[82vh] overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
+      <section className="relative overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pb-20 md:pt-36">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfAccentDim md:h-[42rem] md:w-[42rem]" />
 
-        <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div className="fade-in">
-            <h1
-              className="max-w-5xl font-display leading-[0.9] text-balance text-pfText"
-              style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.8rem)" }}
-            >
-              {c.heroHeading}
-            </h1>
-            <div className="my-8 h-px w-28 bg-gradient-to-r from-pfAccent to-transparent" />
+        <div className="relative mx-auto max-w-screen-xl">
+          <div className="fade-in mb-10 flex flex-col gap-6 md:mb-12 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+            <div>
+              <p className="mb-5 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfAccent">{c.eyebrow}</p>
+              <h1
+                className="max-w-4xl font-display leading-[0.88] text-balance text-pfText"
+                style={{ fontSize: "clamp(3rem, 7vw, 6.5rem)" }}
+              >
+                {c.heroHeading}
+              </h1>
+            </div>
+            <p className="max-w-sm text-base leading-7 text-pfSubtle md:text-lg lg:pb-2">{c.subline}</p>
           </div>
 
-          <div className="fade-in-delay-2 max-w-xl lg:pt-12">
-            <p className="mb-8 max-w-lg text-base leading-8 text-pfSubtle md:text-lg">{c.subline}</p>
-            <div className="mb-8 grid gap-px overflow-hidden border border-pfBorder bg-pfBorder sm:grid-cols-2">
-              {c.heroOffers.map((offer) => (
-                <div key={offer.title} className="bg-pfCard p-5">
-                  <h2 className="font-display text-2xl leading-none text-pfText">{offer.title}</h2>
-                  <p className="mt-3 text-sm leading-6 text-pfSubtle">{offer.text}</p>
+          <div className="fade-in-delay-2 grid gap-px overflow-hidden border border-pfBorderMid bg-pfBorderMid md:grid-cols-2">
+            {c.heroDoors.map((door) => (
+              <Link
+                key={door.title}
+                href={localizeConsultation(door.href)}
+                className="group flex w-full bg-pfCard !py-0 transition-colors duration-200 hover:bg-pfCardHover focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-pfAccent"
+              >
+                {/* Inner wrapper: the global mobile touch-target rule turns links into centered inline-flex rows. */}
+                <div className="flex w-full flex-col gap-5 self-stretch p-6 md:p-9">
+                  <span className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfMuted">{door.kicker}</span>
+                  <h2 className="font-display text-4xl leading-[0.92] text-balance text-pfText md:text-5xl">{door.title}</h2>
+                  <ul className="grid gap-1.5 text-sm leading-6 text-pfSubtle md:text-base">
+                    {door.points.map((point) => (
+                      <li key={point} className="flex gap-2">
+                        <span aria-hidden="true" className="text-pfAccent">—</span>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto grid gap-2 border-t border-pfBorderMid pt-5">
+                    <span className="font-display text-5xl leading-none text-pfAccent">{door.price}</span>
+                    <span className="min-h-[2.5rem] font-mono text-xs leading-5 text-pfMuted">{door.priceNote}</span>
+                  </div>
+                  <span className="flex items-center justify-between font-mono text-xs font-bold uppercase tracking-widest text-pfText transition-colors group-hover:text-pfAccent">
+                    {door.cta}
+                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1.5">→</span>
+                  </span>
                 </div>
-              ))}
-            </div>
-            <p className="mb-8 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfMuted">{c.heroLocation}</p>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Link href={consultationHref} className="btn-accent">
-                {t("hero.ctaFree")} →
               </Link>
-              <Link href="#packages" className="btn-outline">
-                {t("hero.ctaSee")}
-              </Link>
-            </div>
+            ))}
+          </div>
+
+          <div className="fade-in-delay-3 mt-6 flex flex-col gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfMuted sm:flex-row sm:items-center sm:justify-between">
+            <span>{c.heroLocation}</span>
+            <Link
+              href={consultationHref}
+              className="inline-flex min-h-[44px] items-center gap-2 text-pfText underline decoration-pfAccent underline-offset-4 hover:text-pfAccent sm:min-h-0"
+            >
+              {c.heroUnsure} {t("hero.ctaFree")} →
+            </Link>
           </div>
         </div>
       </section>
