@@ -41,6 +41,7 @@ Beratung: https://pagefoundry.de/consultation
 
 - https://pagefoundry.de/ — deutsche Startseite
 - https://pagefoundry.de/en — English homepage
+- https://pagefoundry.de/consultation — Beratung/Anfrage
 - https://pagefoundry.de/individuelle-software
 - https://pagefoundry.de/webdesign-bergisches-land
 - https://pagefoundry.de/webdesign-wipperfuerth
@@ -53,5 +54,6 @@ Beratung: https://pagefoundry.de/consultation
 - https://pagefoundry.de/ki-telefonassistenz
 - https://pagefoundry.de/projekte/the-loft — Website-Referenz
 - https://pagefoundry.de/projekte/carbon-care — Software-Referenz
+- https://pagefoundry.de/agb
 - https://pagefoundry.de/impressum
 - https://pagefoundry.de/datenschutz
