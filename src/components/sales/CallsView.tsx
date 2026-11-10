@@ -16,7 +16,7 @@ type Task = {
 };
 type View = {
   admin: false; day: string;
-  batch: { state: "GENERATING" | "READY" | "FAILED"; targetCount: number; actualCount: number; note: string | null; entries: Entry[] };
+  batch: { state: "GENERATING" | "READY" | "FAILED"; targetCount: number; actualCount: number; keepUntilDone: boolean; note: string | null; entries: Entry[] };
   tasks: Task[];
 };
 type AdminView = { admin: true; batches: Array<{ id: string; state: string; actualCount: number; note: string | null; owner: { email: string; name: string | null }; entries: Array<{ id: string; rank: number; tier: string; companyName: string; city: string | null; status: string; reasonText: string }> }> };
@@ -80,7 +80,7 @@ export default function CallsView({ repName }: { repName: string }) {
   return (
     <div className="space-y-8">
       <div className="grid gap-3 sm:grid-cols-3">
-        <Stat label="Heute offen" value={batch.state === "READY" ? `${open.length} / ${batch.actualCount}` : "…"} />
+        <Stat label={batch.keepUntilDone ? "Noch offen" : "Heute offen"} value={batch.state === "READY" ? `${open.length} / ${batch.actualCount}` : "…"} />
         <Stat label="Erledigt" value={String(done.length)} />
         <Stat label="Rückrufe fällig" value={String(dueTasks.length)} />
       </div>
@@ -98,7 +98,7 @@ export default function CallsView({ repName }: { repName: string }) {
 
       <section>
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-lg text-pfText">Anrufliste heute</h2>
+          <h2 className="text-lg text-pfText">{batch.keepUntilDone ? "Anrufliste" : "Anrufliste heute"}</h2>
           <span className="text-xs text-pfMuted" style={mono}>Sortiert: kaputte Website → schwache Website → keine Website</span>
         </div>
         {batch.state === "GENERATING" && (
@@ -114,6 +114,7 @@ export default function CallsView({ repName }: { repName: string }) {
         )}
         {batch.state === "READY" && (
           <>
+            {batch.keepUntilDone && <p className="mb-3 text-sm text-pfSubtle">Diese Liste bleibt bestehen, bis alle Kontakte bearbeitet sind.</p>}
             {batch.note && <p className="mb-3 text-sm text-pfSubtle">{batch.note}</p>}
             {open.length === 0 ? (
               <p className="text-pfSubtle">Alle Kontakte für heute sind erledigt. Morgen gibt es eine neue Liste.</p>

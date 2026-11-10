@@ -633,6 +633,7 @@ model CallListBatch {
   leaseUntil  DateTime?
   targetCount Int
   actualCount Int            @default(0)
+  keepUntilDone Boolean      @default(false)
   note        String?        @db.VarChar(500)
   createdAt   DateTime       @default(now())
   finishedAt  DateTime?
@@ -671,7 +672,8 @@ model CallListEntry {
   @@index([leadfinderId])
 }
 
-// Globale Tagesreservierung (verhindert Doppelvergabe zwischen Verkaeufern). Pro
+// Globale Reservierung (verhindert Doppelvergabe zwischen Verkaeufern). Ohne
+// expiresAt bleibt sie fuer eine Liste bis zur Bearbeitung erhalten. Pro
 // Eintrag mehrere Schluessel: lf:<leadfinderId>, ph:<E.164>, host:<domain>, mail:<email>.
 // Abgelaufene Claims werden atomar uebernommen (INSERT ... ON CONFLICT ... WHERE).
 model CompanyClaim {
@@ -679,7 +681,7 @@ model CompanyClaim {
   leadfinderId String   @db.VarChar(40)
   ownerId      String
   entryId      String?
-  expiresAt    DateTime
+  expiresAt    DateTime?
   createdAt    DateTime @default(now())
 
   @@index([entryId])

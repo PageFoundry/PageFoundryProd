@@ -102,7 +102,7 @@ async function confirmCallOnce(actor: JwtPayload, input: { entryId?: string; tas
       if (entry.batch.ownerId !== actor.sub) throw new CallError(404, "NOT_FOUND", "Eintrag nicht gefunden.");
       if (entry.status !== "OPEN") throw new CallError(409, "ENTRY_CLOSED", "Dieser Eintrag ist nicht mehr offen.");
       const claim = await tx.companyClaim.findUnique({ where: { key: `lf:${entry.leadfinderId}` } });
-      if (!claim || claim.entryId !== entry.id || claim.expiresAt <= now) throw new CallError(409, "CLAIM_EXPIRED", "Die Reservierung ist abgelaufen (neuer Tag).");
+      if (!claim || claim.entryId !== entry.id || (claim.expiresAt && claim.expiresAt <= now)) throw new CallError(409, "CLAIM_EXPIRED", "Die Reservierung ist abgelaufen (neuer Tag).");
 
       const ident: Ident = { leadfinderId: entry.leadfinderId, phoneNorm: entry.phoneNorm, websiteHost: normalizeHost(entry.website), emailNorm: normalizeEmail(entry.email) };
       if (await isBlocked(tx, ident)) {

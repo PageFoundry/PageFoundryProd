@@ -3,8 +3,9 @@
 import assert from "node:assert/strict";
 import { after, test } from "node:test";
 import { prisma } from "../src/lib/prisma";
-import { generate, getOrStartBatch, type GenDeps } from "../src/lib/sales/callList";
+import { generate, getOrStartBatch, loadCallView, type GenDeps } from "../src/lib/sales/callList";
 import { berlinDay, dayToDbDate } from "../src/lib/sales/callGuide";
+import { confirmCall } from "../src/lib/sales/callService";
 import type { LfCandidate } from "../src/lib/sales/ranking";
 
 assert.equal(new URL(process.env.DATABASE_URL || "").pathname, "/pagefoundry_test");
@@ -35,6 +36,7 @@ function deps(over: Partial<GenDeps> = {}): GenDeps {
 after(async () => {
   await prisma.companyClaim.deleteMany({ where: { ownerId: { in: created } } });
   await prisma.callListBatch.deleteMany({ where: { ownerId: { in: created } } });
+  await prisma.salesLead.deleteMany({ where: { ownerId: { in: created } } });
   await prisma.user.deleteMany({ where: { id: { in: created } } });
   await prisma.$disconnect();
 });
@@ -88,4 +90,71 @@ test("Outreach-Sperrliste nicht lesbar -> FAILED mit Hinweis, keine Eintraege", 
   assert.equal(res.state, "FAILED");
   assert.match(res.note || "", /Sperrliste/);
   assert.equal(res.entries.length, 0);
+});
+
+test("20er-Liste bleibt nach Mitternacht aufrufbar und reserviert, bis alle Kontakte bearbeitet sind", async () => {
+  const u = await seller("retained");
+  const other = await seller("retained-other");
+  const now = new Date();
+  const previous = new Date(now.getTime() - 3 * 86400_000);
+  const day = berlinDay(previous);
+  const plz = ["42499", "44135", "45127", "50667", "53111", "40210", "41061", "33602"];
+  const candidates = Array.from({ length: 24 }, (_, i) => ({
+    ...cand(`retained-${stamp}-${i}`, `+4921929${10000 + i}`), plz: plz[Math.floor(i / 3)],
+  }));
+  const sources = deps({
+    fetchCandidates: async ({ tier }) => tier === "C" ? candidates : [],
+    now: () => previous,
+  });
+  const batch = await prisma.callListBatch.create({
+    data: { ownerId: u.id, day: dayToDbDate(day), targetCount: 20, keepUntilDone: true, genToken: "retained", leaseUntil: now },
+  });
+  await generate(batch.id, "retained", u.id, day, sources);
+  const ready = await prisma.callListBatch.findUniqueOrThrow({ where: { id: batch.id }, include: { entries: true } });
+  assert.equal(ready.actualCount, 20);
+  assert.equal(ready.entries.length, 20);
+  assert.equal(ready.note, null);
+  assert.equal(await prisma.companyClaim.count({ where: { ownerId: u.id, expiresAt: null } }), 40);
+
+  const todaySources = { ...sources, now: () => now };
+  assert.equal((await getOrStartBatch(u.id, todaySources)).id, batch.id);
+  const view = await loadCallView(u.id, now);
+  assert.equal(view.batch?.id, batch.id);
+  assert.equal(view.batch?.entries.filter((entry) => entry.status === "OPEN").length, 20);
+  assert.equal(await prisma.callListBatch.count({ where: { ownerId: u.id } }), 1);
+
+  const competing = await prisma.callListBatch.create({
+    data: { ownerId: other.id, day: dayToDbDate(berlinDay(now)), targetCount: 30, genToken: "other", leaseUntil: now },
+  });
+  await generate(competing.id, "other", other.id, berlinDay(now), todaySources);
+  const otherEntries = await prisma.callListEntry.findMany({ where: { batchId: competing.id } });
+  assert.equal(otherEntries.length, 4);
+  const reserved = new Set(ready.entries.map((entry) => entry.leadfinderId));
+  assert(otherEntries.every((entry) => !reserved.has(entry.leadfinderId)));
+
+  const first = ready.entries[0];
+  const confirmed = await confirmCall({ sub: u.id, role: "SALES", sv: u.sessionVersion }, { entryId: first.id }, now);
+  assert(confirmed.attemptId, "Reservierung ohne Ablauf bleibt nach dem Tageswechsel anrufbar");
+  await prisma.callListEntry.updateMany({ where: { batchId: batch.id, NOT: { id: first.id } }, data: { status: "DONE" } });
+  assert.equal((await getOrStartBatch(u.id, todaySources)).id, batch.id, "Ein offener Kontakt hält die Liste fest");
+  await prisma.callListEntry.update({ where: { id: first.id }, data: { status: "DONE" } });
+  const next = await getOrStartBatch(u.id, deps({ now: () => now, fetchCandidates: () => new Promise(() => {}) }));
+  assert.notEqual(next.id, batch.id, "Erst nach dem letzten Kontakt darf eine neue Liste entstehen");
+  assert.equal(next.day.toISOString(), dayToDbDate(berlinDay(now)).toISOString());
+});
+
+test("Normale Tageslisten verfallen weiterhin mit ihren befristeten Reservierungen", async () => {
+  const u = await seller("daily-expiry");
+  const now = new Date();
+  const previous = new Date(now.getTime() - 3 * 86400_000);
+  const day = berlinDay(previous);
+  const batch = await prisma.callListBatch.create({
+    data: { ownerId: u.id, day: dayToDbDate(day), targetCount: 30, genToken: "daily", leaseUntil: now },
+  });
+  const candidates = [cand(`daily-${stamp}`, "+492192999881")];
+  await generate(batch.id, "daily", u.id, day, deps({ now: () => previous, fetchCandidates: async ({ tier }) => tier === "C" ? candidates : [] }));
+  assert.equal(await prisma.companyClaim.count({ where: { ownerId: u.id, expiresAt: { lt: now } } }), 2);
+  const next = await getOrStartBatch(u.id, deps({ now: () => now, fetchCandidates: () => new Promise(() => {}) }));
+  assert.notEqual(next.id, batch.id);
+  assert.equal(await prisma.callListEntry.count({ where: { batchId: batch.id, status: "EXPIRED" } }), 1);
 });

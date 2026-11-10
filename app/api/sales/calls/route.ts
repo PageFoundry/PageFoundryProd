@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, forbidden, salesActor } from "@/lib/sales/http";
-import { getOrStartBatch, loadCallView } from "@/lib/sales/callList";
+import { getOrStartBatch, loadCallView, retainedBatchWhere } from "@/lib/sales/callList";
 import { berlinDay, dayToDbDate, demoForBranch, GUIDE, websiteSearchUrl } from "@/lib/sales/callGuide";
 import { detectBranch } from "@/lib/sales/ranking";
 import { formatPhoneDE } from "@/lib/sales/phone";
@@ -16,7 +16,7 @@ export async function GET() {
   try {
     if (actor.role === "ADMIN") {
       const batches = await prisma.callListBatch.findMany({
-        where: { day: dayToDbDate(berlinDay()) },
+        where: { OR: [{ day: dayToDbDate(berlinDay()) }, retainedBatchWhere(dayToDbDate(berlinDay()))] },
         include: { owner: { select: { email: true, name: true } }, entries: { orderBy: { rank: "asc" }, select: { id: true, rank: true, tier: true, companyName: true, city: true, status: true, reasonText: true } } },
       });
       return NextResponse.json({ admin: true, batches });
@@ -31,6 +31,7 @@ export async function GET() {
         state: b.state,
         targetCount: b.targetCount,
         actualCount: b.actualCount,
+        keepUntilDone: b.keepUntilDone,
         note: b.note,
         entries: (b.state === "READY" ? b.entries : []).map((e) => {
           const branch = detectBranch(e.companyName);

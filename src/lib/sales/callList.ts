@@ -64,14 +64,24 @@ export const defaultDeps: GenDeps = {
 
 const running = new Set<string>(); // Batch-IDs, die dieser Prozess gerade erzeugt
 
+export function retainedBatchWhere(dbDay: Date): Prisma.CallListBatchWhereInput {
+  return { keepUntilDone: true, day: { lt: dbDay }, state: "READY", entries: { some: { status: "OPEN" } } };
+}
+
 export async function getOrStartBatch(ownerId: string, deps: GenDeps = defaultDeps) {
   const now = deps.now();
   const day = berlinDay(now);
   const dbDay = dayToDbDate(day);
 
+  const retained = await prisma.callListBatch.findFirst({
+    where: { ownerId, ...retainedBatchWhere(dbDay) },
+    orderBy: { day: "asc" },
+  });
+  if (retained) return retained;
+
   // Nicht angerufene Eintraege frueherer Tage verfallen (Claims laufen am Tagesende ab).
   await prisma.callListEntry.updateMany({
-    where: { status: "OPEN", batch: { ownerId, day: { lt: dbDay } } },
+    where: { status: "OPEN", batch: { ownerId, day: { lt: dbDay }, keepUntilDone: false } },
     data: { status: "EXPIRED" },
   });
 
@@ -133,7 +143,7 @@ async function loadIdentities(now: Date): Promise<Identity> {
   const [leads, blocks, claims] = await Promise.all([
     prisma.salesLead.findMany({ select: { leadfinderId: true, phoneNorm: true, websiteHost: true, emailNorm: true } }),
     prisma.callBlock.findMany({ select: { leadfinderId: true, phoneNorm: true, websiteHost: true, emailNorm: true } }),
-    prisma.companyClaim.findMany({ where: { expiresAt: { gt: now } }, select: { key: true } }),
+    prisma.companyClaim.findMany({ where: { OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] }, select: { key: true } }),
   ]);
   const id: Identity = { lf: new Set(), phones: new Set(), hosts: new Set(), emails: new Set() };
   for (const r of [...leads, ...blocks]) {
@@ -176,6 +186,13 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T) => Promise<R
 }
 
 export async function generate(batchId: string, token: string, ownerId: string, day: string, deps: GenDeps) {
+  const batch = await prisma.callListBatch.findFirst({
+    where: { id: batchId, ownerId, genToken: token, state: "GENERATING" },
+    select: { targetCount: true },
+  });
+  if (!batch) return;
+  const targetCount = batch.targetCount;
+  if (!Number.isInteger(targetCount) || targetCount < 1 || targetCount > CALLS_PER_DAY) throw new PublicError("Ungültige Anzahl für die Anrufliste.");
   const started = deps.now().getTime();
   let lost = false;
   const heartbeat = setInterval(async () => {
@@ -215,7 +232,7 @@ export async function generate(batchId: string, token: string, ownerId: string, 
     const checkQueue = sorted.filter((p) => p.preTier !== "C" && p.c.website && !p.platform);
     const verified: Picked[] = [];
     let checks = 0;
-    for (let off = 0; off < checkQueue.length && verified.length < CALLS_PER_DAY && checks < GEN.maxSiteChecks; ) {
+    for (let off = 0; off < checkQueue.length && verified.length < targetCount && checks < GEN.maxSiteChecks; ) {
       if (lost) throw new PublicError("Erzeugung wurde von einem anderen Prozess übernommen.");
       if (deps.now().getTime() - started > GEN.wallMs) break;
       const n = Math.min(GEN.concurrency * 2, GEN.maxSiteChecks - checks, checkQueue.length - off);
@@ -257,7 +274,7 @@ export async function generate(batchId: string, token: string, ownerId: string, 
       return true;
     });
     // Reserve fuer Konflikte bei der Finalisierung: etwas mehr als noetig mitnehmen.
-    const candidates = capPerPlzPrefix(unique, MAX_PER_PLZ_PREFIX).slice(0, CALLS_PER_DAY + 15);
+    const candidates = capPerPlzPrefix(unique, MAX_PER_PLZ_PREFIX).slice(0, targetCount + 15);
 
     if (lost) throw new PublicError("Erzeugung wurde von einem anderen Prozess übernommen.");
     await finalize(batchId, token, ownerId, day, candidates, deps.now());
@@ -269,7 +286,6 @@ export async function generate(batchId: string, token: string, ownerId: string, 
 class StaleGenerationError extends Error {}
 
 async function finalize(batchId: string, token: string, ownerId: string, day: string, candidates: Picked[], now: Date) {
-  const expiresAt = endOfBerlinDay(day);
   try {
     await prisma.$transaction(
       async (tx) => {
@@ -279,10 +295,12 @@ async function finalize(batchId: string, token: string, ownerId: string, day: st
           data: { state: "READY", genToken: null, leaseUntil: null, finishedAt: now },
         });
         if (mine.count !== 1) throw new StaleGenerationError();
+        const batch = await tx.callListBatch.findUniqueOrThrow({ where: { id: batchId }, select: { targetCount: true, keepUntilDone: true } });
+        const expiresAt = batch.keepUntilDone ? null : endOfBerlinDay(day);
 
         let rank = 0;
         for (const p of candidates) {
-          if (rank >= CALLS_PER_DAY) break;
+          if (rank >= batch.targetCount) break;
           const emailNorm = normalizeEmail(p.c.email);
           const host = normalizeHost(p.c.website);
           // 2) Erneute Pruefung gegen dauerhafte Identitaeten (koennen seit dem Laden entstanden sein).
@@ -337,7 +355,7 @@ async function finalize(batchId: string, token: string, ownerId: string, day: st
           where: { id: batchId },
           data: {
             actualCount: rank,
-            note: rank < CALLS_PER_DAY ? `Nur ${rank} von ${CALLS_PER_DAY} passenden Kontakten gefunden.` : null,
+            note: rank < batch.targetCount ? `Nur ${rank} von ${batch.targetCount} passenden Kontakten gefunden.` : null,
           },
         });
       },
@@ -353,8 +371,9 @@ async function finalize(batchId: string, token: string, ownerId: string, day: st
 
 export async function loadCallView(ownerId: string, now: Date = new Date()) {
   const day = berlinDay(now);
-  const batch = await prisma.callListBatch.findUnique({
-    where: { ownerId_day: { ownerId, day: dayToDbDate(day) } },
+  const batch = await prisma.callListBatch.findFirst({
+    where: { ownerId, OR: [{ day: dayToDbDate(day) }, retainedBatchWhere(dayToDbDate(day))] },
+    orderBy: { day: "asc" },
     include: { entries: { orderBy: { rank: "asc" } } },
   });
   const tasks = await prisma.callTask.findMany({

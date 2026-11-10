@@ -75,6 +75,32 @@ after(async () => {
 
 let list;
 
+test("Festgehaltene Liste bleibt nach dem Tageswechsel für Verkäufer und Admin sichtbar", async () => {
+  const user = await makeUser("retained", "SALES");
+  const day = new Date();
+  day.setUTCDate(day.getUTCDate() - 3);
+  const batch = await prisma.callListBatch.create({
+    data: {
+      ownerId: user.id, day, state: "READY", targetCount: 1, actualCount: 1, keepUntilDone: true,
+      entries: { create: { leadfinderId: `retained-http-${stamp}`, rank: 1, tier: "C", reasonText: "Keine eigene Website hinterlegt", companyName: "Malerbetrieb Beständig", phoneNorm: "+492192999883" } },
+    },
+    include: { entries: true },
+  });
+  const entry = batch.entries[0];
+  await prisma.companyClaim.createMany({
+    data: [`lf:${entry.leadfinderId}`, `ph:${entry.phoneNorm}`].map((key) => ({ key, leadfinderId: entry.leadfinderId, ownerId: user.id, entryId: entry.id, expiresAt: null })),
+  });
+  const response = await api(user, "/api/sales/calls");
+  assert.equal(response.status, 200);
+  assert.equal(response.data.batch.keepUntilDone, true);
+  assert.equal(response.data.batch.entries.length, 1);
+  assert.equal(response.data.batch.entries[0].id, entry.id);
+  assert.equal(await prisma.callListBatch.count({ where: { ownerId: user.id } }), 1);
+  const admin = await api(users.admin, "/api/sales/calls");
+  assert(admin.data.batches.some((item) => item.id === batch.id));
+  assert.equal((await confirm(user, { entryId: entry.id })).status, 200);
+});
+
 test("Rollen: USER/Anonym 403, ADMIN nur lesend", async () => {
   assert.equal((await api(null, "/api/sales/calls")).status, 403);
   assert.equal((await api(users.user, "/api/sales/calls")).status, 403);

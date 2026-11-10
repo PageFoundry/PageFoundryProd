@@ -1,0 +1,2 @@
+ALTER TABLE "CallListBatch" ADD COLUMN "keepUntilDone" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "CompanyClaim" ALTER COLUMN "expiresAt" DROP NOT NULL;
