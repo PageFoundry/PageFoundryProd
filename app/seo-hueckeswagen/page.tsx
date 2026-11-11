@@ -19,12 +19,12 @@ export const metadata = createPageMetadata({
 
 const data: ServiceLandingData = {
   eyebrow: "SEO · Hückeswagen",
-  heroHeading: "SEO für Unternehmen in Hückeswagen und im Bergischen Land.",
+  heroHeading: "SEO für Unternehmen in Hückeswagen und im Bergischen Land",
   heroSubline:
     "Ich prüfe, bei welchen Suchanfragen Ihre Website erscheint, welche Seiten Besucher erreichen und wo der Kontaktweg stockt. Daraus entsteht ein konkreter Arbeitsplan für Technik, Inhalte und lokale Auffindbarkeit.",
   problem: {
     label: "Das Problem",
-    heading: "Einblendungen sollen zu passenden Besuchern werden.",
+    heading: "Einblendungen sollen zu passenden Besuchern werden",
     points: [
       "Die Seite hat Impressionen in Google, aber kaum Klicks — Snippet und Suchintention passen nicht zusammen.",
       "Wichtige Seiten sind schwer auffindbar, laden langsam oder erklären das Angebot nicht klar genug.",
@@ -33,7 +33,7 @@ const data: ServiceLandingData = {
   },
   steps: {
     label: "So arbeite ich",
-    heading: "Analyse zuerst. Dann Umsetzung.",
+    heading: "Analyse zuerst. Dann Umsetzung",
     items: [
       {
         title: "Bestandsaufnahme",
@@ -45,13 +45,13 @@ const data: ServiceLandingData = {
       },
       {
         title: "Umsetzung & Kontrolle",
-        text: "Ich setze die Maßnahmen um und beobachten, wie Impressionen, Klicks und Interaktion sich entwickeln. Weitere Optimierungsschritte vereinbare ich abhängig vom beauftragten Umfang.",
+        text: "Ich setze die Maßnahmen um und beobachte, wie Impressionen, Klicks und Interaktion sich entwickeln. Weitere Optimierungsschritte vereinbare ich abhängig vom beauftragten Umfang.",
       },
     ],
   },
   included: {
     label: "Leistungsumfang",
-    heading: "Diese Bereiche prüfe ich gemeinsam.",
+    heading: "Diese Bereiche prüfen wir gemeinsam",
     items: [
       "Technisches SEO: Ladezeiten, Crawlbarkeit, Struktur, Meta-Daten",
       "Inhaltliches SEO: Suchintention, Titles, Descriptions, interne Verlinkung",
@@ -61,7 +61,7 @@ const data: ServiceLandingData = {
     note: "Je nach Auftrag erhalten Sie eine priorisierte Maßnahmenliste aus der Analyse, eine Dokumentation der tatsächlich geänderten Punkte aus der Umsetzung und eine Auswertung verfügbarer Suchdaten aus der Kontrolle. Der konkrete Umfang wird im Angebot festgelegt. Rankings, Klickzahlen oder Umsatzsteigerungen kann ich nicht garantieren.",
   },
   pricing: {
-    label: "Preise", heading: "Google-Profil, technische Lesbarkeit oder neue Website.",
+    label: "Preise", heading: "Google-Profil, technische Lesbarkeit oder neue Website",
     tiers: [
       { name: "Google-Profil-Paket", price: "149 €", priceNote: "einmalig", features: ["Unternehmensprofil einrichten oder bereinigen", "Kategorien, Leistungen, Fotos und Bewertungslink"] },
       { name: "AI-Readiness-Umsetzung", price: "490 €", priceNote: "einmalig", features: ["llms.txt und, wo sinnvoll, Korrektur der strukturierten Daten (JSON-LD)", "Behebung von bis zu drei im Report belegten technischen Befunden", "Einbau oder Überarbeitung einer kompakten Informations- oder FAQ-Sektion", "Prüfung der gelieferten Dateien auf der Live-Seite und kurzer Abschlussnachweis", "Eine Korrekturschleife für Umsetzungsfehler"] },
@@ -71,7 +71,7 @@ const data: ServiceLandingData = {
   },
   faq: {
     label: "FAQ",
-    heading: "Häufige Fragen.",
+    heading: "Häufige Fragen",
     items: [
       {
         q: "Garantieren Sie ein bestimmtes Ranking?",
@@ -92,7 +92,7 @@ const data: ServiceLandingData = {
     ],
   },
   cta: {
-    heading: "Erst sehen, dann optimieren.",
+    heading: "Erst sehen, dann optimieren",
     text: "Kostenlose Erstberatung: Ich schaue mir Ihre Sichtbarkeit an und sage Ihnen, ob und wo SEO bei Ihnen Hebel hat — ehrlich und ohne Verkaufsdruck.",
   },
   related: {
@@ -119,7 +119,7 @@ export default function SeoHueckeswagenPage() {
           ],
         }}
       />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} centered />
     </>
   );
 }
