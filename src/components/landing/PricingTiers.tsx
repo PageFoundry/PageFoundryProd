@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import clsx from "clsx";
 
 export interface PricingTier {
@@ -6,7 +7,10 @@ export interface PricingTier {
   price: string;
   priceNote?: string;
   highlight?: boolean;
+  description?: string;
   features: string[];
+  cta?: { label: string; href: string };
+  alternative?: { price: string; note: string; href: string };
 }
 
 interface Props {
@@ -16,6 +20,52 @@ interface Props {
   footnote?: string;
   image?: { src: string; alt: string; caption: string };
   centered?: boolean;
+}
+
+function OfferCard({ tier }: { tier: PricingTier }) {
+  return (
+    <article
+      className={clsx(
+        "flex min-w-0 flex-col gap-6 border bg-pfCard p-6 text-center transition-colors hover:bg-pfCardHover md:p-8 lg:row-span-3 lg:grid lg:grid-rows-subgrid",
+        tier.highlight ? "border-pfAccent/70" : "border-pfBorderMid",
+      )}
+    >
+      <div>
+        <h3 className="text-balance font-display text-4xl leading-none text-pfText">{tier.name}</h3>
+        {tier.description && <p className="mt-4 text-base leading-7 text-pfSubtle">{tier.description}</p>}
+      </div>
+      <div className="text-pfAccent">
+        <p className="font-display text-6xl leading-none tabular-nums">{tier.price}</p>
+        {tier.priceNote && <p className="mt-2 text-sm text-pfSubtle">{tier.priceNote}</p>}
+      </div>
+      <div className="flex flex-1 flex-col gap-6">
+        <ul className="space-y-4 border-t border-pfBorder pt-6 text-sm leading-7 text-pfSubtle">
+          {tier.features.map((feature) => <li key={feature}>{feature}</li>)}
+        </ul>
+        <div className="mt-auto flex flex-col gap-6">
+          {tier.alternative && (
+            <div className="border-t border-pfBorder pt-6">
+              <p className="text-sm text-pfText">Alternativ betreut</p>
+              <p className="mt-2 text-base text-pfAccent">{tier.alternative.price}</p>
+              <p className="mt-3 text-xs leading-6 text-pfSubtle">{tier.alternative.note}</p>
+              <Link href={tier.alternative.href} prefetch={false} className="mt-3 inline-flex min-h-11 items-center justify-center text-sm text-pfAccent underline underline-offset-4 transition-colors hover:text-pfText">
+                Betreuung besprechen →
+              </Link>
+            </div>
+          )}
+          {tier.cta && (
+            <Link
+              href={tier.cta.href}
+              prefetch={false}
+              className={clsx(tier.highlight ? "btn-accent" : "btn-outline", "!min-h-12 !w-full !rounded-lg !px-4 !py-3 !font-sans !text-sm !font-medium !normal-case !tracking-normal !transition-colors")}
+            >
+              {tier.cta.label} →
+            </Link>
+          )}
+        </div>
+      </div>
+    </article>
+  );
 }
 
 export default function PricingTiers({ label, heading, tiers, footnote, image, centered = false }: Props) {
@@ -29,8 +79,8 @@ export default function PricingTiers({ label, heading, tiers, footnote, image, c
           <h2 className="font-display text-5xl leading-none text-pfText md:text-7xl">{heading}</h2>
         </div>
 
-        <div className={`grid gap-px overflow-hidden rounded-3xl bg-pfBorder ${cols}`}>
-          {tiers.map((tier) => (
+        <div className={clsx("grid", cols, centered ? "gap-5" : "gap-px overflow-hidden rounded-3xl bg-pfBorder")}>
+          {tiers.map((tier) => centered ? <OfferCard key={tier.name} tier={tier} /> : (
             <div
               key={tier.name}
               className={clsx("flex flex-col gap-4 bg-pfSurface p-8", tier.highlight && "ring-1 ring-inset ring-pfBorderAccent", centered && "lg:row-span-3 lg:grid lg:grid-rows-subgrid")}
