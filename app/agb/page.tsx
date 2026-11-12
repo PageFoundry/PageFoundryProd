@@ -60,8 +60,12 @@ export default async function AgbPage() {
 
           <h2 className="text-xl font-semibold mt-10 mb-3">7. Nutzungsrechte</h2>
           <p>
-            Nach vollständiger Zahlung erhält der Kunde einfache, nicht übertragbare Nutzungsrechte
-            an den erstellten Werken. Vor Zahlung ist jede Nutzung untersagt.
+            Nach vollständiger Zahlung gehört die für den Kunden erstellte Website dem Kunden. Er
+            darf sie zeitlich und räumlich unbeschränkt nutzen, ändern, zu einem anderen Anbieter
+            umziehen und von Dritten weiterentwickeln lassen und erhält auf Wunsch die Quelldateien.
+            Für enthaltene Open-Source-Bestandteile gelten deren Lizenzen. Allgemeine Werkzeuge und
+            wiederverwendbare Bausteine darf der Anbieter weiterhin in anderen Projekten einsetzen.
+            Vor Zahlung ist jede Nutzung untersagt.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">8. Gewährleistung</h2>
@@ -128,8 +132,12 @@ export default async function AgbPage() {
 
           <h2 className="text-xl font-semibold mt-10 mb-3">7. Usage rights</h2>
           <p>
-            After full payment the customer receives a simple, non-transferable right to use the
-            delivered work. Any use before payment is not permitted.
+            After full payment the website created for the customer belongs to the customer. The
+            customer may use and modify it without limits in time or territory, move it to another
+            provider and have third parties develop it further, and receives the source files on
+            request. Open-source components remain subject to their licences. The provider may
+            continue to use its general tools and reusable building blocks in other projects. Any
+            use before payment is not permitted.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">8. Warranty</h2>
