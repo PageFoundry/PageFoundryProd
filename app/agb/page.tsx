@@ -65,7 +65,9 @@ export default async function AgbPage() {
             umziehen und von Dritten weiterentwickeln lassen und erhält auf Wunsch die Quelldateien.
             Für enthaltene Open-Source-Bestandteile gelten deren Lizenzen. Allgemeine Werkzeuge und
             wiederverwendbare Bausteine darf der Anbieter weiterhin in anderen Projekten einsetzen.
-            Vor Zahlung ist jede Nutzung untersagt.
+            Bis zur vollständigen Zahlung darf der Kunde die Website nur im vereinbarten Umfang
+            nutzen. Im betreuten Modell mit monatlicher Zahlung darf er die veröffentlichte Website
+            während der Laufzeit nutzen; sie gehört ihm nach 24 Monaten oder mit der Ablöse.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">8. Gewährleistung</h2>
@@ -136,8 +138,10 @@ export default async function AgbPage() {
             customer may use and modify it without limits in time or territory, move it to another
             provider and have third parties develop it further, and receives the source files on
             request. Open-source components remain subject to their licences. The provider may
-            continue to use its general tools and reusable building blocks in other projects. Any
-            use before payment is not permitted.
+            continue to use its general tools and reusable building blocks in other projects. Until
+            full payment the customer may use the website only to the extent agreed. With the
+            managed service and monthly payments, the customer may use the published website during
+            the term; it belongs to the customer after 24 months or on buyout.
           </p>
 
           <h2 className="text-xl font-semibold mt-10 mb-3">8. Warranty</h2>
