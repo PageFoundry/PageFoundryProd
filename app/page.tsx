@@ -674,7 +674,7 @@ export default async function LandingPage() {
                 </div>
                 {/* Inner wrapper: the global mobile touch-target rule turns links into centered inline-flex rows. */}
                 <div className="flex w-full flex-col gap-5 self-stretch p-6 pt-48 md:p-9 md:pt-72">
-                  <span className="inline-flex w-fit items-center border border-pfBorderMid bg-black/75 px-2.5 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-pfText">
+                  <span className="font-mono text-xs leading-5 text-pfSubtle">
                     {door.badge}
                   </span>
                   <span className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfMuted">{door.kicker}</span>
