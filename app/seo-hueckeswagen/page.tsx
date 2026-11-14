@@ -3,8 +3,9 @@ import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "SEO Hückeswagen";
+const META_TITLE = "SEO Hückeswagen: Analyse, Technik & Google-Profil";
 const DESCRIPTION =
-  "SEO aus Hückeswagen für Unternehmen im Bergischen Land: Technik, Suchinhalte und interne Links gezielt verbessern. Google-Profil-Paket 149 €, AI-Readiness-Umsetzung 490 €. Kostenlose Erstberatung.";
+  "SEO aus Hückeswagen für Betriebe im Bergischen Land: Technik, Suchinhalte und interne Links verbessern. Google-Profil-Paket 149 €. Kostenlose Erstberatung.";
 const URL = "https://pagefoundry.de/seo-hueckeswagen";
 
 const TAX_NOTE =
@@ -12,7 +13,7 @@ const TAX_NOTE =
 
 export const metadata = createPageMetadata({
   path: "/seo-hueckeswagen",
-  title: TITLE,
+  title: META_TITLE,
   description: DESCRIPTION,
   locale: "de_DE",
 });

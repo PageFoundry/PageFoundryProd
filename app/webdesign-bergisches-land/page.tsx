@@ -4,6 +4,7 @@ import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Webdesign Bergisches Land";
+const META_TITLE = "Webdesign Bergisches Land: Webagentur aus Hückeswagen";
 const DESCRIPTION =
   "Webdesign im Bergischen Land für Websites und Landingpages: klare Angebote, mobile Umsetzung und transparente Festpreise ab 790 €. Kostenlose Erstberatung anfragen.";
 const URL = "https://pagefoundry.de/webdesign-bergisches-land";
@@ -13,7 +14,7 @@ const TAX_NOTE =
 
 export const metadata = createPageMetadata({
   path: "/webdesign-bergisches-land",
-  title: TITLE,
+  title: META_TITLE,
   description: DESCRIPTION,
   locale: "de_DE",
 });
