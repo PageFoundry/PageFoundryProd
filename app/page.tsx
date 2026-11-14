@@ -14,7 +14,7 @@ const homeMetadata = {
   de: {
     title: "Webdesign & individuelle Software aus Hückeswagen | PageFoundry",
     description:
-      "Ich baue Websites ab 790 € und individuelle Betriebssoftware ab 2.500 € aus Hückeswagen. Für Unternehmen auch betreut ab 190 € Einrichtung und 49 €/Monat.",
+      "Ich baue Websites ab 790 € und Betriebssoftware ab 2.500 € aus Hückeswagen. Dazu SEO, Hosting und Website-Wartung für Unternehmen im Bergischen Land.",
     openGraphDescription:
       "Websites, Landingpages und individuelle Software aus Hückeswagen – mit echten Projekten, transparenten Preisen und einem festen Ansprechpartner.",
     locale: "de_DE",
@@ -272,8 +272,8 @@ const copy = {
       },
       {
         key: "Care",
-        title: "Hosting & Betreuung",
-        text: "Für Erreichbarkeit, Updates und eine feste technische Verantwortung nach dem Launch.",
+        title: "Hosting, Wartung & Betreuung",
+        text: "Website-Wartung nach dem Launch: Erreichbarkeit, Updates und eine feste technische Verantwortung.",
         cta: "Betreuung ansehen",
         href: "/website-wache",
       },
@@ -376,7 +376,7 @@ const copy = {
       },
       {
         q: "Kombinieren Sie SEO mit Hosting und Technik?",
-        a: "Ja. Technische Schwächen, Performance und unklare Seitenstruktur wirken direkt darauf, ob Menschen Sie finden, verstehen und kontaktieren.",
+        a: "Ja. Suchmaschinenoptimierung beginnt bei mir mit der Technik: Schwächen im Code, Ladezeit und eine unklare Seitenstruktur wirken direkt darauf, ob Menschen Sie finden, verstehen und kontaktieren.",
       },
     ],
   },
