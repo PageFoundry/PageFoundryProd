@@ -3,8 +3,9 @@ import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "KI-Telefonassistenz";
+const META_TITLE = "KI-Telefonassistent für Betriebe: 790 € + 249 €/Monat";
 const DESCRIPTION =
-  "Die KI-Telefonassistenz von PageFoundry nimmt Anrufe an, erfasst das Anliegen, bucht Termine und gibt jeden Kontakt sauber an Sie weiter. 790 € Einrichtung, 249 €/Monat.";
+  "KI-Telefonassistent für Handwerk, Gastronomie und Werkstätten: nimmt Anrufe an, erfasst das Anliegen, bucht Termine. 790 € Einrichtung, 249 €/Monat.";
 const URL = "https://pagefoundry.de/ki-telefonassistenz";
 
 const TAX_NOTE =
@@ -12,16 +13,23 @@ const TAX_NOTE =
 
 export const metadata = createPageMetadata({
   path: "/ki-telefonassistenz",
-  title: TITLE,
+  title: META_TITLE,
   description: DESCRIPTION,
   locale: "de_DE",
 });
 
 const data: ServiceLandingData = {
   eyebrow: "KI-Telefonassistenz",
-  heroHeading: "Anrufe annehmen, Anliegen erfassen, Rückrufe vorbereiten.",
+  heroHeading: "KI-Telefonassistent: Anrufe annehmen, Anliegen erfassen, Rückrufe vorbereiten.",
   heroSubline:
     "Meine KI-Telefonassistenz nimmt Anrufe entgegen, wenn Sie keine Zeit haben — erfasst das Anliegen, bucht auf Wunsch direkt einen Termin und gibt jeden Kontakt sauber an Sie weiter. Mit echter Festnetznummer.",
+  heroNote: (
+    <>
+      Live testen: Rufen Sie{" "}
+      <a href="tel:+4921928743999" className="text-pfAccent underline underline-offset-4">02192 8743999</a>{" "}
+      an. Dort nimmt die Assistenz ab.
+    </>
+  ),
   problem: {
     label: "Das Problem",
     heading: "Im Tagesgeschäft bleibt wenig Zeit für das Telefon.",
@@ -97,6 +105,14 @@ const data: ServiceLandingData = {
     heading: "Häufige Fragen.",
     items: [
       {
+        q: "Was kostet ein KI-Telefonassistent?",
+        a: "790 € Einrichtung und 249 € im Monat. Enthalten sind 300 Gesprächsminuten, jede weitere Minute kostet 0,45 €. Alle Preise sind Endpreise.",
+      },
+      {
+        q: "Kann der Assistent Termine buchen?",
+        a: "Ja. Die Assistenz prüft freie Zeiten und bucht auf Wunsch direkt einen Termin in Ihren Kalender. Kommt kein Termin zustande, erfasst sie Name, Anliegen und Rückrufwunsch.",
+      },
+      {
         q: "Klingt das wie ein Roboter?",
         a: "Die Assistenz spricht natürlich und in Ihrem Namen. Anrufern wird zu Beginn transparent gesagt, dass ein digitaler Assistent antwortet.",
       },
@@ -118,13 +134,35 @@ const data: ServiceLandingData = {
     heading: "Wie soll Ihre Telefonassistenz arbeiten?",
     text: "In einem kurzen, kostenlosen Gespräch kläre ich, wie Ihre Anrufe heute laufen und wie die Assistenz konkret aussehen würde.",
   },
+  related: {
+    label: "Passende Seiten",
+    items: [
+      { label: "Website für Handwerker", href: "/website-fuer-handwerker" },
+      { label: "Website für Restaurants und Cafés", href: "/website-fuer-gastronomie" },
+      { label: "Website-Wache", href: "/website-wache" },
+      { label: "Individuelle Software", href: "/individuelle-software" },
+    ],
+  },
 };
 
 export default function KiTelefonassistenzPage() {
   return (
     <>
-      <JsonLd data={getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL })} />
-      <ServiceLanding data={data} />
+      <JsonLd
+        data={{
+          ...getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL }),
+          offers: [
+            { "@type": "Offer", name: "Einrichtung, einmalig", price: 790, priceCurrency: "EUR" },
+            {
+              "@type": "Offer",
+              name: "Betrieb pro Monat, 300 Gesprächsminuten inklusive, danach 0,45 € je Minute",
+              price: 249,
+              priceCurrency: "EUR",
+            },
+          ],
+        }}
+      />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: TITLE, path: "/ki-telefonassistenz" }] }} />
     </>
   );
 }

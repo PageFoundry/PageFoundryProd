@@ -4,10 +4,11 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { regionalPricing, regionalReferences } from "@/lib/seo/regionalWebdesign";
 
 const TITLE = "Webdesign Wipperfürth";
+const META_TITLE = "Webdesign Wipperfürth: Websites ab 790 € Festpreis";
 const DESCRIPTION = "Webdesign für Wipperfürth aus dem benachbarten Hückeswagen: Websites für Handwerk, Handel und Gastronomie. Persönlicher Termin nach Absprache, Website ab 790 €.";
 const PATH = "/webdesign-wipperfuerth";
 
-export const metadata = createPageMetadata({ path: PATH, title: TITLE, description: DESCRIPTION, locale: "de_DE" });
+export const metadata = createPageMetadata({ path: PATH, title: META_TITLE, description: DESCRIPTION, locale: "de_DE" });
 
 const data: ServiceLandingData = {
   pricing: regionalPricing,
@@ -75,12 +76,25 @@ const data: ServiceLandingData = {
     "heading": "Welche Fragen soll Ihre Website vor dem ersten Anruf beantworten?",
     "text": "In der kostenlosen Erstberatung kläre ich Ausgangslage, Ziele und den nächsten sinnvollen Schritt. Ein persönlicher Termin vor Ort wird individuell vereinbart."
   },
+  auditHint: true,
   "related": {
     "label": "Weitere Leistungen aus Hückeswagen",
     "items": [
       {
         "label": "Webdesign im Bergischen Land",
         "href": "/webdesign-bergisches-land"
+      },
+      {
+        "label": "Webdesign Wermelskirchen",
+        "href": "/webdesign-wermelskirchen"
+      },
+      {
+        "label": "Webdesign Radevormwald",
+        "href": "/webdesign-radevormwald"
+      },
+      {
+        "label": "Webdesign Wuppertal",
+        "href": "/webdesign-wuppertal"
       },
       {
         "label": "Individuelle Software",
@@ -101,7 +115,7 @@ export default function RegionalWebdesignPage() {
         ...getServiceSchema({ name: TITLE, description: DESCRIPTION, url: `https://pagefoundry.de${PATH}` }),
         areaServed: { "@type": "City", name: "Wipperfürth" },
       }} />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: "Webdesign Bergisches Land", path: "/webdesign-bergisches-land" }, { name: TITLE, path: PATH }] }} />
     </>
   );
 }

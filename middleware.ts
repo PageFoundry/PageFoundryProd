@@ -22,6 +22,13 @@ const GERMAN_ONLY_PATHS = new Set([
   "/individuelle-software",
   "/projekte/carbon-care",
   "/projekte/the-loft",
+  "/projekte",
+  "/website-erstellen-lassen",
+  "/website-kosten",
+  "/website-mieten",
+  "/website-fuer-handwerker",
+  "/website-fuer-gastronomie",
+  "/webdesign-wuppertal",
 ]);
 
 export const FORCED_LANG_HEADER = "x-pf-forced-lang";

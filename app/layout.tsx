@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { getServerI18n } from '@/i18n/server';
 import { AttributionProvider } from '@/components/AttributionProvider';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/metadata';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -29,6 +30,43 @@ const spaceMono = Space_Mono({
 });
 
 const BASE = "https://pagefoundry.de";
+
+// Service and city pages were only reachable from one block on the home page.
+// /webdesign-remscheid is left out until the domain experiment ends on 2026-12-12.
+const footerLinkGroups = [
+  {
+    heading: "Websites",
+    links: [
+      { label: "Website erstellen lassen", href: "/website-erstellen-lassen" },
+      { label: "Website-Kosten", href: "/website-kosten" },
+      { label: "Website mieten", href: "/website-mieten" },
+      { label: "Bestehende Website überarbeiten", href: "/website-rettung" },
+      { label: "Website für Handwerker", href: "/website-fuer-handwerker" },
+      { label: "Website für Restaurants und Cafés", href: "/website-fuer-gastronomie" },
+    ],
+  },
+  {
+    heading: "Region",
+    links: [
+      { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "Webdesign Wuppertal", href: "/webdesign-wuppertal" },
+      { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
+      { label: "Webdesign Wipperfürth", href: "/webdesign-wipperfuerth" },
+      { label: "Webdesign Radevormwald", href: "/webdesign-radevormwald" },
+      { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
+    ],
+  },
+  {
+    heading: "Mehr",
+    links: [
+      { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
+      { label: "Individuelle Software", href: "/individuelle-software" },
+      { label: "Website-Wache", href: "/website-wache" },
+      { label: "Projekte", href: "/projekte" },
+      { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de" },
+    ],
+  },
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
@@ -63,15 +101,14 @@ export const metadata: Metadata = {
     url: BASE,
     locale: "de_DE",
     alternateLocale: ["en_US"],
-    images: [{ url: "/PAGEfoundry.png", alt: "PageFoundry" }],
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "PageFoundry | Landing Pages, Hosting & SEO",
     description:
       "Hochkonvertierende Landing Pages, Hosting, SEO & Speed-Optimierung.",
-    site: "@pagefoundry",
-    images: ["/PAGEfoundry.png"],
+    images: [DEFAULT_OG_IMAGE.url],
   },
 };
 
@@ -87,6 +124,24 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <Navbar />
             <main className="flex-1">{children}</main>
             <footer className="border-t border-pfBorder text-xs text-pfMuted px-6 py-10">
+              {lang === "de" && (
+                <nav aria-label="Leistungen und Regionen" className="mx-auto mb-10 grid max-w-screen-xl gap-8 border-b border-pfBorder pb-10 sm:grid-cols-3">
+                  {footerLinkGroups.map((group) => (
+                    <div key={group.heading}>
+                      <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-widest text-pfMuted">{group.heading}</p>
+                      <ul className="grid gap-1">
+                        {group.links.map((link) => (
+                          <li key={link.href}>
+                            <a href={link.href} className="inline-flex min-h-8 items-center text-sm text-pfSubtle transition-colors hover:text-pfAccent">
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </nav>
+              )}
               <div className="max-w-screen-xl mx-auto flex flex-col gap-2 items-center">
                 <span className="font-mono tracking-widest uppercase text-[0.6rem] text-pfMuted">
                   © {new Date().getFullYear()} PageFoundry

@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 
 export const BASE_URL = "https://pagefoundry.de";
 
-const DEFAULT_OG_IMAGE = { url: "/PAGEfoundry.png", alt: "PageFoundry" };
+// 1200×630 so link previews show the full image instead of cropping the square logo.
+export const DEFAULT_OG_IMAGE = {
+  url: "/og-pagefoundry.png",
+  width: 1200,
+  height: 630,
+  alt: "PageFoundry: Websites und Software aus Hückeswagen",
+};
 
 type PageMetadataInput = {
   /** Path starting with "/", e.g. "/agb". */
@@ -54,7 +60,6 @@ export function createPageMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description,
-      site: "@pagefoundry",
       images: [DEFAULT_OG_IMAGE.url],
     },
     ...(robots ? { robots } : {}),

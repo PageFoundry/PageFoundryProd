@@ -109,6 +109,7 @@ const data: ServiceLandingData = {
       },
     ],
   },
+  auditHint: true,
   related: {
     label: "Passende Seiten",
     items: [
@@ -117,6 +118,8 @@ const data: ServiceLandingData = {
       { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
       { label: "Webdesign Remscheid", href: "/webdesign-remscheid" },
       { label: "Webdesign Radevormwald", href: "/webdesign-radevormwald" },
+      { label: "Webdesign Wuppertal", href: "/webdesign-wuppertal" },
+      { label: "Website-Kosten", href: "/website-kosten" },
       { label: "Website-Rettung", href: "/website-rettung" },
       { label: "Website-Wache (Monitoring)", href: "/website-wache" },
       { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de" },
@@ -139,7 +142,7 @@ export default function WebdesignBergischesLandPage() {
           ],
         }}
       />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: TITLE, path: "/webdesign-bergisches-land" }] }} />
     </>
   );
 }

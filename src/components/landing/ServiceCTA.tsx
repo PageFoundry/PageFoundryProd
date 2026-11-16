@@ -1,14 +1,18 @@
 import Link from "next/link";
 import clsx from "clsx";
+import { WHATSAPP_URL } from "@/components/JsonLd";
 
 interface Props {
   heading: string;
   text: string;
   consultationHref?: string;
   compact?: boolean;
+  whatsappHref?: string;
+  /** Second, lower-commitment path for visitors who are not ready to book. */
+  auditHint?: boolean;
 }
 
-export default function ServiceCTA({ heading, text, consultationHref, compact = false }: Props) {
+export default function ServiceCTA({ heading, text, consultationHref, compact = false, whatsappHref, auditHint = false }: Props) {
   const actionClass = compact && "!min-h-12 !rounded-lg !px-6 !py-3 !font-sans !text-sm !font-medium !normal-case !tracking-normal !transition-colors";
 
   return (
@@ -24,13 +28,21 @@ export default function ServiceCTA({ heading, text, consultationHref, compact = 
           <Link href={consultationHref ?? "/consultation"} className={clsx("btn-accent", actionClass)}>
             Kostenlose Beratung buchen →
           </Link>
-          <a href="https://wa.me/4915167076918" className={clsx("btn-outline", actionClass)}>WhatsApp</a>
+          <a href={whatsappHref ?? WHATSAPP_URL} className={clsx("btn-outline", actionClass)}>WhatsApp</a>
           {!compact && <a href="tel:+4921928743999" className="btn-outline">
             Telefon: 02192 8743999
           </a>}
         </div>
         {compact && <a href="tel:+4921928743999" className="mt-6 inline-flex min-h-11 items-center text-sm text-pfSubtle underline underline-offset-4 transition-colors hover:text-pfText">Telefon: 02192 8743999</a>}
         <p className="mt-4 text-xs leading-6 text-pfMuted">Telefon: Mein KI-Assistent nimmt an, ich rufe zurück.</p>
+        {auditHint && (
+          <p className="mt-6 text-sm leading-7 text-pfSubtle">
+            Oder zuerst selbst prüfen:{" "}
+            <a href="https://audit.pagefoundry.de" className="text-pfAccent underline underline-offset-4">
+              kostenloser KI-Sichtbarkeits-Check ↗
+            </a>
+          </p>
+        )}
       </div>
     </section>
   );

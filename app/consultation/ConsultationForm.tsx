@@ -72,14 +72,14 @@ function computeAllowedDates(locale: string, now: Date = new Date()): AllowedDat
   return out;
 }
 
+// Sichtbare Auswahl nach dem aktuellen Angebot. CONTENT_COPY, ECOMMERCE_OPTIMIZATION und
+// CONVERSION_OPT bleiben im Prisma-Enum und in der API fuer bestehende Buchungen gueltig,
+// werden aber nicht mehr angeboten; neue Werte braeuchten eine Migration.
 const CONSULTATION_TYPES: ConsultationType[] = [
   "LANDING_PAGE",
-  "SEO_AUDIT",
-  "CONTENT_COPY",
-  "ECOMMERCE_OPTIMIZATION",
   "FULL_SITE_REVIEW",
-  "CONVERSION_OPT",
   "SYSTEMS_AUTOMATION",
+  "SEO_AUDIT",
   "SPEED_AUDIT",
 ];
 
@@ -93,8 +93,15 @@ const PACKAGE_TO_TYPE: Partial<Record<ProductKey, ConsultationType>> = {
   all_inclusive: "LANDING_PAGE",
   seo_basic: "SEO_AUDIT",
   seo_advanced: "SEO_AUDIT",
+  google_profil: "SEO_AUDIT",
+  ai_readiness: "SEO_AUDIT",
   speed_opt: "SPEED_AUDIT",
+  betrieb: "SPEED_AUDIT",
+  website_wache: "SPEED_AUDIT",
+  website_wache_care: "SPEED_AUDIT",
   request_offer: "SYSTEMS_AUTOMATION",
+  software: "SYSTEMS_AUTOMATION",
+  ki_telefon: "SYSTEMS_AUTOMATION",
 };
 
 type FieldErrors = {
@@ -314,6 +321,12 @@ export default function ConsultationPage() {
               +49 2192 8743999
             </a>{" "}
             {t("consultation.phoneHintSuffix")}
+          </p>
+          <p className="text-pfMuted text-xs font-mono mt-2 tracking-wide">
+            {t("consultation.whatsappHint")}{" "}
+            <a href="https://wa.me/4915167076918" className="text-pfAccent">
+              WhatsApp
+            </a>
           </p>
         </div>
 

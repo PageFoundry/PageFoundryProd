@@ -6,7 +6,8 @@ import WebsitePackages from "@/components/WebsitePackages";
 import { websiteStages } from "@/lib/websitePricing";
 import { additionalProductKeys } from "@/lib/products";
 import { getServerI18n } from "@/i18n/server";
-import JsonLd, { regionalAreaServed } from "@/components/JsonLd";
+import JsonLd, { BUSINESS_ID, FOUNDER_ID, WEBSITE_ID, businessAddress, getFaqSchema, regionalAreaServed } from "@/components/JsonLd";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/metadata";
 import CaseStudyShowcase from "@/components/landing/CaseStudyShowcase";
 import FounderTrust from "@/components/landing/FounderTrust";
 
@@ -58,13 +59,13 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: current.locale,
       alternateLocale: [current.alternateLocale],
       type: "website",
-      images: [{ url: "/PAGEfoundry.png", alt: "PageFoundry" }],
+      images: [DEFAULT_OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title: current.title,
       description: current.openGraphDescription,
-      images: ["/PAGEfoundry.png"],
+      images: [DEFAULT_OG_IMAGE.url],
     },
   };
 }
@@ -75,23 +76,23 @@ function getOrganizationSchema(lang: "de" | "en") {
   return {
     "@context": "https://schema.org",
     "@type": isDe ? "LocalBusiness" : "ProfessionalService",
+    "@id": BUSINESS_ID,
     name: "PageFoundry",
     url: "https://pagefoundry.de",
     description: isDe
       ? "Webstudio aus Hückeswagen für Websites, Landingpages, individuelle Software, Hosting, SEO und laufende technische Betreuung."
       : "Web studio based in Hückeswagen, Germany, building websites, landing pages, custom software, hosting, SEO, and ongoing technical care.",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Kastanienweg 20a",
-      postalCode: "42499",
-      addressLocality: "Hückeswagen",
-      addressCountry: "DE",
-    },
+    address: businessAddress,
     telephone: "+49 2192 8743999",
     email: "admin@pagefoundry.de",
     image: "https://pagefoundry.de/PAGEfoundry.png",
     logo: "https://pagefoundry.de/PAGEfoundry.png",
-    founder: { "@type": "Person", name: "Fabian Franke" },
+    founder: {
+      "@type": "Person",
+      "@id": FOUNDER_ID,
+      name: "Fabian Franke",
+      jobTitle: isDe ? "Webentwickler und Applied AI Engineer" : "Web developer and applied AI engineer",
+    },
     areaServed: isDe ? regionalAreaServed : { "@type": "Country", name: "Germany" },
     ...(!isDe ? { availableLanguage: ["German", "English"] } : {}),
     priceRange: "€€",
@@ -107,7 +108,7 @@ function getOrganizationSchema(lang: "de" | "en") {
       "@type": "OfferCatalog",
       name: isDe ? "Web-Leistungen" : "Web services",
       itemListElement: [
-        ...websiteStages.map((stage) => ({ "@type": "Offer", price: stage.purchase, priceCurrency: "EUR", url: `https://pagefoundry.de/consultation?package=${stage.id}&modell=kauf`, itemOffered: { "@type": "Service", name: stage.name, description: isDe ? `${stage.de}. ${stage.scope}. Betreut nur für Unternehmen: ${stage.setup} € Einrichtung + ${stage.monthly} €/Monat für 24 Monate; danach ${stage.later} €/Monat.` : `${stage.en}. ${stage.scopeEn}. Managed for businesses only: EUR ${stage.setup} setup + EUR ${stage.monthly}/month for 24 months; then EUR ${stage.later}/month.` } })),
+        ...websiteStages.map((stage) => ({ "@type": "Offer", price: stage.purchase, priceCurrency: "EUR", url: "https://pagefoundry.de/consultation", itemOffered: { "@type": "Service", name: stage.name, description: isDe ? `${stage.de}. ${stage.scope}. Betreut nur für Unternehmen: ${stage.setup} € Einrichtung + ${stage.monthly} €/Monat für 24 Monate; danach ${stage.later} €/Monat.` : `${stage.en}. ${stage.scopeEn}. Managed for businesses only: EUR ${stage.setup} setup + EUR ${stage.monthly}/month for 24 months; then EUR ${stage.later}/month.` } })),
         ...[
           ["Betrieb", 25, "Hosting, Domain, SSL, Backups, Überwachung, Bericht; monatlich, Änderungen nach Aufwand"],
           ["Website-Wache", 49, "Monatlich: externe Überwachung, Frühwarnung, Monatsbericht"],
@@ -120,6 +121,18 @@ function getOrganizationSchema(lang: "de" | "en") {
         ].map(([name, price, description]) => ({ "@type": "Offer", price, priceCurrency: "EUR", itemOffered: { "@type": "Service", name, description } })),
       ],
     },
+  };
+}
+
+function getWebsiteSchema(lang: "de" | "en") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": WEBSITE_ID,
+    name: "PageFoundry",
+    url: "https://pagefoundry.de/",
+    inLanguage: lang,
+    publisher: { "@id": BUSINESS_ID },
   };
 }
 
@@ -281,8 +294,14 @@ const copy = {
     allServicesHeading: "Zusatzleistungen und Software",
     allServicesText: "Transparente Einstiegspreise für klar umrissene Leistungen. Individuelle Kombinationen kläre ich vorab. Alle Preise sind Endpreise — als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer ausgewiesen.",
     detailLinks: [
+      { label: "Website erstellen lassen", href: "/website-erstellen-lassen" },
+      { label: "Website-Kosten", href: "/website-kosten" },
+      { label: "Website mieten", href: "/website-mieten" },
+      { label: "Website für Handwerker", href: "/website-fuer-handwerker" },
+      { label: "Website für Restaurants und Cafés", href: "/website-fuer-gastronomie" },
       { label: "Individuelle Software", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
+      { label: "Webdesign Wuppertal", href: "/webdesign-wuppertal" },
       { label: "Webdesign Wipperfürth", href: "/webdesign-wipperfuerth" },
       { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
       { label: "Webdesign Remscheid", href: "/webdesign-remscheid" },
@@ -291,6 +310,7 @@ const copy = {
       { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
       { label: "Website-Wache", href: "/website-wache" },
       { label: "Website-Rettung", href: "/website-rettung" },
+      { label: "Projekte", href: "/projekte" },
       { label: "KI-Sichtbarkeits-Check", href: "https://audit.pagefoundry.de", external: true },
     ] as { label: string; href: string; external?: boolean }[],
     mobilePricesSummary: "Preisliste öffnen",
@@ -637,6 +657,8 @@ export default async function LandingPage() {
   return (
     <div data-public-page className="relative z-10 text-pfText">
       <JsonLd data={getOrganizationSchema(lang)} />
+      <JsonLd data={getWebsiteSchema(lang)} />
+      <JsonLd data={getFaqSchema(c.faq.map((item) => ({ q: item.q, a: item.a })))} />
 
       <section className="relative overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pb-20 md:pt-36">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pfAccentDim md:h-[42rem] md:w-[42rem]" />
@@ -644,11 +666,12 @@ export default async function LandingPage() {
         <div className="relative mx-auto max-w-screen-xl">
           <div className="fade-in mb-10 flex flex-col gap-6 md:mb-12 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
             <div>
-              <p className="mb-5 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-pfAccent">{c.eyebrow}</p>
+              {/* The eyebrow sits inside the h1 so the heading names service and location; it looks unchanged. */}
               <h1
                 className="max-w-4xl font-display leading-[0.88] text-balance text-pfText"
                 style={{ fontSize: "clamp(3rem, 7vw, 6.5rem)" }}
               >
+                <span className="mb-5 block font-mono text-[0.68rem] font-normal uppercase leading-normal tracking-[0.18em] text-pfAccent">{c.eyebrow}</span>
                 {c.heroHeading}
               </h1>
             </div>
@@ -656,7 +679,7 @@ export default async function LandingPage() {
           </div>
 
           <div className="fade-in-delay-2 grid gap-px overflow-hidden border border-pfBorderMid bg-pfBorderMid md:grid-cols-2">
-            {c.heroDoors.map((door) => (
+            {c.heroDoors.map((door, doorIndex) => (
               <Link
                 key={door.title}
                 href={localizeConsultation(door.href)}
@@ -667,6 +690,8 @@ export default async function LandingPage() {
                     src={door.image}
                     alt=""
                     fill
+                    // The first door image is in the first mobile viewport (LCP candidate).
+                    priority={doorIndex === 0}
                     sizes="(min-width: 768px) 50vw, 100vw"
                     className="object-cover object-top opacity-75 transition duration-500 group-hover:scale-[1.04] group-hover:opacity-95"
                   />

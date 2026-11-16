@@ -4,10 +4,11 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { regionalPricing, regionalReferences } from "@/lib/seo/regionalWebdesign";
 
 const TITLE = "Webdesign Wermelskirchen";
+const META_TITLE = "Webdesign Wermelskirchen: Websites ab 790 € Festpreis";
 const DESCRIPTION = "Webdesign für Wermelskirchen: Leistungen, Einsatzgebiet und Anfragen klar strukturieren. PageFoundry aus Hückeswagen, Vor-Ort-Termin nach Absprache. Ab 790 €.";
 const PATH = "/webdesign-wermelskirchen";
 
-export const metadata = createPageMetadata({ path: PATH, title: TITLE, description: DESCRIPTION, locale: "de_DE" });
+export const metadata = createPageMetadata({ path: PATH, title: META_TITLE, description: DESCRIPTION, locale: "de_DE" });
 
 const data: ServiceLandingData = {
   pricing: regionalPricing,
@@ -75,12 +76,25 @@ const data: ServiceLandingData = {
     "heading": "Welche Aufträge möchten Sie über Ihre Website erhalten?",
     "text": "In der kostenlosen Erstberatung kläre ich Ausgangslage, Ziele und den nächsten sinnvollen Schritt. Ein persönlicher Termin vor Ort wird individuell vereinbart."
   },
+  auditHint: true,
   "related": {
     "label": "Weitere Leistungen aus Hückeswagen",
     "items": [
       {
         "label": "Webdesign im Bergischen Land",
         "href": "/webdesign-bergisches-land"
+      },
+      {
+        "label": "Webdesign Wipperfürth",
+        "href": "/webdesign-wipperfuerth"
+      },
+      {
+        "label": "Webdesign Radevormwald",
+        "href": "/webdesign-radevormwald"
+      },
+      {
+        "label": "Webdesign Wuppertal",
+        "href": "/webdesign-wuppertal"
       },
       {
         "label": "Individuelle Software",
@@ -101,7 +115,7 @@ export default function RegionalWebdesignPage() {
         ...getServiceSchema({ name: TITLE, description: DESCRIPTION, url: `https://pagefoundry.de${PATH}` }),
         areaServed: { "@type": "City", name: "Wermelskirchen" },
       }} />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: "Webdesign Bergisches Land", path: "/webdesign-bergisches-land" }, { name: TITLE, path: PATH }] }} />
     </>
   );
 }

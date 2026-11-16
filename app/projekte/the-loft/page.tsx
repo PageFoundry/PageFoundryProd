@@ -1,5 +1,5 @@
 import ProjectCaseStudy, { type ProjectCaseStudyData } from "@/components/landing/ProjectCaseStudy";
-import JsonLd, { getServiceSchema } from "@/components/JsonLd";
+import JsonLd, { getBreadcrumbSchema, getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Projekt The Loft";
@@ -56,12 +56,16 @@ const data: ProjectCaseStudyData = {
     heading: "Soll Ihre Website auch so überzeugen?",
     text: "In der kostenlosen Erstberatung schauen wir uns Ihre aktuelle Website an und zeigen die Hebel mit der größten Wirkung.",
   },
+  whatsappTopic: "Projekt The Loft",
   related: {
     label: "Passende Seiten",
     items: [
       { label: "Website-Rettung", href: "/website-rettung" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Projekt Carbon Care", href: "/projekte/carbon-care" },
+      { label: "Website für Restaurants und Cafés", href: "/website-fuer-gastronomie" },
+      { label: "Webdesign Wuppertal", href: "/webdesign-wuppertal" },
+      { label: "Alle Projekte", href: "/projekte" },
     ],
   },
 };
@@ -76,6 +80,7 @@ export default function TheLoftProjectPage() {
           url: URL,
         })}
       />
+      <JsonLd data={getBreadcrumbSchema([{ name: "Projekte", path: "/projekte" }, { name: "The Loft", path: "/projekte/the-loft" }])} />
       <ProjectCaseStudy data={data} />
     </>
   );

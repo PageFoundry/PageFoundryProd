@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ServiceCTA from "./ServiceCTA";
+import { whatsappHref } from "@/components/JsonLd";
 
 export interface ProjectCaseStudyData {
   eyebrow: string;
@@ -19,6 +20,7 @@ export interface ProjectCaseStudyData {
   scopeNote?: string;
   cta: { heading: string; text: string };
   related?: { label: string; items: { label: string; href: string }[] };
+  whatsappTopic?: string;
 }
 
 export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData }) {
@@ -136,7 +138,7 @@ export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData 
         </section>
       )}
 
-      <ServiceCTA heading={data.cta.heading} text={data.cta.text} />
+      <ServiceCTA heading={data.cta.heading} text={data.cta.text} whatsappHref={whatsappHref(data.whatsappTopic)} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Website-Wache – Website-Überwachung & Wartung";
 const DESCRIPTION =
-  "Website-Wache von PageFoundry: laufende Website-Überwachung (Erreichbarkeit, SSL-Zertifikat, Ladezeit) rund um die Uhr, dazu Website-Wartung mit kleinen Korrekturen und Updates. Ab 49 €/Monat.";
+  "Website-Wache: Überwachung von Erreichbarkeit, SSL-Zertifikat und Ladezeit rund um die Uhr, Frühwarnung und Monatsbericht. Ab 49 €/Monat.";
 const URL = "https://pagefoundry.de/website-wache";
 
 const TAX_NOTE =
@@ -136,6 +136,7 @@ const data: ServiceLandingData = {
       { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Website-Rettung", href: "/website-rettung" },
+      { label: "Website mieten", href: "/website-mieten" },
     ],
   },
 };
@@ -144,7 +145,7 @@ export default function WebsiteWachePage() {
   return (
     <>
       <JsonLd data={getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL })} />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: "Website-Wache", path: "/website-wache" }] }} />
     </>
   );
 }

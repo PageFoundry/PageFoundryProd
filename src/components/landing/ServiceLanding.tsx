@@ -3,23 +3,35 @@ import clsx from "clsx";
 import type { ReactNode } from "react";
 import PricingTiers, { type PricingTier } from "./PricingTiers";
 import ServiceCTA from "./ServiceCTA";
+import JsonLd, { getBreadcrumbSchema, getFaqSchema, whatsappHref, type BreadcrumbTrail } from "@/components/JsonLd";
 
 export interface ServiceLandingData {
   eyebrow: string;
   heroHeading: string;
   heroSubline: string;
+  /** Extra line under the hero actions, e.g. a live demo number. */
+  heroNote?: ReactNode;
   problem: { label: string; heading: string; points: string[] };
   steps: { label: string; heading: string; items: { title: string; text: string }[] };
   included: { label: string; heading: string; items: string[]; note?: string };
-  pricing: {
+  table?: {
+    heading: string;
+    caption: string;
+    columns: string[];
+    rows: { label: string; cells: string[] }[];
+    note?: string;
+  };
+  pricing?: {
     label: string;
     heading: string;
     tiers: PricingTier[];
     footnote?: string;
     image?: { src: string; alt: string; caption: string };
   };
-  faq: { label: string; heading: string; items: { q: string; a: ReactNode }[] };
+  /** `aText` is the plain-text answer for structured data when `a` contains links. */
+  faq: { label: string; heading: string; items: { q: string; a: ReactNode; aText?: string }[] };
   cta: { heading: string; text: string };
+  auditHint?: boolean;
   /** Overrides the default "/consultation" target, e.g. to preselect a package. */
   consultationHref?: string;
   references?: {
@@ -35,11 +47,28 @@ export interface ServiceLandingData {
   related?: { label: string; items: { label: string; href: string }[] };
 }
 
-export default function ServiceLanding({ data, centered = false }: { data: ServiceLandingData; centered?: boolean }) {
+export default function ServiceLanding({
+  data,
+  centered = false,
+  seo,
+}: {
+  data: ServiceLandingData;
+  centered?: boolean;
+  /** Opt-in: breadcrumb and FAQ structured data plus a WhatsApp text naming this page's topic. */
+  seo?: { breadcrumb: BreadcrumbTrail };
+}) {
   const actionClass = centered && "!min-h-12 !rounded-lg !px-6 !py-3 !font-sans !text-sm !font-medium !normal-case !tracking-normal !transition-colors";
+  const topic = seo?.breadcrumb[seo.breadcrumb.length - 1]?.name;
+  const whatsapp = whatsappHref(topic);
+  const faqForSchema = data.faq.items.flatMap((item) => {
+    const answer = typeof item.a === "string" ? item.a : item.aText;
+    return answer ? [{ q: item.q, a: answer }] : [];
+  });
 
   return (
     <div data-public-page lang="de" className={clsx("relative z-10 text-pfText", centered && "text-center")}>
+      {seo && <JsonLd data={getBreadcrumbSchema(seo.breadcrumb)} />}
+      {seo && faqForSchema.length > 0 && <JsonLd data={getFaqSchema(faqForSchema)} />}
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-20 pt-32 md:px-10 md:pt-36">
         <div className="mx-auto max-w-screen-xl">
@@ -53,13 +82,14 @@ export default function ServiceLanding({ data, centered = false }: { data: Servi
             <Link href={data.consultationHref ?? "/consultation"} className={clsx("btn-accent", actionClass)}>
               Kostenlose Beratung buchen →
             </Link>
-            <a href="https://wa.me/4915167076918" className={clsx("btn-outline", actionClass)}>WhatsApp</a>
+            <a href={whatsapp} className={clsx("btn-outline", actionClass)}>WhatsApp</a>
             {!centered && <a href="tel:+4921928743999" className="btn-outline">
               Telefon: 02192 8743999
             </a>}
           </div>
           {centered && <a href="tel:+4921928743999" className="mt-6 inline-flex min-h-11 items-center text-sm text-pfSubtle underline underline-offset-4 transition-colors hover:text-pfText">Telefon: 02192 8743999</a>}
           <p className="mt-4 text-xs leading-6 text-pfMuted">Telefon: Mein KI-Assistent nimmt an, ich rufe zurück.</p>
+          {data.heroNote && <p className="mt-4 text-sm leading-7 text-pfSubtle">{data.heroNote}</p>}
         </div>
       </section>
 
@@ -130,14 +160,52 @@ export default function ServiceLanding({ data, centered = false }: { data: Servi
         </div>
       </section>
 
-      <PricingTiers
-        label={data.pricing.label}
-        heading={data.pricing.heading}
-        tiers={data.pricing.tiers}
-        footnote={data.pricing.footnote}
-        image={data.pricing.image}
-        centered={centered}
-      />
+      {data.table && (
+        <section className="bg-pfSurface px-6 py-24 md:px-10">
+          <div className="mx-auto max-w-screen-xl">
+            <div className="mb-10 max-w-3xl">
+              <h2 className="font-display text-4xl leading-none text-pfText md:text-6xl">{data.table.heading}</h2>
+            </div>
+            {/* Own scroll container: the page itself must not scroll sideways on phones. */}
+            <div className="overflow-x-auto rounded-2xl border border-pfBorder">
+              <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+                <caption className="sr-only">{data.table.caption}</caption>
+                <thead>
+                  <tr className="bg-pfCard">
+                    {/* Label column stays pinned while the price columns scroll on phones. */}
+                    <th scope="col" className="sticky left-0 z-10 w-36 bg-pfCard p-4 font-mono text-[0.62rem] uppercase tracking-widest text-pfMuted sm:w-auto"><span className="sr-only">Merkmal</span></th>
+                    {data.table.columns.map((column) => (
+                      <th key={column} scope="col" className="p-4 font-display text-2xl font-normal leading-none text-pfText">{column}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.table.rows.map((row) => (
+                    <tr key={row.label} className="border-t border-pfBorder">
+                      <th scope="row" className="sticky left-0 z-10 w-36 border-r border-pfBorder bg-pfSurface p-4 align-top text-xs font-normal leading-5 text-pfSubtle sm:w-auto sm:border-r-0 sm:text-sm sm:leading-6">{row.label}</th>
+                      {row.cells.map((cell, index) => (
+                        <td key={`${row.label}-${index}`} className="p-4 align-top leading-6 text-pfText">{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {data.table.note && <p className="mt-6 max-w-3xl text-sm leading-7 text-pfMuted">{data.table.note}</p>}
+          </div>
+        </section>
+      )}
+
+      {data.pricing && (
+        <PricingTiers
+          label={data.pricing.label}
+          heading={data.pricing.heading}
+          tiers={data.pricing.tiers}
+          footnote={data.pricing.footnote}
+          image={data.pricing.image}
+          centered={centered}
+        />
+      )}
 
       {/* FAQ */}
       <section className="px-6 py-24 md:px-10">
@@ -196,7 +264,14 @@ export default function ServiceLanding({ data, centered = false }: { data: Servi
         </section>
       )}
 
-      <ServiceCTA heading={data.cta.heading} text={data.cta.text} consultationHref={data.consultationHref} compact={centered} />
+      <ServiceCTA
+        heading={data.cta.heading}
+        text={data.cta.text}
+        consultationHref={data.consultationHref}
+        compact={centered}
+        whatsappHref={whatsapp}
+        auditHint={data.auditHint}
+      />
     </div>
   );
 }

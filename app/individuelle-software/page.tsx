@@ -4,7 +4,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Individuelle Software & Softwareentwicklung Bergisches Land";
 const DESCRIPTION =
-  "Softwareentwicklung im Bergischen Land aus Hückeswagen: individuelle Software für Rechnungen und Betriebsabläufe. Festpreisprojekte ab 2.500 €. Praxisbeispiel Carbon Care.";
+  "Individuelle Software aus Hückeswagen für Rechnungen, Daten und Betriebsabläufe. Festpreisprojekte ab 2.500 €. Praxisbeispiel: Carbon Care.";
 const URL = "https://pagefoundry.de/individuelle-software";
 
 const TAX_NOTE =
@@ -136,6 +136,8 @@ const data: ServiceLandingData = {
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Website-Wache (Wartung)", href: "/website-wache" },
       { label: "Website-Rettung", href: "/website-rettung" },
+      { label: "KI-Telefonassistenz", href: "/ki-telefonassistenz" },
+      { label: "Projekte", href: "/projekte" },
       { label: "Lernplattform für Ausbildungsbetriebe (Zusatzangebot)", href: "https://verkauf.pagefoundry.de" },
     ],
   },
@@ -145,7 +147,7 @@ export default function IndividuelleSoftwarePage() {
   return (
     <>
       <JsonLd data={getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL })} />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: "Individuelle Software", path: "/individuelle-software" }] }} />
     </>
   );
 }

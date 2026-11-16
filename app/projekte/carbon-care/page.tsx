@@ -1,10 +1,10 @@
 import ProjectCaseStudy, { type ProjectCaseStudyData } from "@/components/landing/ProjectCaseStudy";
-import JsonLd, { getServiceSchema } from "@/components/JsonLd";
+import JsonLd, { getBreadcrumbSchema, getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Projekt Carbon Care";
 const DESCRIPTION =
-  "Projektseite Carbon Care: Landingpage und individuelle Rechnungssoftware für die Fahrzeugaufbereitung, live seit 02/2026 — Ausgangslage, Umsetzung und dokumentiertes Ergebnis.";
+  "Projekt Carbon Care: Landingpage und individuelle Rechnungssoftware für die Fahrzeugaufbereitung, live seit 02/2026. Ausgangslage, Umsetzung, Ergebnis.";
 const URL = "https://pagefoundry.de/projekte/carbon-care";
 
 export const metadata = createPageMetadata({
@@ -56,12 +56,14 @@ const data: ProjectCaseStudyData = {
     heading: "Ein ähnliches Projekt für Ihren Betrieb?",
     text: "In der kostenlosen Erstberatung schauen wir, ob eine Website, eine individuelle Software oder beides für Sie der richtige nächste Schritt ist.",
   },
+  whatsappTopic: "Projekt Carbon Care",
   related: {
     label: "Passende Seiten",
     items: [
       { label: "Softwareentwicklung im Bergischen Land", href: "/individuelle-software" },
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Projekt The Loft", href: "/projekte/the-loft" },
+      { label: "Alle Projekte", href: "/projekte" },
     ],
   },
 };
@@ -76,6 +78,7 @@ export default function CarbonCareProjectPage() {
           url: URL,
         })}
       />
+      <JsonLd data={getBreadcrumbSchema([{ name: "Projekte", path: "/projekte" }, { name: "Carbon Care", path: "/projekte/carbon-care" }])} />
       <ProjectCaseStudy data={data} />
     </>
   );

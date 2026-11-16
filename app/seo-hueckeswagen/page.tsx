@@ -123,6 +123,7 @@ const data: ServiceLandingData = {
     heading: "Erst sehen, dann optimieren",
     text: "Kostenlose Erstberatung: Ich schaue mir Ihre Sichtbarkeit an und sage Ihnen, ob und wo SEO bei Ihnen Hebel hat — ehrlich und ohne Verkaufsdruck.",
   },
+  auditHint: true,
   related: {
     label: "Passende Seiten",
     items: [
@@ -147,7 +148,7 @@ export default function SeoHueckeswagenPage() {
           ],
         }}
       />
-      <ServiceLanding data={data} centered />
+      <ServiceLanding data={data} centered seo={{ breadcrumb: [{ name: TITLE, path: "/seo-hueckeswagen" }] }} />
     </>
   );
 }

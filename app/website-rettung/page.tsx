@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Bestehende Website neu — Analyse und Relaunch";
 const DESCRIPTION =
-  "Website-Rettung von PageFoundry: Ich überarbeite Ihre bestehende Website oder setze einen Website-Relaunch um — verständlich positioniert, schnell und mit Vorschau vorab. Ab 790 €.";
+  "Bestehende Website überarbeiten oder neu bauen: Analyse, Vorschau vor der Entscheidung, Relaunch in drei Festpreis-Stufen ab 790 €.";
 const URL = "https://pagefoundry.de/website-rettung";
 
 const TAX_NOTE =
@@ -90,12 +90,15 @@ const data: ServiceLandingData = {
     heading: "Soll ich Ihre bestehende Website prüfen?",
     text: "In der kostenlosen Erstberatung schaue ich auf Ihre aktuelle Website und zeige die Hebel mit der größten Wirkung — ohne Verkaufsgespräch.",
   },
+  auditHint: true,
   related: {
     label: "Passende Seiten",
     items: [
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "SEO Hückeswagen", href: "/seo-hueckeswagen" },
       { label: "Website-Wache", href: "/website-wache" },
+      { label: "Website-Kosten", href: "/website-kosten" },
+      { label: "Website für Restaurants und Cafés", href: "/website-fuer-gastronomie" },
     ],
   },
 };
@@ -104,7 +107,7 @@ export default function WebsiteRettungPage() {
   return (
     <>
       <JsonLd data={getServiceSchema({ name: TITLE, description: DESCRIPTION, url: URL })} />
-      <ServiceLanding data={data} />
+      <ServiceLanding data={data} seo={{ breadcrumb: [{ name: "Bestehende Website überarbeiten", path: "/website-rettung" }] }} />
     </>
   );
 }

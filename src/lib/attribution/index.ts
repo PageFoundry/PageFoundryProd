@@ -4,7 +4,7 @@ export type SelfReportedSource = (typeof SELF_REPORTED_SOURCES)[number];
 export const OBSERVED_SOURCES = ["organic_search", "referral", "campaign", "direct_or_unknown"] as const;
 export type ObservedSource = (typeof OBSERVED_SOURCES)[number];
 
-export const ALLOWED_ENTRY_PATHS = ["/", "/consultation", "/website-wache", "/website-rettung", "/seo-hueckeswagen", "/webdesign-bergisches-land", "/ki-telefonassistenz"] as const;
+export const ALLOWED_ENTRY_PATHS = ["/", "/consultation", "/website-wache", "/website-rettung", "/seo-hueckeswagen", "/webdesign-bergisches-land", "/ki-telefonassistenz", "/individuelle-software", "/webdesign-wipperfuerth", "/webdesign-wermelskirchen", "/webdesign-remscheid", "/webdesign-radevormwald", "/webdesign-wuppertal", "/website-erstellen-lassen", "/website-kosten", "/website-mieten", "/website-fuer-handwerker", "/website-fuer-gastronomie", "/projekte", "/projekte/carbon-care", "/projekte/the-loft"] as const;
 const SEARCH_HOSTS = new Set(["google.com", "www.google.com", "google.de", "www.google.de", "bing.com", "www.bing.com", "bing.de", "www.bing.de", "duckduckgo.com", "www.duckduckgo.com", "ecosia.org", "www.ecosia.org"]);
 
 export function parseObservedProvenance(input: { referrer?: string; href?: string; pathname?: string }): {
