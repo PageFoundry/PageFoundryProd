@@ -2,9 +2,9 @@ import ProjectCaseStudy, { type ProjectCaseStudyData } from "@/components/landin
 import JsonLd, { getBreadcrumbSchema, getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
-const TITLE = "Projekt Carbon Care";
+const TITLE = "Individuelle Rechnungssoftware für Carbon Care";
 const DESCRIPTION =
-  "Projekt Carbon Care: Landingpage und individuelle Rechnungssoftware für die Fahrzeugaufbereitung, live seit 02/2026. Ausgangslage, Umsetzung, Ergebnis.";
+  "Für die Fahrzeugaufbereitung Carbon Care habe ich eine Landingpage und eine eigene Rechnungssoftware entwickelt. Die Demo zeigt Rechnungen und Zahlungsstände.";
 const URL = "https://pagefoundry.de/projekte/carbon-care";
 
 export const metadata = createPageMetadata({
@@ -16,15 +16,17 @@ export const metadata = createPageMetadata({
 
 const data: ProjectCaseStudyData = {
   eyebrow: "Projekt · Carbon Care",
-  heading: "Vom Neustart zur funktionierenden digitalen Basis.",
+  heading: TITLE,
   subline:
-    "Carbon Care bietet Fahrzeugaufbereitung an. Vor dem Projekt gab es weder eine Website noch einen eigenen, wiederholbaren Rechnungsablauf. Heute laufen beide Systeme im täglichen Betrieb.",
+    "Für die Fahrzeugaufbereitung Carbon Care habe ich eine Website und eine eigene Rechnungsanwendung entwickelt. In der Rechnungsübersicht kann der Betrieb einen Vorgang einem Kunden und Fahrzeug zuordnen und direkt sehen, ob der Betrag noch offen ist.",
   domain: "rechnung.carbon-care.de",
   url: "https://carbon-care.de",
   visitLabel: "Kundenwebsite öffnen",
   image: "/work/carbon-care.jpg",
   imageAlt:
     "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
+  imageCaption:
+    "Rechnungsübersicht mit Beispieldaten. Jede Zeile zeigt die Rechnungsnummer, den Kunden, das Fahrzeug und den Betrag. Rechts kennzeichnet die Spalte „Bezahlt“, welche Rechnungen offen und welche bezahlt sind.",
   situation: {
     label: "Ausgangslage",
     heading: "0 eigene Web-Systeme.",
@@ -40,7 +42,7 @@ const data: ProjectCaseStudyData = {
     heading: "Zwei Systeme, ein gemeinsamer Ansprechpartner.",
     points: [
       "Landingpage: klare Darstellung des Angebots, direkter Kontaktweg, live unter carbon-care.de.",
-      "Individuelle Rechnungssoftware: eigenes Datenmodell für Rechnungen, Status und Zahlungsstand statt Zettelwirtschaft — im Screenshot als Demoansicht mit Beispieldaten gezeigt.",
+      "In der Anwendung lässt sich ein Rechnungsvorgang anhand von Nummer, Kunde oder Fahrzeug in der Übersicht wiederfinden. Rechnungsstatus und Zahlungsstand stehen getrennt in derselben Zeile.",
       "Beide Systeme sind eigenständig nutzbar und laufen unabhängig voneinander im Tagesbetrieb.",
     ],
   },

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TheLoftExampleLink from "@/components/landing/TheLoftExampleLink";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -17,6 +18,7 @@ const data: ServiceLandingData = {
   heroHeading: "Website für Restaurants und Cafés: Speisekarte, Öffnungszeiten, Weg zu Ihnen.",
   heroSubline:
     "Gäste entscheiden unterwegs. Sie suchen Speisekarte, Öffnungszeiten und Anfahrt, meist auf dem Smartphone und oft kurz vor dem Besuch. Ich baue Gastronomie-Websites, die diese drei Fragen ohne Umweg beantworten und die Atmosphäre Ihres Hauses zeigen. Für The Loft Brunch and Lunch in Wuppertal habe ich so einen Relaunch umgesetzt.",
+  heroNote: <TheLoftExampleLink />,
   problem: {
     label: "Ausgangslage",
     heading: "Woran Gastronomie-Websites häufig scheitern.",

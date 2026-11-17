@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import ServiceCTA from "./ServiceCTA";
 import { whatsappHref } from "@/components/JsonLd";
 
@@ -12,6 +13,7 @@ export interface ProjectCaseStudyData {
   visitLabel: string;
   image: string;
   imageAlt: string;
+  imageCaption?: string;
   imageAspectRatio?: string;
   situation: { label: string; heading: string; text: string };
   task: { label: string; heading: string; text: string };
@@ -23,7 +25,7 @@ export interface ProjectCaseStudyData {
   whatsappTopic?: string;
 }
 
-export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData }) {
+export default function ProjectCaseStudy({ data, children }: { data: ProjectCaseStudyData; children?: ReactNode }) {
   return (
     <div data-public-page lang="de" className="relative z-10 text-pfText">
       <section className="relative overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pt-36">
@@ -39,7 +41,7 @@ export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData 
 
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto max-w-screen-xl">
-          <div className="overflow-hidden border border-pfBorder bg-pfCard shadow-card">
+          <figure className="overflow-hidden border border-pfBorder bg-pfCard shadow-card">
             <div className="flex h-11 items-center gap-2 border-b border-pfBorder bg-black px-4" aria-hidden="true">
               <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
               <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
@@ -62,7 +64,12 @@ export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData 
                 className={data.imageAspectRatio ? "object-contain" : "object-cover object-top"}
               />
             </div>
-          </div>
+            {data.imageCaption && (
+              <figcaption className="border-t border-pfBorder px-5 py-4 text-sm leading-6 text-pfSubtle">
+                {data.imageCaption}
+              </figcaption>
+            )}
+          </figure>
           <a href={data.url} target="_blank" rel="noreferrer" className="btn-outline mt-6 inline-flex">
             {data.visitLabel} ↗
           </a>
@@ -102,6 +109,8 @@ export default function ProjectCaseStudy({ data }: { data: ProjectCaseStudyData 
           </div>
         </div>
       </section>
+
+      {children}
 
       <section className="border-t border-pfBorder bg-pfSurface px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto max-w-screen-xl">

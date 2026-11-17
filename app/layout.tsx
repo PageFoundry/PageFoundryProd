@@ -31,8 +31,6 @@ const spaceMono = Space_Mono({
 
 const BASE = "https://pagefoundry.de";
 
-// Service and city pages were only reachable from one block on the home page.
-// /webdesign-remscheid is left out until the domain experiment ends on 2026-12-12.
 const footerLinkGroups = [
   {
     heading: "Websites",
@@ -50,6 +48,7 @@ const footerLinkGroups = [
     links: [
       { label: "Webdesign Bergisches Land", href: "/webdesign-bergisches-land" },
       { label: "Webdesign Wuppertal", href: "/webdesign-wuppertal" },
+      { label: "Webdesign Remscheid", href: "/webdesign-remscheid" },
       { label: "Webdesign Wermelskirchen", href: "/webdesign-wermelskirchen" },
       { label: "Webdesign Wipperfürth", href: "/webdesign-wipperfuerth" },
       { label: "Webdesign Radevormwald", href: "/webdesign-radevormwald" },

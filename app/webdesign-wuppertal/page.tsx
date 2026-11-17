@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TheLoftExampleLink from "@/components/landing/TheLoftExampleLink";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -17,6 +18,7 @@ const data: ServiceLandingData = {
   heroHeading: "Webdesign für Wuppertal: ein Ansprechpartner, feste Preise, ein Projekt vor Ort.",
   heroSubline:
     "In Wuppertal gibt es viele Agenturen. PageFoundry ist keine: Eine Person plant, baut und betreut Ihre Website, zu veröffentlichten Festpreisen. Für The Loft Brunch and Lunch in Wuppertal habe ich den Website-Relaunch umgesetzt. Mein Sitz ist Hückeswagen, ein Büro in Wuppertal gibt es nicht.",
+  heroNote: <TheLoftExampleLink />,
   problem: {
     label: "Ausgangslage",
     heading: "Was vor einem Website-Projekt geklärt sein sollte.",

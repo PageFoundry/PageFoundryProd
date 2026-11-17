@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Website-Wache – Website-Überwachung & Wartung";
 const DESCRIPTION =
-  "Website-Wache: Überwachung von Erreichbarkeit, SSL-Zertifikat und Ladezeit rund um die Uhr, Frühwarnung und Monatsbericht. Ab 49 €/Monat.";
+  "Website-Monitoring mit Monatsbericht für 49 € im Monat. Website-Wache Care für 99 € im Monat umfasst zusätzlich bis zu 60 Minuten für kleine technische Korrekturen.";
 const URL = "https://pagefoundry.de/website-wache";
 
 const TAX_NOTE =
@@ -20,9 +20,9 @@ export const metadata = createPageMetadata({
 
 const data: ServiceLandingData = {
   eyebrow: "Website-Wache",
-  heroHeading: "Ihre Website im Blick — bevor der Kunde den Ausfall meldet.",
+  heroHeading: "Website-Wartung und Monitoring für Ihren Betrieb",
   heroSubline:
-    "Ich überwache Erreichbarkeit, SSL-Zertifikat und Ladezeit Ihrer Website rund um die Uhr, melde Probleme früh und halte die Seite mit kleinen Updates sauber. Damit Ihre Online-Visitenkarte nicht still verfällt.",
+    "Für 49 € im Monat überwache ich Erreichbarkeit, SSL und Ladezeit Ihrer Website. Bei Auffälligkeiten melde ich mich. Sie erhalten jeden Monat einen Bericht. Im Care-Paket für 99 € monatlich sind zusätzlich bis zu 60 Minuten für kleine technische Korrekturen enthalten.",
   problem: {
     label: "Das Problem",
     heading: "Die meisten Website-Probleme fallen zuerst dem Kunden auf.",
@@ -62,6 +62,17 @@ const data: ServiceLandingData = {
       "Fester Ansprechpartner statt Hotline",
     ],
     note: "Ehrlich gesagt: Die Überwachung läuft von außen über HTTP, TLS und Antwortzeit. Das deckt die häufigsten Ausfälle früh ab — ist aber kein automatisches Reparieren jeder denkbaren Störung. Was ich behebe, halte ich im Bericht fest.",
+  },
+  table: {
+    heading: "Ein Monatsbericht als Beispiel",
+    caption: "Musterbericht der Website-Wache mit frei gewählten Beispieldaten für Oktober 2026",
+    columns: ["Oktober 2026 · Beispieldaten"],
+    rows: [
+      { label: "Erreichbarkeit", cells: ["99,98 %. Am 12. Oktober war die Website von 08:42 bis 08:51 Uhr nicht erreichbar."] },
+      { label: "Meldung", cells: ["Der Betreiber bekam eine Ausfallmeldung und nach neun Minuten die Nachricht, dass die Website wieder erreichbar war."] },
+      { label: "SSL-Zertifikat", cells: ["Am Monatsende noch 54 Tage gültig. Im Berichtsmonat stand keine Verlängerung an."] },
+      { label: "Antwortzeit", cells: ["Im Median antwortete der Server nach 320 Millisekunden."] },
+    ],
   },
   pricing: {
     label: "Preise",

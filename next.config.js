@@ -2,6 +2,8 @@
 const nextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  // Emit each page's metadata in its initial HTML head for browsers and crawlers.
+  htmlLimitedBots: /.*/,
   // Worktrees liegen unterhalb des Haupt-Repositories. Ohne explizite Root-Angabe
   // waehlt Next wegen des uebergeordneten package-lock.json das Haupt-Repo und legt
   // server.js in einem verschachtelten Standalone-Pfad ab.

@@ -144,7 +144,6 @@ const copy = {
     proof: ["Websites", "Landingpages", "Betriebliche Software", "SEO", "Hosting", "Bergisches Land"],
     heroHeading: "Was soll in Ihrem Betrieb besser laufen?",
     heroLocation: "Hückeswagen · Bergisches Land · deutschlandweit",
-    heroUnsure: "Noch unsicher?",
     heroDoors: [
       {
         kicker: "Nach außen",
@@ -152,8 +151,8 @@ const copy = {
         points: ["Klare Struktur und Kontaktwege", "Mobil schnell und lokal bei Google auffindbar"],
         price: "ab 790 €",
         priceNote: "einmalig · für Unternehmen betreut ab 190 € + 49 €/Monat",
-        cta: "Website besprechen",
-        href: "/consultation?package=sichtbar&modell=kauf",
+        cta: "Webdesign – Leistungen und Preise",
+        href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
         badge: "Live · theloftbrunch.de",
       },
@@ -274,7 +273,7 @@ const copy = {
         title: "Websites",
         text: "Für Unternehmen, die ihr Angebot klar zeigen und einen verständlichen Kontaktweg anbieten möchten.",
         cta: "Website besprechen",
-        href: "/consultation?package=sichtbar&modell=kauf",
+        href: "/consultation",
       },
       {
         key: "Systems",
@@ -407,7 +406,6 @@ const copy = {
     proof: ["Websites", "Landing pages", "Business software", "SEO", "Hosting", "Bergisches Land"],
     heroHeading: "What should run better in your business?",
     heroLocation: "Hückeswagen · Bergisches Land · Germany-wide",
-    heroUnsure: "Not sure yet?",
     heroDoors: [
       {
         kicker: "Outward",
@@ -415,8 +413,8 @@ const copy = {
         points: ["Clear structure and contact paths", "Fast on mobile and findable locally on Google"],
         price: "from €790",
         priceNote: "one-off · managed for businesses from €190 + €49/month",
-        cta: "Discuss a website",
-        href: "/consultation?package=sichtbar&modell=kauf",
+        cta: "Web design and pricing (German)",
+        href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
         badge: "Live · theloftbrunch.de",
       },
@@ -529,7 +527,7 @@ const copy = {
         title: "Websites",
         text: "For businesses that want to explain their offer clearly, build trust, and earn more enquiries.",
         cta: "Discuss a website",
-        href: "/consultation?package=sichtbar&modell=kauf",
+        href: "/consultation",
       },
       {
         key: "Systems",
@@ -646,7 +644,7 @@ const copy = {
 } as const;
 
 export default async function LandingPage() {
-  const { lang, t } = await getServerI18n();
+  const { lang } = await getServerI18n();
   const c = copy[lang];
   const consultationHref = `/consultation?lang=${lang}`;
   const localizeConsultation = (href: string) =>
@@ -675,7 +673,12 @@ export default async function LandingPage() {
                 {c.heroHeading}
               </h1>
             </div>
-            <p className="max-w-sm text-base leading-7 text-pfSubtle md:text-lg lg:pb-2">{c.subline}</p>
+            <div className="max-w-sm lg:pb-2">
+              <p className="text-base leading-7 text-pfSubtle md:text-lg">{c.subline}</p>
+              <Link href={consultationHref} className="mt-2 inline-flex min-h-11 items-center text-sm text-pfText underline decoration-pfAccent underline-offset-4 hover:text-pfAccent">
+                {c.consultationCta} →
+              </Link>
+            </div>
           </div>
 
           <div className="fade-in-delay-2 grid gap-px overflow-hidden border border-pfBorderMid bg-pfBorderMid md:grid-cols-2">
@@ -725,15 +728,7 @@ export default async function LandingPage() {
             ))}
           </div>
 
-          <div className="fade-in-delay-3 mt-6 flex flex-col gap-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfMuted sm:flex-row sm:items-center sm:justify-between">
-            <span>{c.heroLocation}</span>
-            <Link
-              href={consultationHref}
-              className="inline-flex min-h-[44px] items-center gap-2 text-pfText underline decoration-pfAccent underline-offset-4 hover:text-pfAccent sm:min-h-0"
-            >
-              {c.heroUnsure} {t("hero.ctaFree")} →
-            </Link>
-          </div>
+          <p className="fade-in-delay-3 mt-6 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-pfMuted">{c.heroLocation}</p>
         </div>
       </section>
 

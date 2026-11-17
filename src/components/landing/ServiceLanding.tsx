@@ -168,7 +168,7 @@ export default function ServiceLanding({
             </div>
             {/* Own scroll container: the page itself must not scroll sideways on phones. */}
             <div className="overflow-x-auto rounded-2xl border border-pfBorder">
-              <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+              <table className={clsx("w-full border-collapse text-left text-sm", data.table.columns.length > 1 && "min-w-[40rem]")}>
                 <caption className="sr-only">{data.table.caption}</caption>
                 <thead>
                   <tr className="bg-pfCard">
