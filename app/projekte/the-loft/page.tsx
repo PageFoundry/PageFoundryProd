@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TheLoftComparison from "@/components/landing/TheLoftComparison";
 import ProjectCaseStudy, { type ProjectCaseStudyData } from "@/components/landing/ProjectCaseStudy";
 import JsonLd, { getBreadcrumbSchema, getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -23,8 +24,7 @@ const data: ProjectCaseStudyData = {
   domain: "theloftbrunch.de",
   url: "https://theloftbrunch.de",
   visitLabel: "Kundenwebsite öffnen",
-  image: "/work/the-loft-desktop.jpg",
-  imageAspectRatio: "1440 / 1000",
+  image: "/work/the-loft-cover-studio.webp",
   imageAlt: "Startseite von The Loft Brunch and Lunch in Wuppertal",
   situation: {
     label: "Ausgangslage",
@@ -71,25 +71,6 @@ const data: ProjectCaseStudyData = {
   },
 };
 
-const mobileExamples = [
-  {
-    heading: "Wo finde ich die Speisekarte?",
-    detail: "Der bestehende Link zur digitalen Speisekarte blieb erhalten. Im neuen Startbild steht darüber auch die Adresse in Wuppertal. Über das mobile Menü lässt sich die Karte ebenfalls öffnen.",
-    images: [
-      { label: "Vor dem Relaunch", src: "/work/the-loft-mobile-speisekarte-vorher.webp", width: 390, height: 314, alt: "Alter Startbereich mit dem Namen The Loft und dem Button zur Speisekarte." },
-      { label: "Nach dem Relaunch", src: "/work/the-loft-mobile-speisekarte-nachher.webp", width: 381, height: 320, alt: "Neuer Startbereich mit Wuppertaler Adresse und Zugang zur Speisekarte." },
-    ],
-  },
-  {
-    heading: "Bis wann gibt es Brunch?",
-    detail: "Auf der früheren Startseite standen Brunch- und Öffnungszeiten im Fußbereich. Heute zeigen zwei Karten diese Angaben bereits im Restaurantabschnitt. Gäste können die Brunchzeiten direkt mit den allgemeinen Öffnungszeiten vergleichen.",
-    images: [
-      { label: "Vor dem Relaunch", src: "/work/the-loft-mobile-zeiten-vorher.webp", width: 358, height: 253, alt: "Die frühere Fußzeile listet Öffnungs- und Brunchzeiten in einem Textblock." },
-      { label: "Nach dem Relaunch", src: "/work/the-loft-mobile-zeiten-nachher.webp", width: 342, height: 488, alt: "Der neue Restaurantabschnitt zeigt eigene Karten für Brunch, Öffnungszeiten und Reservierungshinweise." },
-    ],
-  },
-];
-
 export default function TheLoftProjectPage() {
   return (
     <>
@@ -101,33 +82,23 @@ export default function TheLoftProjectPage() {
         })}
       />
       <JsonLd data={getBreadcrumbSchema([{ name: "Projekte", path: "/projekte" }, { name: "The Loft", path: "/projekte/the-loft" }])} />
-      <ProjectCaseStudy data={data}>
-        <section id="mobiler-vergleich" aria-labelledby="vergleich-titel" className="scroll-mt-24 border-t border-pfBorder px-6 py-16 md:px-10 md:py-20">
-          <div className="mx-auto max-w-screen-xl">
-            <h2 id="vergleich-titel" className="font-display text-4xl leading-none text-pfText md:text-6xl">
-              Die mobile Website vor und nach dem Relaunch
-            </h2>
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-pfSubtle">
-              Die Ausschnitte zeigen die Startseite auf einem 390 Pixel breiten Bildschirm. Die frühere Version stammt aus dem{" "}
-              <a href="https://web.archive.org/web/20260410193012/https://theloftbrunch.de/" className="text-pfAccent underline underline-offset-4">Webarchiv vom 10. April 2026</a>.
-              Die neue Website wurde am 17. November 2026 aufgenommen.
-            </p>
-            {mobileExamples.map((example) => (
-              <div key={example.heading} className="mt-12 max-w-3xl">
-                <h3 className="font-display text-2xl text-pfText md:text-3xl">{example.heading}</h3>
-                <p className="mt-3 text-sm leading-7 text-pfSubtle md:text-base">{example.detail}</p>
-                <div className="mt-5 grid items-start gap-5 sm:grid-cols-2">
-                  {example.images.map((item) => (
-                    <figure key={item.src} className="overflow-hidden border border-pfBorder bg-pfCard">
-                      <figcaption className="px-4 py-3 text-sm text-pfText">{item.label}</figcaption>
-                      <Image src={item.src} alt={item.alt} width={item.width} height={item.height} sizes="(min-width: 640px) 375px, 90vw" className="h-auto w-full border-t border-pfBorder" />
-                    </figure>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+      <ProjectCaseStudy
+        data={data}
+        cover={
+          <picture className="block">
+            <source media="(max-width: 639px)" srcSet="/work/the-loft-cover-mobile.webp" width={900} height={1050} />
+            <Image
+              src={data.image}
+              alt={data.imageAlt}
+              width={1920}
+              height={1200}
+              sizes="(min-width: 1360px) 1280px, 96vw"
+              className="block h-auto w-full"
+            />
+          </picture>
+        }
+      >
+        <TheLoftComparison />
       </ProjectCaseStudy>
     </>
   );

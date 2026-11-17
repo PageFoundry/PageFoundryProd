@@ -1,0 +1,89 @@
+.spread {
+  max-width: 78rem;
+  margin-inline: auto;
+  display: grid;
+  align-items: start;
+  gap: 1.5rem;
+}
+
+.intro { max-width: 36rem; }
+.topics, .versions { display: flex; }
+
+.topics {
+  width: fit-content;
+  margin-top: 1.7rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid #39352f;
+}
+
+.topics button {
+  color: #b4b0a8;
+  font-size: .94rem;
+  padding-block: .55rem;
+  border-bottom: 2px solid transparent;
+}
+
+.topics button[aria-pressed="true"] {
+  border-color: #d4b267;
+  color: #fff9ef;
+}
+
+.detail { margin-top: 1rem; color: #d0cbc1; line-height: 1.7; }
+.source { margin-top: 1.25rem; font-size: .78rem; line-height: 1.65; color: #ada79d; }
+.source a { text-decoration: underline; text-underline-offset: .2em; }
+.topics button:focus-visible, .versions button:focus-visible, .fullsize:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.stage {
+  color: #322b25;
+  background: #e8e1d7;
+  padding: clamp(1rem, 2.7vw, 2.5rem);
+}
+
+.versions {
+  width: fit-content;
+  border: 1px solid #aea395;
+  margin: 0 auto 1.1rem;
+}
+
+.versions button { padding: .4rem 1rem; font-size: .85rem; }
+.versions button[aria-pressed="true"] { color: #fff9ef; background: #342e28; }
+
+.pair {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: minmax(0, 20.3rem);
+  gap: clamp(1rem, 2.3vw, 2.25rem);
+}
+.pair[hidden] { display: none; }
+.shot { min-width: 0; }
+.shot[data-selected="false"] { display: none; }
+.shot figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: .58rem;
+  gap: .3rem;
+  font-size: .88rem;
+  font-weight: 600;
+}
+.shot figcaption span:last-child { color: #62584e; font-size: .76rem; font-weight: 400; }
+.fullsize {
+  display: block;
+  width: 100%;
+  cursor: zoom-in;
+  background: #25201c;
+  box-shadow: 0 1px 3px #2e241e26, 0 10px 22px -10px #33281d4d;
+}
+.fullsize img { display: block; width: 100%; height: auto; }
+
+@media (min-width: 720px) {
+  .versions { display: none; }
+  .pair { grid-template-columns: repeat(2, minmax(0, 20.3rem)); }
+  .shot[data-selected="false"] { display: block; }
+}
+
+@media (min-width: 1024px) {
+  .spread { grid-template-columns: minmax(15rem, .75fr) minmax(0, 1.85fr); gap: clamp(2rem, 4vw, 4.5rem); }
+  .intro { padding-top: .4rem; }
+  .source { margin-top: 2rem; max-width: 17rem; }
+}

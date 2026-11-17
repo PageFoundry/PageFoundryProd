@@ -21,10 +21,10 @@ const data: ServiceLandingData = {
   heroNote: (
     <Link href="/projekte/the-loft" className="mt-8 !grid w-full max-w-2xl items-center gap-4 rounded-xl border border-pfBorder p-4 hover:border-pfAccent focus-visible:outline focus-visible:outline-2 focus-visible:outline-pfAccent sm:grid-cols-[13rem_minmax(0,1fr)]">
       <Image
-        src="/work/the-loft-desktop.jpg"
-        alt="Startseite von The Loft mit dem Button „Speisekarte ansehen“"
-        width={1440}
-        height={1000}
+        src="/work/the-loft-menu-detail.webp"
+        alt="Mobiler Startbereich von The Loft mit dem Button „Speisekarte ansehen“"
+        width={660}
+        height={540}
         sizes="(min-width: 640px) 208px, calc(100vw - 82px)"
         className="h-auto w-full rounded-lg"
       />

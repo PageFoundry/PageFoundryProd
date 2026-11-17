@@ -25,7 +25,7 @@ export interface ProjectCaseStudyData {
   whatsappTopic?: string;
 }
 
-export default function ProjectCaseStudy({ data, children }: { data: ProjectCaseStudyData; children?: ReactNode }) {
+export default function ProjectCaseStudy({ data, cover, children }: { data: ProjectCaseStudyData; cover?: ReactNode; children?: ReactNode }) {
   return (
     <div data-public-page lang="de" className="relative z-10 text-pfText">
       <section className="relative overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pt-36">
@@ -41,7 +41,7 @@ export default function ProjectCaseStudy({ data, children }: { data: ProjectCase
 
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto max-w-screen-xl">
-          <figure className="overflow-hidden border border-pfBorder bg-pfCard shadow-card">
+          {cover ?? <figure className="overflow-hidden border border-pfBorder bg-pfCard shadow-card">
             <div className="flex h-11 items-center gap-2 border-b border-pfBorder bg-black px-4" aria-hidden="true">
               <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
               <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
@@ -69,7 +69,7 @@ export default function ProjectCaseStudy({ data, children }: { data: ProjectCase
                 {data.imageCaption}
               </figcaption>
             )}
-          </figure>
+          </figure>}
           <a href={data.url} target="_blank" rel="noreferrer" className="btn-outline mt-6 inline-flex">
             {data.visitLabel} ↗
           </a>

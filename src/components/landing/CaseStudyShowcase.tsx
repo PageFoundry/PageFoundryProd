@@ -17,6 +17,7 @@ export type CaseStudy = {
   };
   image: string;
   imageAlt: string;
+  studioCover?: boolean;
   scope: string;
   headline: string;
   problem: string;
@@ -63,15 +64,15 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
             }`}
           >
             <div className={`flex flex-col ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-              <div className="flex h-11 items-center gap-2 border-b border-pfBorder bg-black px-4" aria-hidden="true">
+              {!item.studioCover && <div className="flex h-11 items-center gap-2 border-b border-pfBorder bg-black px-4" aria-hidden="true">
                 <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
                 <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
                 <span className="h-2 w-2 rounded-full bg-[#28c840]" />
                 <span className="ml-3 truncate font-mono text-[0.58rem] uppercase tracking-[0.18em] text-pfMuted">
                   {item.domain}
                 </span>
-              </div>
-              <div className="relative aspect-[5/4] overflow-hidden bg-pfSurface">
+              </div>}
+              <div className={`relative overflow-hidden bg-pfSurface ${item.studioCover ? "aspect-[16/10]" : "aspect-[5/4]"}`}>
                 <Image
                   src={item.image}
                   alt={item.imageAlt}

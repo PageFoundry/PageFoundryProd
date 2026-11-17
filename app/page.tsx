@@ -224,8 +224,9 @@ const copy = {
           href: "/projekte/the-loft",
           label: "Projektseite ansehen",
         },
-        image: "/work/the-loft.jpg",
-        imageAlt: "Startseite von The Loft Brunch and Lunch in Wuppertal",
+        image: "/work/the-loft-cover-studio.webp",
+        imageAlt: "The Loft in Wuppertal mit der Startseite am Desktop und dem Getränkebereich auf dem Handy",
+        studioCover: true,
         scope: "Website-Relaunch · Gastronomie",
         headline: "Eine Website, die sich so hochwertig anfühlt wie der Ort.",
         problem:
@@ -478,8 +479,9 @@ const copy = {
           href: "/website-rettung",
           label: "Improve an existing website (German)",
         },
-        image: "/work/the-loft.jpg",
-        imageAlt: "The Loft Brunch and Lunch homepage in Wuppertal",
+        image: "/work/the-loft-cover-studio.webp",
+        imageAlt: "The Loft in Wuppertal, with the desktop homepage and the drinks section on a phone",
+        studioCover: true,
         scope: "Website relaunch · Hospitality",
         headline: "A website that feels as premium as the place.",
         problem:
