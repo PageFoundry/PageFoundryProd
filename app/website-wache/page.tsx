@@ -108,6 +108,10 @@ const data: ServiceLandingData = {
     heading: "Häufige Fragen.",
     items: [
       {
+        q: "Wer übernimmt Updates und Backups für meinen Betrieb in Remscheid?",
+        a: "Ich betreue Websites in Remscheid von Hückeswagen aus. Bei externem Hosting überwache ich für 49 € im Monat Erreichbarkeit, SSL und Antwortzeit. Backups und Wiederherstellung bleiben bei Ihnen oder Ihrem Hoster, sofern wir die Übernahme nicht vereinbaren. Im Care-Paket für 99 € sind bis zu 60 Minuten für kleine Korrekturen enthalten. Welche CMS-Updates ich übernehmen kann und wie wir vorab sichern, klären wir anhand Ihrer Website.",
+      },
+      {
         q: "Muss ich meinen Hoster wechseln?",
         a: "Nein. Die Website-Wache läuft unabhängig von Ihrem Hoster und überwacht Ihre Seite von außen.",
       },

@@ -22,14 +22,15 @@ const data: ServiceLandingData = {
   eyebrow: "SEO · Hückeswagen",
   heroHeading: "SEO für Unternehmen in Hückeswagen und im Bergischen Land",
   heroSubline:
-    "Ich prüfe, bei welchen Suchanfragen Ihre Website erscheint, welche Seiten Besucher erreichen und wo der Kontaktweg stockt. Daraus entsteht ein konkreter Arbeitsplan für Technik, Inhalte und lokale Auffindbarkeit.",
+    "Für welche Suchanfragen erscheint Ihr Betrieb? Welche Ihrer Seiten zeigt Google dabei? Sie erhalten eine nach Dringlichkeit geordnete Liste mit dem Befund, der empfohlenen Änderung und einem Prüfschritt. Den Umfang der Analyse besprechen wir vorab. Das separate Google-Profil-Paket kostet 149 €.",
+  heroActionLabel: "SEO-Analyse für meinen Betrieb anfragen",
   problem: {
     label: "Das Problem",
-    heading: "Einblendungen sollen zu passenden Besuchern werden",
+    heading: "Ein Befund aus meiner eigenen Website",
     points: [
-      "Die Seite hat Impressionen in Google, aber kaum Klicks — Snippet und Suchintention passen nicht zusammen.",
-      "Wichtige Seiten sind schwer auffindbar, laden langsam oder erklären das Angebot nicht klar genug.",
-      "Es fehlt eine nachvollziehbare Verbindung zwischen Suchbesuchern und eingehenden Anfragen.",
+      "Bei der Prüfung am 19. November 2026 enthielt meine Sitemap 25 Seiten. Google hatte beim letzten Abruf erst 18 erfasst.",
+      "Ich prüfte die sieben neuen Adressen einzeln. Google kannte sie noch nicht. Ein Live-Test bestätigte, dass Google die neue Gastronomie-Seite abrufen konnte.",
+      "Ich reichte die Sitemap erneut ein und beantragte für drei Seiten die Indexierung. Bei der Nachkontrolle zählt, welche Seiten Google tatsächlich aufgenommen hat.",
     ],
   },
   steps: {

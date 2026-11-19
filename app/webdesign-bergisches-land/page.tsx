@@ -1,10 +1,12 @@
+import Image from "next/image";
+import Link from "next/link";
 import { regionalPricing } from "@/lib/seo/regionalWebdesign";
 import ServiceLanding, { type ServiceLandingData } from "@/components/landing/ServiceLanding";
 import JsonLd, { getServiceSchema } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 const TITLE = "Webdesign Bergisches Land";
-const META_TITLE = "Webdesign Bergisches Land: Webagentur aus Hückeswagen";
+const META_TITLE = "Webdesign Bergisches Land – Firmenwebsites ab 790 €";
 const DESCRIPTION =
   "Webdesign im Bergischen Land für Websites und Landingpages: klare Angebote, mobile Umsetzung und transparente Festpreise ab 790 €. Kostenlose Erstberatung anfragen.";
 const URL = "https://pagefoundry.de/webdesign-bergisches-land";
@@ -23,7 +25,17 @@ const data: ServiceLandingData = {
   eyebrow: "Webdesign · Bergisches Land",
   heroHeading: "Webdesign aus Hückeswagen für das Bergische Land.",
   heroSubline:
-    "PageFoundry sitzt in Hückeswagen und baut Websites und Landingpages für Unternehmen im Bergischen Land: Remscheid, Wermelskirchen, Wipperfürth und die Städte drumherum. Sie sprechen direkt mit Fabian Franke: von der ersten Planung bis zum laufenden Betrieb.",
+    "Ich bin Fabian Franke aus Hückeswagen. Eine Seite für Ihr Angebot kostet 790 €. Wenn Ihre Kunden mehrere Leistungen vergleichen sollen, erhalten Sie für 1.390 € eine Firmenwebsite mit bis zu fünf Seiten und Kontaktformular.",
+  heroNote: (
+    <Link href="/projekte/the-loft#mobiler-vergleich" className="group flex max-w-xl flex-col gap-4 border-y border-pfBorder py-4 text-pfText sm:flex-row sm:items-center">
+      <Image src="/work/the-loft-cover-studio.webp" alt="Ansicht der Restaurant-Website von The Loft in Wuppertal" width={1920} height={1200} sizes="(min-width: 640px) 176px, (max-width: 420px) 88vw, 360px" className="h-auto w-full max-w-[360px] sm:w-44" />
+      <span>
+        <strong className="block">The Loft in Wuppertal</strong>
+        Gäste erreichen die Speisekarte direkt von der Startseite. Brunchzeiten und allgemeine Öffnungszeiten stehen getrennt im Restaurantbereich.
+        <span className="block text-pfAccent underline underline-offset-4">Vorher und nachher auf dem Handy ansehen</span>
+      </span>
+    </Link>
+  ),
   problem: {
     label: "Das Problem",
     heading: "Eine Website muss Ihr Angebot verständlich machen.",

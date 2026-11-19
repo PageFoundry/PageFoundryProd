@@ -9,6 +9,7 @@ export interface ServiceLandingData {
   eyebrow: string;
   heroHeading: string;
   heroSubline: string;
+  heroActionLabel?: string;
   /** Extra line under the hero actions, e.g. a live demo number. */
   heroNote?: ReactNode;
   problem: { label: string; heading: string; points: string[] };
@@ -80,7 +81,7 @@ export default function ServiceLanding({
           <p className={clsx("max-w-2xl text-base leading-8 text-pfSubtle md:text-lg", centered && "mx-auto mt-8")}>{data.heroSubline}</p>
           <div className={clsx("mt-10 flex flex-col gap-4 sm:flex-row", centered && "flex-wrap justify-center")}>
             <Link href={data.consultationHref ?? "/consultation"} className={clsx("btn-accent", actionClass)}>
-              Kostenlose Beratung buchen →
+              {data.heroActionLabel ?? "Kostenlose Beratung buchen"} →
             </Link>
             <a href={whatsapp} className={clsx("btn-outline", actionClass)}>WhatsApp</a>
             {!centered && <a href="tel:+4921928743999" className="btn-outline">

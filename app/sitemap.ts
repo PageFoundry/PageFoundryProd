@@ -58,7 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE}/website-wache`,
-      lastModified: UPDATED_2026_11_17,
+      lastModified: "2026-11-19",
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -70,13 +70,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE}/webdesign-bergisches-land`,
-      lastModified: UPDATED_2026_11_16,
+      lastModified: "2026-11-19",
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE}/seo-hueckeswagen`,
-      lastModified: UPDATED_2026_11_16,
+      lastModified: "2026-11-19",
       changeFrequency: "monthly",
       priority: 0.8,
     },
