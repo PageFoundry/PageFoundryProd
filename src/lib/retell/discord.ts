@@ -60,6 +60,8 @@ export function buildDiscordLeadPayload(lead: LeadWithEvents) {
   }
 
   return {
+    content: "@here",
+    allowed_mentions: { parse: ["everyone"] },
     embeds: [
       {
         title: booked ? "📞 Neuer Website-Termin gebucht" : "📞 Neuer Anruf / Lead ohne Termin",

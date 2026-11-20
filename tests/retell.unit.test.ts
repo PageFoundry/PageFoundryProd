@@ -106,6 +106,8 @@ describe("Retell leads and notifications", () => {
     });
     const payload = buildDiscordLeadPayload(lead);
 
+    assert.equal(payload.content, "@here");
+    assert.deepEqual(payload.allowed_mentions, { parse: ["everyone"] });
     assert.equal(payload.embeds[0].title, "📞 Neuer Website-Termin gebucht");
     assert.ok(payload.embeds[0].fields.some((field) => field.name === "Retell Call ID"));
     assert.ok(payload.embeds[0].fields.some((field) => field.name === "Termin"));

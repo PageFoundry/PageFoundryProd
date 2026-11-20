@@ -27,7 +27,14 @@ async function discord(content: string) {
   const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url) return;
   try {
-    await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content: content.slice(0, 1900) }) });
+    await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        content: ("@here\n" + content.replace(/@(everyone|here)/gi, "@\u200b$1")).slice(0, 1900),
+        allowed_mentions: { parse: ["everyone"] },
+      }),
+    });
   } catch {
     // Benachrichtigung darf den Ablauf nie blockieren.
   }
