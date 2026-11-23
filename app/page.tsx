@@ -13,9 +13,9 @@ import FounderTrust from "@/components/landing/FounderTrust";
 
 const homeMetadata = {
   de: {
-    title: "Webdesign & individuelle Software aus Hückeswagen | PageFoundry",
+    title: "Webdesign & Software aus Hückeswagen | PageFoundry",
     description:
-      "Ich baue Websites ab 790 € und Betriebssoftware ab 2.500 € aus Hückeswagen. Dazu SEO, Hosting und Website-Wartung für Unternehmen im Bergischen Land.",
+      "Webdesign aus Hückeswagen: Ich baue Websites ab 790 € und Betriebssoftware ab 2.500 €. Dazu SEO, Hosting und Wartung für Unternehmen im Bergischen Land.",
     openGraphDescription:
       "Websites, Landingpages und individuelle Software aus Hückeswagen – mit echten Projekten, transparenten Preisen und einem festen Ansprechpartner.",
     locale: "de_DE",
@@ -96,6 +96,18 @@ function getOrganizationSchema(lang: "de" | "en") {
     areaServed: isDe ? regionalAreaServed : { "@type": "Country", name: "Germany" },
     ...(!isDe ? { availableLanguage: ["German", "English"] } : {}),
     priceRange: "€€",
+    ...(isDe
+      ? {
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "16:00",
+              closes: "20:00",
+            },
+          ],
+        }
+      : {}),
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
@@ -154,7 +166,7 @@ const copy = {
         cta: "Webdesign – Leistungen und Preise",
         href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
-        imageAlt: "Gut besuchter Gastraum am Abend",
+        imageAlt: "Gastraum von The Loft in Wuppertal am Abend",
         badge: "Live · theloftbrunch.de",
       },
       {
@@ -419,7 +431,7 @@ const copy = {
         cta: "Web design and pricing (German)",
         href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
-        imageAlt: "Busy restaurant dining room in the evening",
+        imageAlt: "The Loft dining room in Wuppertal in the evening",
         badge: "Live · theloftbrunch.de",
       },
       {
