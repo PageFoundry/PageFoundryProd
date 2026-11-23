@@ -154,6 +154,7 @@ const copy = {
         cta: "Webdesign – Leistungen und Preise",
         href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
+        imageAlt: "Gut besuchter Gastraum am Abend",
         badge: "Live · theloftbrunch.de",
       },
       {
@@ -165,6 +166,7 @@ const copy = {
         cta: "KI-Telefon ansehen",
         href: "/ki-telefonassistenz",
         image: "/work/hero-ki-callcenter.webp",
+        imageAlt: "Symbolbild: Arbeitsplätze mit Headsets, auf den Monitoren Sprachwellen",
         badge: "Live testen · 02192 8743999",
       },
     ],
@@ -195,7 +197,7 @@ const copy = {
           label: "Projektseite ansehen",
         },
         image: "/work/carbon-care.jpg",
-        imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
+        imageAlt: "Rechnungssoftware für Carbon Care: Rechnungsübersicht (Demoansicht mit Beispieldaten)",
         scope: "Betriebliche Rechnungssoftware",
         headline: "Vom Neustart zur funktionierenden digitalen Basis.",
         problem:
@@ -417,6 +419,7 @@ const copy = {
         cta: "Web design and pricing (German)",
         href: "/website-erstellen-lassen",
         image: "/work/hero-the-loft.webp",
+        imageAlt: "Busy restaurant dining room in the evening",
         badge: "Live · theloftbrunch.de",
       },
       {
@@ -428,6 +431,7 @@ const copy = {
         cta: "Discuss AI phone & software",
         href: "/consultation?package=request_offer",
         image: "/work/hero-ki-callcenter.webp",
+        imageAlt: "Illustration: workstations with headsets, voice waveforms on the monitors",
         badge: "Live · +49 2192 8743999",
       },
     ],
@@ -454,7 +458,7 @@ const copy = {
           label: "Web design in the Bergisches Land (German)",
         },
         image: "/work/carbon-care.jpg",
-        imageAlt: "Tailored invoicing software for Carbon Care: invoice overview with status and payment state (demo view with sample data)",
+        imageAlt: "Invoicing software for Carbon Care: invoice overview (demo view with sample data)",
         scope: "Business invoicing software",
         headline: "From a new business to a working digital base.",
         problem:
@@ -671,7 +675,7 @@ export default async function LandingPage() {
                 className="max-w-4xl font-display leading-[0.88] text-balance text-pfText"
                 style={{ fontSize: "clamp(3rem, 7vw, 6.5rem)" }}
               >
-                <span className="mb-5 block font-mono text-[0.68rem] font-normal uppercase leading-normal tracking-[0.18em] text-pfAccent">{c.eyebrow}</span>
+                <span className="mb-5 block font-mono text-[0.68rem] font-normal uppercase leading-normal tracking-[0.18em] text-pfAccent">{c.eyebrow}</span>{" "}
                 {c.heroHeading}
               </h1>
             </div>
@@ -693,7 +697,7 @@ export default async function LandingPage() {
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-64 overflow-hidden md:h-[19rem]">
                   <Image
                     src={door.image}
-                    alt=""
+                    alt={door.imageAlt}
                     fill
                     // The first door image is in the first mobile viewport (LCP candidate).
                     priority={doorIndex === 0}
@@ -737,7 +741,8 @@ export default async function LandingPage() {
       <section className="hidden overflow-hidden border-y border-pfBorder bg-pfSurface/70 py-4 sm:block">
         <div className="flex w-max animate-[marquee_32s_linear_infinite] gap-8 whitespace-nowrap font-mono text-[0.65rem] uppercase tracking-[0.22em] text-pfMuted">
           {[...c.proof, ...c.proof, ...c.proof].map((item, index) => (
-            <span key={`${item}-${index}`} className="flex items-center gap-8">
+            // Only the first pass is read out; the two copies exist for the seamless loop.
+            <span key={`${item}-${index}`} aria-hidden={index >= c.proof.length ? true : undefined} className="flex items-center gap-8">
               {item}
               <span className="text-pfAccent">/</span>
             </span>

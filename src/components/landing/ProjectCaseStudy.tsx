@@ -70,7 +70,7 @@ export default function ProjectCaseStudy({ data, cover, children }: { data: Proj
               </figcaption>
             )}
           </figure>}
-          <a href={data.url} target="_blank" rel="noreferrer" className="btn-outline mt-6 inline-flex">
+          <a href={data.url} target="_blank" rel="noopener noreferrer" className="btn-outline mt-6 inline-flex">
             {data.visitLabel} ↗
           </a>
         </div>

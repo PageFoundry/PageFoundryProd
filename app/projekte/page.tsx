@@ -18,7 +18,7 @@ const projects = [
     kind: "Landingpage und individuelle Rechnungssoftware · live seit 02/2026",
     text: "Vor dem Projekt gab es weder eine Website noch einen eigenen, wiederholbaren Rechnungsablauf. Heute laufen eine Landingpage und eine Rechnungssoftware mit Rechnungen, Status und Zahlungsstand im täglichen Betrieb.",
     image: "/work/carbon-care.jpg",
-    imageAlt: "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
+    imageAlt: "Rechnungssoftware für Carbon Care: Rechnungsübersicht (Demoansicht mit Beispieldaten)",
     href: "/projekte/carbon-care",
     external: "https://carbon-care.de",
   },

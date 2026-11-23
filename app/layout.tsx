@@ -1,6 +1,6 @@
 import './globals.css';
 import type { ReactNode } from 'react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Bebas_Neue, Space_Grotesk, Space_Mono } from 'next/font/google';
 import BackgroundAnimated from '@/components/BackgroundAnimated';
 import Navbar from '@/components/Navbar';
@@ -75,15 +75,6 @@ export const metadata: Metadata = {
   },
   description:
     "PageFoundry baut hochkonvertierende Landing Pages, übernimmt Hosting, SEO-Optimierung und Speed-Tuning – transparent kalkuliert, ohne Retainer.",
-  keywords: [
-    "Landing Page Agentur",
-    "Landing Page erstellen lassen",
-    "SEO Optimierung",
-    "Website Hosting",
-    "Speed Optimierung",
-    "Google Ranking verbessern",
-    "Web Agentur Deutschland",
-  ],
   authors: [{ name: "PageFoundry", url: BASE }],
   creator: "PageFoundry",
   robots: {
@@ -111,17 +102,27 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { lang, messages } = await getServerI18n();
   return (
     <html lang={lang} className={`${bebasNeue.variable} ${spaceGrotesk.variable} ${spaceMono.variable}`}>
       <body className="relative min-h-screen bg-pfBg text-pfText">
+        <a
+          href="#inhalt"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-pfAccent focus:px-4 focus:py-3 focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:text-pfBg"
+        >
+          {lang === "de" ? "Zum Inhalt springen" : "Skip to content"}
+        </a>
         <BackgroundAnimated />
         <I18nProvider lang={lang} messages={messages}>
           <AttributionProvider>
           <div className="relative z-10 flex min-h-screen flex-col">
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main id="inhalt" className="flex-1">{children}</main>
             <footer className="border-t border-pfBorder text-xs text-pfMuted px-6 py-10">
               {lang === "de" && (
                 <nav aria-label="Leistungen und Regionen" className="mx-auto mb-10 grid max-w-screen-xl gap-8 border-b border-pfBorder pb-10 sm:grid-cols-3">
@@ -155,6 +156,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                   <a href="/impressum" className="hover:text-pfAccent transition-colors">{lang === "de" ? "Impressum" : "Imprint"}</a>
                   <a href="/datenschutz" className="hover:text-pfAccent transition-colors">{lang === "de" ? "Datenschutz" : "Privacy"}</a>
                   <a href="/agb" className="hover:text-pfAccent transition-colors">{lang === "de" ? "AGB" : "Terms"}</a>
+                  <a
+                    href={lang === "de" ? "/en" : "/"}
+                    hrefLang={lang === "de" ? "en" : "de"}
+                    lang={lang === "de" ? "en" : "de"}
+                    className="hover:text-pfAccent transition-colors"
+                  >
+                    {lang === "de" ? "English" : "Deutsch"}
+                  </a>
                 </div>
               </div>
             </footer>

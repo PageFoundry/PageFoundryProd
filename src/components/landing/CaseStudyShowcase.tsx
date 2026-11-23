@@ -127,7 +127,7 @@ export default function CaseStudyShowcase({ cases, labels }: Props) {
               )}
 
               <div className="mt-6 flex flex-wrap items-start gap-3">
-                <a href={item.url} target="_blank" rel="noreferrer" className="btn-outline">
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="btn-outline">
                   {item.visitLabel ?? labels.visit} ↗
                 </a>
                 {internalLink && (

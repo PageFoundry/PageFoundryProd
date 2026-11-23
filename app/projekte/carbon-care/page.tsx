@@ -24,7 +24,7 @@ const data: ProjectCaseStudyData = {
   visitLabel: "Kundenwebsite öffnen",
   image: "/work/carbon-care.jpg",
   imageAlt:
-    "Individuelle Rechnungssoftware für Carbon Care: Rechnungsübersicht mit Status und Zahlungsstand (Demoansicht mit Beispieldaten)",
+    "Rechnungssoftware für Carbon Care: Rechnungsübersicht (Demoansicht mit Beispieldaten)",
   imageCaption:
     "Rechnungsübersicht mit Beispieldaten. Jede Zeile zeigt die Rechnungsnummer, den Kunden, das Fahrzeug und den Betrag. Rechts kennzeichnet die Spalte „Bezahlt“, welche Rechnungen offen und welche bezahlt sind.",
   situation: {

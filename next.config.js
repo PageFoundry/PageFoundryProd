@@ -10,6 +10,9 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   serverExternalPackages: ['better-sqlite3', 'playwright', 'lighthouse', 'chrome-launcher', 'pdfkit'],
+  // Optimised images were cached for only 60 s. A week keeps repeat visits fast;
+  // after replacing a file under the same name, clear .next/cache/images on the server.
+  images: { minimumCacheTTL: 604800 },
   // Routes of the site version before spring 2026 still get links and impressions.
   // /website-agentur-remscheid stays out until the domain experiment ends on 2026-12-12.
   async redirects() {
@@ -31,6 +34,19 @@ const nextConfig = {
       {
         source: '/icons/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        // Unversioned public images (same file name after an update), so a week instead of a year.
+        source: '/work/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
+      },
+      {
+        source: '/og-pagefoundry.png',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
+      },
+      {
+        source: '/PAGEfoundry.png',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
       },
       {
         source: '/social-audit-ui/:path*',
