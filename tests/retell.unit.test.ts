@@ -2,7 +2,7 @@ import { after, before, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { prisma } from "../src/lib/prisma";
-import { calendarProvider } from "../src/lib/retell/calendar";
+import { calendarProvider, findSlotAlternatives } from "../src/lib/retell/calendar";
 import { buildDiscordLeadPayload } from "../src/lib/retell/discord";
 import { extractLeadInputFromRetellCall, shouldNotifyCallLead, upsertCallLead } from "../src/lib/retell/leads";
 import { handleRetellWebhookEvent } from "../src/lib/retell/webhook";
@@ -58,6 +58,52 @@ describe("Telefonagent-Buchungsfenster Mo–Fr 08–18 Uhr", () => {
     assert.equal(slot("2030-05-06T18:00:00+02:00", "2030-05-06T18:30:00+02:00"), false);
     assert.equal(slot("2030-05-11T10:00:00+02:00", "2030-05-11T10:30:00+02:00"), false);
     assert.equal(slot("2030-05-12T10:00:00+02:00", "2030-05-12T10:30:00+02:00"), false);
+  });
+});
+
+describe("Terminvorschläge des Telefonagenten", () => {
+  // Termine im Juni 2030: kein anderer Test belegt diese Tage.
+  // 2030-06-03 = Mo, -05 = Mi, -07 = Fr, -10 = Mo, -12 = Mi
+  const NOW = new Date("2030-05-01T09:00:00Z");
+  const starts = async (preferred: string, now = NOW) =>
+    (await findSlotAlternatives(new Date(preferred), "Europe/Berlin", 30, 3, now)).map((a) => a.startDateTime);
+
+  test("vor Öffnung: ab 08:00 im Halbstundenraster", async () => {
+    assert.deepEqual(await starts("2030-06-03T07:30:00+02:00"), [
+      "2030-06-03T08:00:00+02:00",
+      "2030-06-03T08:30:00+02:00",
+      "2030-06-03T09:00:00+02:00",
+    ]);
+  });
+
+  test("Freitagabend: weiter am Montag ab 08:00", async () => {
+    assert.deepEqual(await starts("2030-06-07T17:30:00+02:00"), [
+      "2030-06-10T08:00:00+02:00",
+      "2030-06-10T08:30:00+02:00",
+      "2030-06-10T09:00:00+02:00",
+    ]);
+  });
+
+  test("Mindestvorlauf zu krummer Uhrzeit: erster Rasterpunkt danach", async () => {
+    // Jetzt = Di 04.06. 10:05 Berlin, Mindestvorlauf endet Mi 05.06. 10:05.
+    assert.deepEqual(await starts("2030-06-04T11:00:00+02:00", new Date("2030-06-04T08:05:00Z")), [
+      "2030-06-05T10:30:00+02:00",
+      "2030-06-05T11:00:00+02:00",
+      "2030-06-05T11:30:00+02:00",
+    ]);
+  });
+
+  test("belegter Termin wird übersprungen", async () => {
+    const booked = await calendarProvider.createBooking(
+      booking(`${PREFIX}-alternatives`, "2030-06-12T09:00:00+02:00", "2030-06-12T09:30:00+02:00"),
+    );
+    assert.equal(booked.success, true);
+
+    assert.deepEqual(await starts("2030-06-12T08:30:00+02:00"), [
+      "2030-06-12T09:30:00+02:00",
+      "2030-06-12T10:00:00+02:00",
+      "2030-06-12T10:30:00+02:00",
+    ]);
   });
 });
 

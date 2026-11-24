@@ -85,6 +85,14 @@ export async function isSlotAvailable(start: Date, end: Date) {
   return !(await hasConflict(prisma, start, end));
 }
 
+const HALF_HOUR_MS = 30 * 60_000;
+
+// Nächster Halbstunden-Rasterpunkt am oder nach `ms`. Gerechnet in UTC; für Europe/Berlin
+// (Versatz in vollen Stunden) sind das dieselben :00/:30-Grenzen wie in Ortszeit.
+function ceilToHalfHour(ms: number) {
+  return new Date(Math.ceil(ms / HALF_HOUR_MS) * HALF_HOUR_MS);
+}
+
 export async function findSlotAlternatives(
   preferredStart: Date,
   timezone = DEFAULT_TIMEZONE,
@@ -97,18 +105,14 @@ export async function findSlotAlternatives(
 
   // Vorschläge dürfen den Mindestvorlauf nicht unterlaufen — sonst schlägt der Agent
   // genau die Termine vor, die die Buchung anschließend mit "too_soon" ablehnt.
-  const scanStart = preferredStart.getTime() > earliest.getTime() ? preferredStart : earliest;
-  let cursor = addMinutes(scanStart, 30);
+  // Gesucht wird im Halbstundenraster: ab dem ersten Rasterpunkt nach dem Wunschtermin,
+  // bzw. ab dem ersten Rasterpunkt am oder nach dem Mindestvorlauf.
+  let cursor =
+    preferredStart.getTime() >= earliest.getTime()
+      ? ceilToHalfHour(preferredStart.getTime() + 1)
+      : ceilToHalfHour(earliest.getTime());
 
   for (let attempts = 0; attempts < 240 && alternatives.length < limit; attempts += 1) {
-    const minutes = cursor.getUTCMinutes();
-    const roundedMinutes = minutes <= 30 ? 30 : 60;
-    cursor = new Date(cursor);
-    cursor.setUTCMinutes(roundedMinutes === 60 ? 0 : 30, 0, 0);
-    if (roundedMinutes === 60) {
-      cursor.setUTCHours(cursor.getUTCHours() + 1);
-    }
-
     const end = addMinutes(cursor, durationMinutes);
     if (
       cursor.getTime() >= earliest.getTime() &&
