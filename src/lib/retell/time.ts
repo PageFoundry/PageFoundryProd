@@ -1,5 +1,10 @@
 import { DEFAULT_TIMEZONE } from "./validation";
 
+// Buchungsfenster des Telefonagenten: Mo–Fr 08–18 Uhr, wie die Öffnungszeiten im
+// Google-Profil und im LocalBusiness-Schema der Startseite.
+export const PHONE_START_HOUR = 8;
+export const PHONE_END_HOUR = 18;
+
 type LocalParts = {
   year: number;
   month: number;
@@ -44,7 +49,7 @@ export function isBusinessSlot(start: Date, end: Date, timezone = DEFAULT_TIMEZO
   const startMinutes = startParts.hour * 60 + startParts.minute;
   const endMinutes = endParts.hour * 60 + endParts.minute;
 
-  return startMinutes >= 9 * 60 && endMinutes <= 17 * 60 && endMinutes > startMinutes;
+  return startMinutes >= PHONE_START_HOUR * 60 && endMinutes <= PHONE_END_HOUR * 60 && endMinutes > startMinutes;
 }
 
 export function formatGermanDateTime(date: Date, timezone = DEFAULT_TIMEZONE) {

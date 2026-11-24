@@ -102,8 +102,8 @@ function getOrganizationSchema(lang: "de" | "en") {
             {
               "@type": "OpeningHoursSpecification",
               dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-              opens: "16:00",
-              closes: "20:00",
+              opens: "08:00",
+              closes: "18:00",
             },
           ],
         }

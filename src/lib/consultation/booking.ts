@@ -64,8 +64,8 @@ export async function bookSlot(input: BookSlotInput, now: Date = new Date()) {
         throw new SlotUnavailableError();
       }
 
-      // Der Telefonagent bucht in CalendarEvent (09–17 Uhr) — mit den Consultation-Slots
-      // (16–20 Uhr) überschneidet sich das Fenster 16–17 Uhr.
+      // Der Telefonagent bucht in CalendarEvent (08–18 Uhr) — mit den Consultation-Slots
+      // (16–20 Uhr) überschneidet sich das Fenster 16–18 Uhr.
       const phoneAppointment = await tx.calendarEvent.findFirst({
         where: {
           status: { not: "cancelled" },

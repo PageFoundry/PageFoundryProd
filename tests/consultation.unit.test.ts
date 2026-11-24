@@ -150,7 +150,7 @@ describe("Consultation-Buchung", () => {
 
 describe("Kollision zwischen Web-Consultation und Telefonagent", () => {
   test("ein gebuchter Consultation-Slot blockiert den Telefonagenten", async () => {
-    // 16:30–17:00 Berlin: liegt in beiden Fenstern (Consultation 16–20, Telefon 09–17).
+    // 16:30–17:00 Berlin: liegt in beiden Fenstern (Consultation 16–20, Telefon 08–18).
     const slot = await createSlot(8, 16, 30); // Mi
     await bookSlot(bookingInput(slot.id, "web@example.com"), NOW_2030);
 

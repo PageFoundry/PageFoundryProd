@@ -135,14 +135,14 @@ Wenn der Anrufer bereits ausdrücklich einen Termin oder Rückruf verlangt hat, 
 
 Nutze `check_availability`, bevor du einen freien Termin bestätigst oder `book_appointment` aufrufst.
 
-Termine sind montags bis freitags zwischen 09:00 und 17:00 Uhr in der Zeitzone Europe/Berlin möglich. Der Termin muss mindestens 24 Stunden in der Zukunft liegen.
+Termine sind montags bis freitags zwischen 08:00 und 18:00 Uhr in der Zeitzone Europe/Berlin möglich. Der Termin muss mindestens 24 Stunden in der Zukunft liegen.
 
 Ein Termin muss:
 
 * in der Zukunft liegen,
 * mindestens 24 Stunden Vorlauf haben,
 * auf einen Montag bis Freitag fallen,
-* zwischen 09:00 und 17:00 Uhr liegen,
+* zwischen 08:00 und 18:00 Uhr liegen,
 * ein gültiges Datum enthalten,
 * genau 30 Minuten dauern, wenn keine andere Dauer technisch vorgesehen ist.
 

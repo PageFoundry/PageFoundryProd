@@ -8,6 +8,7 @@ import { extractLeadInputFromRetellCall, shouldNotifyCallLead, upsertCallLead } 
 import { handleRetellWebhookEvent } from "../src/lib/retell/webhook";
 import { verifyRetellSignature } from "../src/lib/retell/signature";
 import { parseRetellToolBody } from "../src/lib/retell/validation";
+import { isBusinessSlot } from "../src/lib/retell/time";
 
 const PREFIX = `test-retell-${Date.now()}`;
 
@@ -39,6 +40,25 @@ before(async () => {
 after(async () => {
   await cleanup();
   await prisma.$disconnect();
+});
+
+describe("Telefonagent-Buchungsfenster Mo–Fr 08–18 Uhr", () => {
+  const slot = (start: string, end: string) => isBusinessSlot(new Date(start), new Date(end), "Europe/Berlin");
+
+  test("erster und letzter Slot liegen im Fenster (Sommer- und Winterzeit)", () => {
+    assert.equal(slot("2030-05-06T08:00:00+02:00", "2030-05-06T08:30:00+02:00"), true);
+    assert.equal(slot("2030-05-06T17:30:00+02:00", "2030-05-06T18:00:00+02:00"), true);
+    assert.equal(slot("2030-01-07T08:00:00+01:00", "2030-01-07T08:30:00+01:00"), true);
+    assert.equal(slot("2030-01-07T17:30:00+01:00", "2030-01-07T18:00:00+01:00"), true);
+  });
+
+  test("vor 08 Uhr, nach 18 Uhr und am Wochenende abgelehnt", () => {
+    assert.equal(slot("2030-05-06T07:30:00+02:00", "2030-05-06T08:00:00+02:00"), false);
+    assert.equal(slot("2030-05-06T17:45:00+02:00", "2030-05-06T18:15:00+02:00"), false);
+    assert.equal(slot("2030-05-06T18:00:00+02:00", "2030-05-06T18:30:00+02:00"), false);
+    assert.equal(slot("2030-05-11T10:00:00+02:00", "2030-05-11T10:30:00+02:00"), false);
+    assert.equal(slot("2030-05-12T10:00:00+02:00", "2030-05-12T10:30:00+02:00"), false);
+  });
 });
 
 describe("Retell appointment booking", () => {

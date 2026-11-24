@@ -14,8 +14,8 @@ export type SlotValidationResult =
 type DbClient = Prisma.TransactionClient | typeof prisma;
 
 // Kollidiert der Zeitraum mit einem Telefontermin ODER einem gebuchten Consultation-Slot?
-// Der Telefonagent bucht 09–17 Uhr in CalendarEvent, die Website 16–20 Uhr in
-// ConsultationSlot — im Fenster 16–17 Uhr können sich beide in die Quere kommen.
+// Der Telefonagent bucht 08–18 Uhr in CalendarEvent, die Website 16–20 Uhr in
+// ConsultationSlot — im Fenster 16–18 Uhr können sich beide in die Quere kommen.
 async function hasConflict(db: DbClient, start: Date, end: Date) {
   const phoneAppointment = await db.calendarEvent.findFirst({
     where: {

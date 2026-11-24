@@ -49,7 +49,7 @@ Telefon +49 2192 8743999: Der KI-Assistent nimmt an, Fabian ruft zurück. WhatsA
 
 ## Beratungstermine
 
-Die kostenlose Erstberatung dauert 30 Minuten und findet per Zoom oder Telefon statt. Ein Telefonassistent-Termin wird montags bis freitags zwischen 09:00 und 17:00 Uhr Europe/Berlin angeboten. Der telefonische Kalender verlangt mindestens 24 Stunden Vorlauf und prüft die Verfügbarkeit technisch.
+Die kostenlose Erstberatung dauert 30 Minuten und findet per Zoom oder Telefon statt. Ein Telefonassistent-Termin wird montags bis freitags zwischen 08:00 und 18:00 Uhr Europe/Berlin angeboten. Der telefonische Kalender verlangt mindestens 24 Stunden Vorlauf und prüft die Verfügbarkeit technisch.
 
 Ein Termin ist erst verbindlich, wenn der Kalenderaufruf erfolgreich war. Die KI darf vorher nicht sagen, dass der Termin eingetragen ist.
 
